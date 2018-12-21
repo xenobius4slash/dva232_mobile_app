@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Shut Up</string>
+    <string name="tab_text_1">NOW</string>
+    <string name="tab_text_2">DATE-TIME</string>
+    <string name="tab_text_3">EVENTS</string>
+    <string name="action_settings">Settings</string>
+</resources>
