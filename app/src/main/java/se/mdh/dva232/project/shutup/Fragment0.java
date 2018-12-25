@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 public class Fragment0 extends Fragment {
 
@@ -32,6 +33,31 @@ public class Fragment0 extends Fragment {
         Log.d("LIFECYCLE Fragment0", "onCreateView(...)");
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);
+
+        final AudioController AC = new AudioController(rootView.getContext());
+        AC.logCurrentAudioMode();
+        Button btnSilent = rootView.findViewById(R.id.silent_btn);
+        btnSilent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AC.setPhoneToSilentMode(false);
+            }
+        });
+        Button btnVibration = rootView.findViewById(R.id.vibrate_btn);
+        btnVibration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AC.setPhoneToSilentMode(true);
+            }
+        });
+        Button btnNormal = rootView.findViewById(R.id.normal_btn);
+        btnNormal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AC.setPhoneToPreviousMode();
+            }
+        });
+
         return rootView;
     }
 

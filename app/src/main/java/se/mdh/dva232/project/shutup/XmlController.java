@@ -16,29 +16,34 @@ public class XmlController {
     private String xmlFilename = "events.xml";
     private String xmlContent = null;
     private XmlSerializer xmlSerializer = Xml.newSerializer();
+    private Boolean debug = true;       // true: with Log.d output; false: without Log.d output
 
+    /**
+     * Constructor for these class
+     * @param c     Context     context of that application for access to the open file functions
+     */
     XmlController(Context c) {
-        Log.d("XMLC", "constructor");
+        if(debug) { Log.d("XMLC", "constructor"); }
         context = c;
     }
 
     public void resetXmlContent() {
-        Log.d("XMLC","resetXmlContent()");
+        if(debug) { Log.d("XMLC","resetXmlContent()"); }
         setXmlContent( null );
     }
 
     private void setXmlContent(String content) {
-        Log.d("XMLC","setXmlContent(...)");
+        if(debug) { Log.d("XMLC","setXmlContent(...)"); }
         xmlContent = content;
     }
 
     public String getXmlContent() {
-        Log.d("XMLC","getXmlContent()");
+        if(debug) { Log.d("XMLC","getXmlContent()"); }
         return xmlContent;
     }
 
     public Boolean isXmlContent() {
-        Log.d("XMLC","isXmlContent()");
+        if(debug) { Log.d("XMLC","isXmlContent()"); }
         if( (getXmlContent() != null) && (!getXmlContent().isEmpty()) && (getXmlContent().length() > 0) ) {
             return true;
         } else {
@@ -47,7 +52,7 @@ public class XmlController {
     }
 
     public void createXml() {
-        Log.d("XMLC", "createXml()");
+        if(debug) { Log.d("XMLC", "createXml()"); }
         StringWriter writer = new StringWriter();
         try {
             xmlSerializer.setOutput(writer);
@@ -62,7 +67,7 @@ public class XmlController {
     }
 
     public void saveXmlToFile() {
-        Log.d("XMLC","saveXmlToFile()");
+        if(debug) { Log.d("XMLC","saveXmlToFile()"); }
         FileOutputStream xmlFile;
         try {
             xmlFile = context.openFileOutput(xmlFilename, Context.MODE_PRIVATE);
@@ -74,7 +79,7 @@ public class XmlController {
     }
 
     public void readXmlFile() {
-        Log.d("XMLC", "readXmlFile()");
+        if(debug) { Log.d("XMLC", "readXmlFile()"); }
         try {
             FileInputStream xmlFile = context.openFileInput(xmlFilename);
             InputStreamReader inputStreamReader = new InputStreamReader(xmlFile);
