@@ -9,9 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.sql.Time;
-import java.util.Calendar;
-
 public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -23,31 +20,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         XmlController xmlC = new XmlController( getBaseContext() );
-        Calendar dateStart = Calendar.getInstance();
-        dateStart.set(Calendar.YEAR, 2018);
-        dateStart.set(Calendar.MONTH, 12);
-        dateStart.set(Calendar.DAY_OF_MONTH, 3);
-        Log.d("DATE", "date: " + dateStart.toString());
 
-        Calendar dateEnd = dateStart;
+        //SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
+        //SimpleDateFormat timeFormater = new SimpleDateFormat("hh:mm");
 
-        Calendar timeStart = Calendar.getInstance();
-        timeStart.set(Calendar.HOUR_OF_DAY, 12);
-        timeStart.set(Calendar.MINUTE, 00);
+        String dateStart = "2018-12-03";
+        String timeStart = "12:00";
+        String dateEnd = "2018-12-03";
+        String timeEnd = "14:00";
+        String name = "test name";
 
-        Calendar timeEnd = Calendar.getInstance();
-        timeEnd.set(Calendar.HOUR_OF_DAY, 14);
-        timeEnd.set(Calendar.MINUTE, 00);
         if( xmlC.readXmlFileAndLoad() ) {
             Log.d("XMLC","reading XML file success");
             xmlC.logCurrentXmlContent();
-            xmlC.addEventToXmlContent(dateStart.getTime(), timeStart.getTime(), dateEnd.getTime(), timeEnd.getTime(), "test name" );
+            xmlC.addEventToXmlContent(dateStart, timeStart, dateEnd, timeEnd, name);
             xmlC.logCurrentXmlContent();
         } else {
-            Log.d("XMLC", "error while reading XML file");
+            Log.d("XMLC", "error while reading XML file -> file not exist");
             xmlC.createXmlContentSkeleton();
             xmlC.logCurrentXmlContent();
-            xmlC.addEventToXmlContent(dateStart.getTime(), timeStart.getTime(), dateEnd.getTime(), timeEnd.getTime(), "test name" );
+            xmlC.addEventToXmlContent(dateStart, timeStart, dateEnd, timeEnd, name);
             xmlC.logCurrentXmlContent();
         }
 

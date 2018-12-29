@@ -12,24 +12,17 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlSerializer;
 
-import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -115,18 +108,15 @@ public class XmlController {
 
     /**
      * Adds an event to the XML content string
-     * @param startDate     Date        start date of the event
-     * @param startTime     Date        start time of the event
-     * @param endDate       Date        end date of the event
-     * @param endTime       Date        end time of the event
+     * @param startDate     String  Format: "yyyy-MM-dd"    start date of the event
+     * @param startTime     String  Format: "hh:mm"         start time of the event
+     * @param endDate       String  Format: "yyyy-MM-dd"    end date of the event
+     * @param endTime       String  Format: "hh:mm"         end time of the event
      * @param name          String      name of the event
      */
-    void addEventToXmlContent(Date startDate, Date startTime, Date endDate, Date endTime, String name) {
+    void addEventToXmlContent(String startDate, String startTime, String endDate, String endTime, String name) {
         if(debug) { Log.d("XMLC", "addEventToXmlContent()"); }
         try {
-            SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat timeFormater = new SimpleDateFormat("hh:mm");
-
             // instance the DOM object
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -139,13 +129,13 @@ public class XmlController {
 
             // create content (elements) of one event
             Element eStartDate = doc.createElement("start_date");
-            eStartDate.appendChild(doc.createTextNode( dateFormater.format(startDate) ));
+            eStartDate.appendChild(doc.createTextNode( startDate ));
             Element eStartTime = doc.createElement("start_time");
-            eStartTime.appendChild(doc.createTextNode( timeFormater.format(startTime) ));
+            eStartTime.appendChild(doc.createTextNode( startTime ));
             Element eEndDate = doc.createElement("end_date");
-            eEndDate.appendChild(doc.createTextNode( dateFormater.format(endDate) ));
+            eEndDate.appendChild(doc.createTextNode( endDate ));
             Element eEndTime = doc.createElement("end_time");
-            eEndTime.appendChild(doc.createTextNode( timeFormater.format(endTime) ));
+            eEndTime.appendChild(doc.createTextNode( endTime ));
             Element eName = doc.createElement("name");
             eName.appendChild(doc.createTextNode( name ));
 
