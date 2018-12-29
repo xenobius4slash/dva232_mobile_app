@@ -21,25 +21,49 @@ public class MainActivity extends AppCompatActivity {
 
         XmlController xmlC = new XmlController( getBaseContext() );
 
+
         //SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
         //SimpleDateFormat timeFormater = new SimpleDateFormat("hh:mm");
 
-        String dateStart = "2018-12-03";
-        String timeStart = "12:00";
-        String dateEnd = "2018-12-03";
-        String timeEnd = "14:00";
-        String name = "test name";
+        String id1 = "2018-12-03_1200";
+        String dateStart1 = "2018-12-29";
+        String timeStart1 = "12:00";
+        String dateEnd1 = "2018-12-29";
+        String timeEnd1 = "15:45";
+        String name1 = "test name 1";
+
+        String id2 = "2018-12-04_1200";
+        String dateStart2 = "2018-12-29";
+        String timeStart2 = "12:00";
+        String dateEnd2 = "2018-12-29";
+        String timeEnd2 = "15:51";
+        String name2 = "test name 2";
 
         if( xmlC.readXmlFileAndLoad() ) {
             Log.d("XMLC","reading XML file success");
+            xmlC.createXmlContentSkeleton();
             xmlC.logCurrentXmlContent();
-            xmlC.addEventToXmlContent(dateStart, timeStart, dateEnd, timeEnd, name);
+            xmlC.addEventToXmlContent(id1, dateStart1, timeStart1, dateEnd1, timeEnd1, name1);
+            //xmlC.logCurrentXmlContent();
+            xmlC.addEventToXmlContent(id2, dateStart2, timeStart2, dateEnd2, timeEnd2, name2);
+            xmlC.saveXmlContentToFile();
+            //xmlC.logCurrentXmlContent();
+            //xmlC.removeEventFromXmlContent(id1);
+            xmlC.removeAllPastEventsFromXmlContent();
+            xmlC.saveXmlContentToFile();
             xmlC.logCurrentXmlContent();
         } else {
             Log.d("XMLC", "error while reading XML file -> file not exist");
             xmlC.createXmlContentSkeleton();
             xmlC.logCurrentXmlContent();
-            xmlC.addEventToXmlContent(dateStart, timeStart, dateEnd, timeEnd, name);
+            xmlC.addEventToXmlContent(id1, dateStart1, timeStart1, dateEnd1, timeEnd1, name1);
+            //xmlC.logCurrentXmlContent();
+            xmlC.addEventToXmlContent(id2, dateStart2, timeStart2, dateEnd2, timeEnd2, name2);
+            xmlC.saveXmlContentToFile();
+            //xmlC.logCurrentXmlContent();
+            //xmlC.removeEventFromXmlContent(id1);
+            xmlC.removeAllPastEventsFromXmlContent();
+            xmlC.saveXmlContentToFile();
             xmlC.logCurrentXmlContent();
         }
 
