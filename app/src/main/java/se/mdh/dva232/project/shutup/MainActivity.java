@@ -1,5 +1,6 @@
 package se.mdh.dva232.project.shutup;
 
+import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,20 @@ public class MainActivity extends AppCompatActivity {
         Log.d("LIFECYCLE Actvity", "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+        if( !settings.contains("vibration") || !settings.contains("extended_mode") || !settings.contains("close") ) {
+            
+            // first start => initial values
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean("vibration", false);
+            editor.putBoolean("extended_mode", false);
+            editor.putBoolean("close", false);
+            editor.commit();
+        }
+
+
 
         /*
          * Toolbar with app-name and menu

@@ -1,13 +1,21 @@
 package se.mdh.dva232.project.shutup;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
-public class Fragment0 extends Fragment {
+public class Fragment0 extends Fragment{
+
+    //variables
+    Switch extended_check;
+
 
     public Fragment0() {
         // Required empty public constructor
@@ -25,15 +33,27 @@ public class Fragment0 extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         Log.d("LIFECYCLE Fragment0", "onCreate");
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d("LIFECYCLE Fragment0", "onCreateView(...)");
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);
+
+        SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
+        View rootView;
+        if( settings.getBoolean("extended_mode", false) ) {
+            rootView = inflater.inflate(R.layout.fragment_fragment0_extended, container, false);
+        } else {
+            rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);
+        }
+
+
         return rootView;
     }
+
+
 
     @Override
     public void onStart() {

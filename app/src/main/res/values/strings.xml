@@ -4,4 +4,32 @@
     <string name="tab_text_2">DATE-TIME</string>
     <string name="tab_text_3">EVENTS</string>
     <string name="action_settings">Settings</string>
+
+
+    <string name="textView1">CURRENT MODE</string>
+    <string name="textView2">Select Duration: </string>
+    <string name="button1">0:30</string>
+    <string name="button2">1:00</string>
+    <string name="button3">1:30</string>
+    <string name="button4">2:00</string>
+    <string name="button5">2:30</string>
+    <string name="button6">3:00</string>
+    <string name="button7">DEACTIVATE CURRENT ACTIVE MODE</string>
+    <string name="textView3">Vibration in Silent Mode</string>
+    <string name="textView4">Extended Mode</string>
+    <string name="textView5">Close after activation</string>
+    <string name="switch_set">ON </string>
+
+    <string name="button8">DURATION</string>
+    <string name="button9">UNTIL</string>
+
+
+
+
+
+
+
+
+
+
 </resources>
