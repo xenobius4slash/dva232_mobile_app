@@ -9,6 +9,9 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.sql.Time;
+import java.util.Calendar;
+
 public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -18,6 +21,35 @@ public class MainActivity extends AppCompatActivity {
         Log.d("LIFECYCLE Actvity", "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        XmlController xmlC = new XmlController( getBaseContext() );
+        Calendar dateStart = Calendar.getInstance();
+        dateStart.set(Calendar.YEAR, 2018);
+        dateStart.set(Calendar.MONTH, 12);
+        dateStart.set(Calendar.DAY_OF_MONTH, 3);
+        Log.d("DATE", "date: " + dateStart.toString());
+
+        Calendar dateEnd = dateStart;
+
+        Calendar timeStart = Calendar.getInstance();
+        timeStart.set(Calendar.HOUR_OF_DAY, 12);
+        timeStart.set(Calendar.MINUTE, 00);
+
+        Calendar timeEnd = Calendar.getInstance();
+        timeEnd.set(Calendar.HOUR_OF_DAY, 14);
+        timeEnd.set(Calendar.MINUTE, 00);
+        if( xmlC.readXmlFileAndLoad() ) {
+            Log.d("XMLC","reading XML file success");
+            xmlC.logCurrentXmlContent();
+            xmlC.addEventToXmlContent(dateStart.getTime(), timeStart.getTime(), dateEnd.getTime(), timeEnd.getTime(), "test name" );
+            xmlC.logCurrentXmlContent();
+        } else {
+            Log.d("XMLC", "error while reading XML file");
+            xmlC.createXmlContentSkeleton();
+            xmlC.logCurrentXmlContent();
+            xmlC.addEventToXmlContent(dateStart.getTime(), timeStart.getTime(), dateEnd.getTime(), timeEnd.getTime(), "test name" );
+            xmlC.logCurrentXmlContent();
+        }
 
         /*
          * Frame container

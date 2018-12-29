@@ -14,7 +14,7 @@ public class Fragment1 extends Fragment {
     }
 
     public static Fragment1 newInstance() {
-        Log.d("LIFECYCLE Fragment1", "newInstance()");
+        Log.d("LIFECYCLE Fragment11111", "newInstance()");
         Fragment1 fragment = new Fragment1();
         Bundle args = new Bundle();
         fragment.setArguments(args);
