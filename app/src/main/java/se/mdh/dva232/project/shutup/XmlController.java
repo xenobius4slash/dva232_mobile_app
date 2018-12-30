@@ -10,9 +10,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
-import java.io.DataInput;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -42,7 +44,6 @@ class XmlController {
     private Context context;
     private String xmlFilename = "events.xml";
     private String xmlContent = null;
-    private XmlSerializer xmlSerializer = Xml.newSerializer();
     private Boolean debug = true;       // true: with Log.d output; false: without Log.d output
 
     /**
@@ -53,6 +54,213 @@ class XmlController {
         if(debug) { Log.d("XMLC", "constructor"); }
         context = c;
     }
+
+    //
+    // Main methods
+    //
+
+    public void getAllEventsFromTheXmlContent() {
+        try {
+            XmlPullParserFactory xmlFactory = XmlPullParserFactory.newInstance();
+            XmlPullParser xmlParser = xmlFactory.newPullParser();
+            xmlParser.setInput( new StringReader( getXmlContent() ));
+
+            while(xmlParser.next() != XmlPullParser.END_DOCUMENT) {
+                if ( xmlParser.getName().equals("event") ) {
+                    if ( xmlParser.getEventType() == XmlPullParser.START_TAG ) {
+
+                    }
+                    if ( xmlParser.getEventType() == XmlPullParser.END_TAG ) {
+
+                    }
+                }
+            }
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Adds an event in order to the XML content string
+     * @param id            String  Format: "yyyy-MM-dd_hhmm"   id of the event
+     * @param startDate     String  Format: "yyyy-MM-dd"        start date of the event
+     * @param startTime     String  Format: "hh:mm"             start time of the event
+     * @param endDate       String  Format: "yyyy-MM-dd"        end date of the event
+     * @param endTime       String  Format: "hh:mm"             end time of the event
+     * @param name          String                              name of the event
+     * @return   Integer     Error-Code
+     */
+    Integer addEventToXmlContent(String id, String startDate, String startTime, String endDate, String endTime, String name) {
+        if(debug) { Log.d("XMLC", "addEventToXmlContent()"); }
+        Integer errorCode = 0;
+        Document doc = getDocumentOfXmlContent();
+        if (doc != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            // create compare values from parameters
+            Date newStartDateTime = null;
+            Date newEndDateTime = null;
+            try {
+                newStartDateTime = sdf.parse(startDate + " " + startTime + ":00");
+                newEndDateTime = sdf.parse(endDate + " " + endTime + ":00");
+            } catch (ParseException e) {
+                e.printStackTrace();
+                errorCode = 1;
+            }
+
+            if ( newStartDateTime == null || newEndDateTime == null || !newStartDateTime.before(newEndDateTime) ) {
+                errorCode = 10;
+            } else {
+                Node nRoot = doc.getFirstChild();      // get root node ("events")
+
+                // find the right position for inserting the new event in the XML content string
+                NodeList nRootList = nRoot.getChildNodes();
+                Node nodeInsertBefore = null;
+                Boolean insertAtEnd = false;
+                Boolean found = false;
+                Log.d("XMLC", "nRootList.getLength(): " + nRootList.getLength());
+                if (nRootList.getLength() == 0) {
+                    insertAtEnd = true;
+                } else {
+                    for (int i = 0; !found && (i < nRootList.getLength()); i++) {
+                        NodeList event = nRootList.item(i).getChildNodes();
+                        Date startDateTime = null;
+                        Date endDateTime = null;
+                        try {
+                            startDateTime = sdf.parse(event.item(0).getTextContent() + " " + event.item(1).getTextContent() + ":00");
+                            endDateTime = sdf.parse(event.item(2).getTextContent() + " " + event.item(3).getTextContent() + ":00");
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            errorCode = 2;
+                        }
+
+                        /*
+                        Log.d("XMLC"," startDateTime: " + startDateTime.toString());
+                        Log.d("XMLC"," endDateTime: " + endDateTime.toString());
+                        Log.d("XMLC"," newStartDateTime: " + newStartDateTime.toString());
+                        Log.d("XMLC"," newEndDateTime: " + newEndDateTime.toString());
+                        */
+
+                        if (startDateTime == null || endDateTime == null) {
+                            errorCode = 11;
+                        } else {
+                            /*
+                             * current event for check: -----------------------|----------------|-------------------->
+                             * new event:               ----{------------------]------------------------------------->
+                             * result: insert new event before current event
+                             */
+                            if (newStartDateTime.before(startDateTime) && (newEndDateTime.equals(startDateTime) || newEndDateTime.before(startDateTime))) {
+                                nodeInsertBefore = nRootList.item(i);
+                                found = true;
+                            }
+                            /*
+                             * current event for check: -----------------------|----------------|-------------------->
+                             * new event:               ----------------------------------------[---------------}----->
+                             * result: go to the next event -> if the current event is the last event then insert at the end
+                             */
+                            else if ((newStartDateTime.equals(endDateTime) || newStartDateTime.after(endDateTime)) && newEndDateTime.after(endDateTime)) {
+                                if (i == (nRootList.getLength() - 1)) {
+                                    insertAtEnd = true;
+                                }
+                            } else {
+                                errorCode = 20;
+                            }
+                        }
+                    }
+                }
+
+                if (errorCode == 0) {
+                    // create content (elements) of one event
+                    Element eStartDate = doc.createElement("start_date");
+                    eStartDate.appendChild(doc.createTextNode(startDate));
+                    Element eStartTime = doc.createElement("start_time");
+                    eStartTime.appendChild(doc.createTextNode(startTime));
+                    Element eEndDate = doc.createElement("end_date");
+                    eEndDate.appendChild(doc.createTextNode(endDate));
+                    Element eEndTime = doc.createElement("end_time");
+                    eEndTime.appendChild(doc.createTextNode(endTime));
+                    Element eName = doc.createElement("name");
+                    eName.appendChild(doc.createTextNode(name));
+
+                    // create the parent of the elements (event node) with content (elements)
+                    Element eEvent = doc.createElement("event");
+                    eEvent.setAttribute("id", id);
+                    eEvent.appendChild(eStartDate);
+                    eEvent.appendChild(eStartTime);
+                    eEvent.appendChild(eEndDate);
+                    eEvent.appendChild(eEndTime);
+                    eEvent.appendChild(eName);
+
+                    if (insertAtEnd) {
+                        nRoot.appendChild(eEvent);
+                        Log.d("XMLC", "add event at the end");
+                    } else {
+                        nRoot.insertBefore(eEvent, nodeInsertBefore);
+                        Log.d("XMLC", "add event before node");
+                    }
+
+                    writeChangesToXmlContent(doc);
+                }
+
+            }
+        }
+        Log.d("XMLC", "errorCode: " + errorCode);
+        return errorCode;
+    }
+
+    /**
+     * Removes one event by given id from the XML content string
+     * @param id    String  Format: "yyyy-MM-dd_hhii"
+     */
+    private void removeEventFromXmlContent(String id) {
+        if(debug) { Log.d("XMLC", "removeEventFromXmlContent()"); }
+        Document doc = getDocumentOfXmlContent();
+        if (doc != null) {
+            Node nToRemove = doc.getElementById(id);
+            nToRemove.getParentNode().removeChild( nToRemove );
+            writeChangesToXmlContent(doc);
+        } else {
+            Log.d("XMLC","Node not found");
+        }
+    }
+
+    /**
+     * Removes all past events from the XML content string
+     */
+    void removeAllPastEventsFromXmlContent() {
+        if(debug) { Log.d("XMLC", "removeAllPastEvents()"); }
+        Document doc = getDocumentOfXmlContent();
+        if (doc != null) {
+            Node nRoot = doc.getFirstChild();     // get root node ("events")
+            NodeList nRootList = nRoot.getChildNodes();
+            Log.d("XMLC","count node event: " + nRootList.getLength());
+            // traverse the childs of the "events" node (root)
+            for (int i=0; i<nRootList.getLength(); i++) {
+                Element eEvent = (Element) nRootList.item(i);
+                String id = eEvent.getAttribute("id");                  // id of the event node
+                NodeList nEventList = nRootList.item(i).getChildNodes();    // get childs of the event node
+                String datetimeEnd = nEventList.item(2).getTextContent() + " " + nEventList.item(3).getTextContent() + ":00";
+                SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                try {
+                    Date endDateTime = dateFormater.parse(datetimeEnd);
+                    if (new Date().after(endDateTime)) {    // is "endDateTime" after now?
+                        // event is past => remove event
+                        removeEventFromXmlContent(id);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+    //
+    //  Helper methods
+    //
 
     /**
      * Clear the XML content string in the class
@@ -80,9 +288,6 @@ class XmlController {
         return xmlContent;
     }
 
-    void logCurrentXmlContent() {
-        Log.d("XMLC", "XML content: " + getXmlContent() );
-    }
     /**
      * Is there any XML content?
      * @return      Boolean     True: yes; False: no
@@ -100,6 +305,7 @@ class XmlController {
      * Creates the skeleton (start and end) of the XML content (XML valid)
      */
     void createXmlContentSkeleton() {
+        XmlSerializer xmlSerializer = Xml.newSerializer();
         if(debug) { Log.d("XMLC", "createXmlContentSkeleton()"); }
         StringWriter writer = new StringWriter();
         try {
@@ -115,92 +321,6 @@ class XmlController {
     }
 
     /**
-     * Adds an event to the XML content string
-     * @param id            String  Format: "yyyy-MM-dd_hhmm"   id of the event
-     * @param startDate     String  Format: "yyyy-MM-dd"        start date of the event
-     * @param startTime     String  Format: "hh:mm"             start time of the event
-     * @param endDate       String  Format: "yyyy-MM-dd"        end date of the event
-     * @param endTime       String  Format: "hh:mm"             end time of the event
-     * @param name          String                              name of the event
-     */
-    void addEventToXmlContent(String id, String startDate, String startTime, String endDate, String endTime, String name) {
-        if(debug) { Log.d("XMLC", "addEventToXmlContent()"); }
-        Document doc = getDocumentOfXmlContent();
-        Node nRoot = null;
-        if (doc != null) {
-            nRoot = doc.getFirstChild();      // get root node ("events")
-
-            // create content (elements) of one event
-            Element eStartDate = doc.createElement("start_date");
-            eStartDate.appendChild(doc.createTextNode(startDate));
-            Element eStartTime = doc.createElement("start_time");
-            eStartTime.appendChild(doc.createTextNode(startTime));
-            Element eEndDate = doc.createElement("end_date");
-            eEndDate.appendChild(doc.createTextNode(endDate));
-            Element eEndTime = doc.createElement("end_time");
-            eEndTime.appendChild(doc.createTextNode(endTime));
-            Element eName = doc.createElement("name");
-            eName.appendChild(doc.createTextNode(name));
-
-            // create the parent of the elements (event node) with content (elements)
-            Element eEvent = doc.createElement("event");
-            eEvent.setAttribute("id", id);
-            eEvent.appendChild(eStartDate);
-            eEvent.appendChild(eStartTime);
-            eEvent.appendChild(eEndDate);
-            eEvent.appendChild(eEndTime);
-            eEvent.appendChild(eName);
-            nRoot.appendChild(eEvent);
-
-            writeChangesToXmlContent(doc);
-        }
-    }
-
-    void removeEventFromXmlContent(String id) {
-        if(debug) { Log.d("XMLC", "removeEventFromXmlContent()"); }
-        Document doc = getDocumentOfXmlContent();
-        Node nToRemove = null;
-        if (doc != null) {
-            nToRemove = doc.getElementById(id);
-            nToRemove.getParentNode().removeChild( nToRemove );
-            writeChangesToXmlContent(doc);
-        } else {
-            Log.d("XMLC","Node not found");
-        }
-    }
-
-    /**
-     * Removes all past events from the XML content string
-     */
-    void removeAllPastEventsFromXmlContent() {
-        if(debug) { Log.d("XMLC", "removeAllPastEvents()"); }
-        Document doc = getDocumentOfXmlContent();
-        Node nRoot = null;
-        if (doc != null) {
-            nRoot = doc.getFirstChild();     // get root node ("events")
-            NodeList nEventsList = nRoot.getChildNodes();
-            Log.d("XMLC","count node event: " + nEventsList.getLength());
-            // traverse the childs of the "events" node (root)
-            for (int i=0; i<nEventsList.getLength(); i++) {
-                Element eEvent = (Element) nEventsList.item(i);
-                String id = eEvent.getAttribute("id");                  // id of the event node
-                NodeList nEventList = nEventsList.item(i).getChildNodes();    // get childs of the event node
-                String datetimeEnd = nEventList.item(2).getTextContent() + " " + nEventList.item(3).getTextContent() + ":00";
-                SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                try {
-                    Date endDateTime = dateFormater.parse(datetimeEnd);
-                    if (new Date().after(endDateTime)) {    // is "endDateTime" after now?
-                        // event is past => remove event
-                        removeEventFromXmlContent(id);
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    /**
      * Get the document object of the XML content string
      * @return  Document    XML object
      */
@@ -210,8 +330,7 @@ class XmlController {
         try {
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             InputSource xml = new InputSource(new StringReader( getXmlContent() ));
-            Document doc = docBuilder.parse( xml );
-            return doc;
+            return docBuilder.parse( xml );
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -246,6 +365,18 @@ class XmlController {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Writes the current XML content string to the Log
+     */
+    void logCurrentXmlContent() {
+        Log.d("XMLC", "XML content: " + getXmlContent() );
+    }
+
+
+    //
+    //  XML file
+    //
 
     /**
      * Saves the XML content in the class to the XML file on the device

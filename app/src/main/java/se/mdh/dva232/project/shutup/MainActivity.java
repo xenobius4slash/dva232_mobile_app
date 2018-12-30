@@ -9,6 +9,13 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -21,51 +28,55 @@ public class MainActivity extends AppCompatActivity {
 
         XmlController xmlC = new XmlController( getBaseContext() );
 
-
-        //SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
-        //SimpleDateFormat timeFormater = new SimpleDateFormat("hh:mm");
-
-        String id1 = "2018-12-03_1200";
-        String dateStart1 = "2018-12-29";
+        String id1 = "2018-12-20_1200";
+        String dateStart1 = "2018-12-20";
         String timeStart1 = "12:00";
-        String dateEnd1 = "2018-12-29";
-        String timeEnd1 = "15:45";
+        String dateEnd1 = "2018-12-20";
+        String timeEnd1 = "14:00";
         String name1 = "test name 1";
 
-        String id2 = "2018-12-04_1200";
-        String dateStart2 = "2018-12-29";
-        String timeStart2 = "12:00";
-        String dateEnd2 = "2018-12-29";
-        String timeEnd2 = "15:51";
+        String id2 = "2018-12-20_1800";
+        String dateStart2 = "2018-12-20";
+        String timeStart2 = "18:00";
+        String dateEnd2 = "2018-12-20";
+        String timeEnd2 = "19:00";
         String name2 = "test name 2";
+
+        String id3 = "2018-12-20_0900";
+        String dateStart3 = "2018-12-20";
+        String timeStart3 = "09:00";
+        String dateEnd3 = "2018-12-20";
+        String timeEnd3 = "10:00";
+        String name3 = "test name 3";
+
+        String id4 = "2018-12-20_0900";
+        String dateStart4 = "2018-12-20";
+        String timeStart4 = "14:30";
+        String dateEnd4 = "2018-12-20";
+        String timeEnd4 = "16:00";
+        String name4 = "test name 4";
+
+        // 3, 1, 4, 2
+
 
         if( xmlC.readXmlFileAndLoad() ) {
             Log.d("XMLC","reading XML file success");
-            xmlC.createXmlContentSkeleton();
-            xmlC.logCurrentXmlContent();
-            xmlC.addEventToXmlContent(id1, dateStart1, timeStart1, dateEnd1, timeEnd1, name1);
-            //xmlC.logCurrentXmlContent();
-            xmlC.addEventToXmlContent(id2, dateStart2, timeStart2, dateEnd2, timeEnd2, name2);
-            xmlC.saveXmlContentToFile();
-            //xmlC.logCurrentXmlContent();
-            //xmlC.removeEventFromXmlContent(id1);
-            xmlC.removeAllPastEventsFromXmlContent();
-            xmlC.saveXmlContentToFile();
-            xmlC.logCurrentXmlContent();
+            xmlC.createXmlContentSkeleton();    // TODO: del
+
         } else {
             Log.d("XMLC", "error while reading XML file -> file not exist");
             xmlC.createXmlContentSkeleton();
-            xmlC.logCurrentXmlContent();
-            xmlC.addEventToXmlContent(id1, dateStart1, timeStart1, dateEnd1, timeEnd1, name1);
-            //xmlC.logCurrentXmlContent();
-            xmlC.addEventToXmlContent(id2, dateStart2, timeStart2, dateEnd2, timeEnd2, name2);
-            xmlC.saveXmlContentToFile();
-            //xmlC.logCurrentXmlContent();
-            //xmlC.removeEventFromXmlContent(id1);
-            xmlC.removeAllPastEventsFromXmlContent();
-            xmlC.saveXmlContentToFile();
-            xmlC.logCurrentXmlContent();
         }
+        xmlC.logCurrentXmlContent();
+        xmlC.addEventToXmlContent(id1, dateStart1, timeStart1, dateEnd1, timeEnd1, name1);
+        xmlC.logCurrentXmlContent();
+        xmlC.addEventToXmlContent(id2, dateStart2, timeStart2, dateEnd2, timeEnd2, name2);
+        xmlC.logCurrentXmlContent();
+        xmlC.addEventToXmlContent(id3, dateStart3, timeStart3, dateEnd3, timeEnd3, name3);
+        xmlC.logCurrentXmlContent();
+        xmlC.addEventToXmlContent(id4, dateStart4, timeStart4, dateEnd4, timeEnd4, name4);
+        xmlC.logCurrentXmlContent();
+        xmlC.saveXmlContentToFile();
 
         /*
          * Frame container
