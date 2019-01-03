@@ -1,6 +1,7 @@
 package se.mdh.dva232.project.shutup;
 
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
@@ -22,15 +23,52 @@ public class MainActivity extends AppCompatActivity {
 
 
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-        if( !settings.contains("vibration") || !settings.contains("extended_mode") || !settings.contains("close") ) {
+        SharedPreferences.Editor editor = settings.edit();
+
+        //SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        //SharedPreferences.Editor editor = settings.edit();
+
+
+        //put false by default to all setting values
+        String vibration_check = settings.getString("vibration","False");
+        editor.commit();
+        Log.d("Check_settings", "first check, should be false: " +vibration_check);
+
+        //editor.putString("vibration", "True");
+        //editor.commit();
+        //Log.d("Check_settings", "last check after true: " + vibration_check);
+
+        //vibration_check = settings.getString("vibration","default");
+        //editor.commit();
+        //Log.d("Check_settings", vibration_check);
+
+
+
+        //String extended_mode_check = settings.getString("extended_mode","");
+        //String close_activation_check = settings.getString("close_after_activation","False");
+
+
+
+
+
+
+
+
+
+
+
+        /*if( !settings.contains("vibration") || !settings.contains("extended_mode") || !settings.contains("close") ) {
             
             // first start => initial values
+            Log.d("Check_settings","initiallizing values");
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean("vibration", false);
             editor.putBoolean("extended_mode", false);
             editor.putBoolean("close", false);
+            Log.d("Check_settings","");
+
             editor.commit();
-        }
+        }*/
 
 
 
