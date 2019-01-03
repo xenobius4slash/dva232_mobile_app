@@ -36,6 +36,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+
+class Collision {
+    private Boolean collision = false;
+    private Integer collisionCode = 0;
+    private String collisionMessage = null;
+}
+
 /**
  * That class includes all methods for handling with the XML content string and the XML file in the storage of the device.
  * @author Sylvio Ujvari
@@ -98,9 +105,9 @@ class XmlController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date newStartDateTime = null;
         Date newEndDateTime = null;
-        String startDateString;
+        String startDateString = null;
         Date startDateTime = null;
-        String endDateString;
+        String endDateString = null;
         Date endDateTime = null;
 
         // create compare values from parameters
@@ -117,59 +124,53 @@ class XmlController {
             xmlParser.setInput( new StringReader( getXmlContent() ));
 
             while(xmlParser.next() != XmlPullParser.END_DOCUMENT && !collision) {
-                if ( xmlParser.getName().equals("event") ) {
-                    if ( xmlParser.getEventType() == XmlPullParser.START_TAG ) {
-                        xmlParser.next();
-                        if (xmlParser.getName().equals("start_date")) {     // get start_date
-                            startDateString = xmlParser.getText();
-                            xmlParser.next();
-                            if (xmlParser.getName().equals("start_time")) { // get start_time
-                                startDateTime = sdf.parse(startDateString + " " + xmlParser.getText() + ":00");
-                                xmlParser.next();
-                                if (xmlParser.getName().equals("end_date")) {       // get end_date
-                                    endDateString = xmlParser.getText();
-                                    xmlParser.next();
-                                    if (xmlParser.getName().equals("end_time")){    // get end_time
-                                        startDateTime = sdf.parse(endDateString + " " + xmlParser.getText() + ":00");
-                                        if (debug) { Log.d("XMLC","isCollisionByNewEvent(..) -> find event with start ("+startDateTime.toString()+") and end ("+endDateTime.toString()+")"); }
-                                    }
-                                }
-                            }
-                        }
+                if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("start_date")) {
+                    xmlParser.next();
+                    startDateString = xmlParser.getText();
+//                    Log.d("XMLC", "isCollisionByNewEvent -> <start_date> -> " + xmlParser.getText() );
+                } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("start_time")) {
+                    xmlParser.next();
+                    startDateTime = sdf.parse(startDateString + " " + xmlParser.getText() + ":00");
+//                    Log.d("XMLC","isCollisionByNewEvent -> <start_time> -> " + xmlParser.getText() );
+                } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("end_date")) {
+                    xmlParser.next();
+                    endDateString = xmlParser.getText();
+//                    Log.d("XMLC","isCollisionByNewEvent -> <end_date> -> " + xmlParser.getText() );
+                } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("end_time")) {
+                    xmlParser.next();
+                    endDateTime = sdf.parse(endDateString + " " + xmlParser.getText() + ":00");
+//                    Log.d("XMLC","isCollisionByNewEvent -> <end_time> -> " + xmlParser.getText() );
+                } else if ( xmlParser.getEventType() == XmlPullParser.END_TAG && xmlParser.getName().equals("event")) {
+//                    Log.d("XMLC", "isCollisionByNewEvent -> check for collision");
+                    /*
+                     * current event for check: -----------------------|----------------|-------------------->
+                     * new event:               -----------{--------------------}---------------------------->
+                     */
+                    if (startDateTime.before(newEndDateTime) && (newEndDateTime.before(endDateTime) || newEndDateTime.equals(endDateTime))) {
+                        collision = true;
                     }
-                    if ( xmlParser.getEventType() == XmlPullParser.END_TAG ) {
-                        if (newStartDateTime != null && newEndDateTime != null && startDateTime != null && endDateTime != null) {
-                            /*
-                             * current event for check: -----------------------|----------------|-------------------->
-                             * new event:               -----------{--------------------}---------------------------->
-                             */
-                            if (startDateTime.before(newEndDateTime) && (newEndDateTime.before(endDateTime) || newEndDateTime.equals(endDateTime))) {
-                                collision = true;
-                            }
-                            /*
-                             * current event for check: -----------------------|----------------|-------------------->
-                             * new event:               --------------------------------{---------------}------------>
-                             */
-                            else if ((startDateTime.before(newStartDateTime) || startDateTime.equals(newStartDateTime)) && newStartDateTime.before(newEndDateTime)) {
-                                collision = true;
-                            }
-                            /*
-                             * current event for check: -----------------------|----------------|-------------------->
-                             * new event:               ---------------{-------------------------------}------------->
-                             */
-                            else if ((newStartDateTime.before(startDateTime) || newStartDateTime.equals(startDateTime)) && (endDateTime.equals(newEndDateTime) || endDateTime.before(newEndDateTime))) {
-                                collision = true;
-                            }
-                            /*
-                             * current event for check: -----------------------|----------------|-------------------->
-                             * new event:               --------------------------{----------}----------------------->
-                             */
-                            else if (startDateTime.before(newStartDateTime) && newEndDateTime.before(endDateTime)) {
-                                collision = true;
-                            } else if (newStartDateTime.before(startDateTime) && (newEndDateTime.equals(startDateTime) || newEndDateTime.before(startDateTime))) {
-                                collision = true;
-                            }
-                        }
+                    /*
+                     * current event for check: -----------------------|----------------|-------------------->
+                     * new event:               --------------------------------{---------------}------------>
+                     */
+                    else if ((startDateTime.before(newStartDateTime) || startDateTime.equals(newStartDateTime)) && newStartDateTime.before(newEndDateTime)) {
+                        collision = true;
+                    }
+                    /*
+                     * current event for check: -----------------------|----------------|-------------------->
+                     * new event:               ---------------{-------------------------------}------------->
+                     */
+                    else if ((newStartDateTime.before(startDateTime) || newStartDateTime.equals(startDateTime)) && (endDateTime.equals(newEndDateTime) || endDateTime.before(newEndDateTime))) {
+                        collision = true;
+                    }
+                    /*
+                     * current event for check: -----------------------|----------------|-------------------->
+                     * new event:               --------------------------{----------}----------------------->
+                     */
+                    else if (startDateTime.before(newStartDateTime) && newEndDateTime.before(endDateTime)) {
+                        collision = true;
+                    } else if (newStartDateTime.before(startDateTime) && (newEndDateTime.equals(startDateTime) || newEndDateTime.before(startDateTime))) {
+                        collision = true;
                     }
                 }
             }

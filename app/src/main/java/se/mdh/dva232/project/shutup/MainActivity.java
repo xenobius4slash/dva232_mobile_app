@@ -26,13 +26,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        XmlController xmlC = new XmlController( getBaseContext() );
-
-        String id1 = "2018-12-20_1200";
-        String dateStart1 = "2018-12-20";
-        String timeStart1 = "12:00";
-        String dateEnd1 = "2018-12-20";
-        String timeEnd1 = "14:00";
+        String id1 = "2019-01-03_19xx";
+        String dateStart1 = "2019-01-03";
+        String timeStart1 = "19:00";
+        String dateEnd1 = "2019-01-03";
+        String timeEnd1 = "19:50";
         String name1 = "test name 1";
 
         String id2 = "2018-12-20_1800";
@@ -58,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
         // 3, 1, 4, 2
 
-
+        /*
+        XmlController xmlC = new XmlController( getBaseContext() );
         if( xmlC.readXmlFileAndLoad() ) {
             Log.d("XMLC","reading XML file success");
             xmlC.createXmlContentSkeleton();    // TODO: del
@@ -77,6 +76,11 @@ public class MainActivity extends AppCompatActivity {
         xmlC.addEventToXmlContent(id4, dateStart4, timeStart4, dateEnd4, timeEnd4, name4);
         xmlC.logCurrentXmlContent();
         xmlC.saveXmlContentToFile();
+        */
+
+        Log.d("MainActivity","START");
+        EventController EC = new EventController( getBaseContext() );
+        EC.activateSilentModeFromNow(dateStart1, timeStart1, dateEnd1, timeEnd1, name1);
 
         /*
          * Frame container

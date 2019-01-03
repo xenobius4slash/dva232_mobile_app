@@ -4,8 +4,11 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.util.Log;
 
+/**
+ * That class includes all methods for handling with the AudioManager.
+ * @author Sylvio Ujvari
+ */
 class AudioController {
-
     private Context context;
     private Boolean debug = true;   // true: with Log.d output; false: without Log.d output
 
