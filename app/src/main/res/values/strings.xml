@@ -19,6 +19,7 @@
     <string name="textView4">Extended Mode</string>
     <string name="textView5">Close after activation</string>
     <string name="switch_set">ON </string>
+    <string name="button_date">SELECT DATE</string>
 
     <string name="button8">DURATION</string>
     <string name="button9">UNTIL</string>

@@ -10,10 +10,24 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.Switch;
+import android.widget.TimePicker;
+
+import java.util.Calendar;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    String vibration_check;
+    String extended_mode_check;
+    String close_activation_check;
+    Switch switch_2;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,18 +35,66 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        switch_2 = (Switch)findViewById(R.id.switch2);
 
-        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-        SharedPreferences.Editor editor = settings.edit();
 
+
+
+        final SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+        final SharedPreferences.Editor editor = settings.edit();
         //SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         //SharedPreferences.Editor editor = settings.edit();
 
+        /*switch_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (switch_2.isEnabled())
+                {
+                    //put extended_mode value to True and save
+                    editor.putString("extended_mode","True");
+                    editor.commit();
+                    Log.d("Check_extended_mode", "extended_mode = ON");
+
+                }
+            }
+        });*/
+
+        //if there is no settings put default to false
+        if ((!settings.contains("vibration_check"))|| (!settings.contains("extended_mode_check"))||(!settings.contains("close_activation_check")))
+        {
+            vibration_check = settings.getString("vibration","False");
+            extended_mode_check = settings.getString("extended_mode","False");
+            close_activation_check = settings.getString("close_after_activation","False");
+            editor.commit();
+
+
+            Log.d("Check_settings", "first vibration_check, should be false: " +vibration_check);
+            Log.d("Check_settings", "first extended_mode_check, should be false: " +extended_mode_check);
+            Log.d("Check_settings", "first close_activation_check, should be false: " +close_activation_check);
+        }
+        else
+        {
+            Log.d("Check_settings", "There are settings");
+
+        }
+
+
+
+
+
+
+
+
 
         //put false by default to all setting values
-        String vibration_check = settings.getString("vibration","False");
-        editor.commit();
-        Log.d("Check_settings", "first check, should be false: " +vibration_check);
+
+        //vibration_check = settings.getString("vibration","False");
+        //extended_mode_check = settings.getString("extended_mode","False");
+        //close_activation_check = settings.getString("close_after_activation","False
+
+
+
+
 
         //editor.putString("vibration", "True");
         //editor.commit();
@@ -46,14 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
         //String extended_mode_check = settings.getString("extended_mode","");
         //String close_activation_check = settings.getString("close_after_activation","False");
-
-
-
-
-
-
-
-
 
 
 
@@ -83,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
         /*
          * Frame container
          */
+
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         ViewPager mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -101,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
         tabLayoutTab.setupWithViewPager(mViewPager, true);
 
     }
+
+
+
 
     @Override
     protected void onStart() {
