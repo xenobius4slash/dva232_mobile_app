@@ -60,6 +60,7 @@ class XmlController {
     //
 
     public void getAllEventsFromTheXmlContent() {
+        if(debug) { Log.d("XMLC", "getAllEventsFromTheXmlContent()"); }
         try {
             XmlPullParserFactory xmlFactory = XmlPullParserFactory.newInstance();
             XmlPullParser xmlParser = xmlFactory.newPullParser();
@@ -81,6 +82,106 @@ class XmlController {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * Check for collision by given new event
+     * @param newStartDate     String  Format: "yyyy-MM-dd"        start date of the event
+     * @param newStartTime     String  Format: "hh:mm"             start time of the event
+     * @param newEndDate       String  Format: "yyyy-MM-dd"        end date of the event
+     * @param newEndTime       String  Format: "hh:mm"             end time of the event
+     * @return  Boolean     true: collision found; false: no collision found
+     */
+    Boolean isCollisionByNewEvent(String newStartDate, String newStartTime, String newEndDate, String newEndTime) {
+        if(debug) { Log.d("XMLC", "isCollisionByNewEvent("+newStartDate+", "+newStartTime+", "+newEndDate+", "+newEndTime+")"); }
+        Boolean collision = false;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date newStartDateTime = null;
+        Date newEndDateTime = null;
+        String startDateString;
+        Date startDateTime = null;
+        String endDateString;
+        Date endDateTime = null;
+
+        // create compare values from parameters
+        try {
+            newStartDateTime = sdf.parse(newStartDate + " " + newStartTime + ":00");
+            newEndDateTime = sdf.parse(newEndDate + " " + newEndTime + ":00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            XmlPullParserFactory xmlFactory = XmlPullParserFactory.newInstance();
+            XmlPullParser xmlParser = xmlFactory.newPullParser();
+            xmlParser.setInput( new StringReader( getXmlContent() ));
+
+            while(xmlParser.next() != XmlPullParser.END_DOCUMENT && !collision) {
+                if ( xmlParser.getName().equals("event") ) {
+                    if ( xmlParser.getEventType() == XmlPullParser.START_TAG ) {
+                        xmlParser.next();
+                        if (xmlParser.getName().equals("start_date")) {     // get start_date
+                            startDateString = xmlParser.getText();
+                            xmlParser.next();
+                            if (xmlParser.getName().equals("start_time")) { // get start_time
+                                startDateTime = sdf.parse(startDateString + " " + xmlParser.getText() + ":00");
+                                xmlParser.next();
+                                if (xmlParser.getName().equals("end_date")) {       // get end_date
+                                    endDateString = xmlParser.getText();
+                                    xmlParser.next();
+                                    if (xmlParser.getName().equals("end_time")){    // get end_time
+                                        startDateTime = sdf.parse(endDateString + " " + xmlParser.getText() + ":00");
+                                        if (debug) { Log.d("XMLC","isCollisionByNewEvent(..) -> find event with start ("+startDateTime.toString()+") and end ("+endDateTime.toString()+")"); }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if ( xmlParser.getEventType() == XmlPullParser.END_TAG ) {
+                        if (newStartDateTime != null && newEndDateTime != null && startDateTime != null && endDateTime != null) {
+                            /*
+                             * current event for check: -----------------------|----------------|-------------------->
+                             * new event:               -----------{--------------------}---------------------------->
+                             */
+                            if (startDateTime.before(newEndDateTime) && (newEndDateTime.before(endDateTime) || newEndDateTime.equals(endDateTime))) {
+                                collision = true;
+                            }
+                            /*
+                             * current event for check: -----------------------|----------------|-------------------->
+                             * new event:               --------------------------------{---------------}------------>
+                             */
+                            else if ((startDateTime.before(newStartDateTime) || startDateTime.equals(newStartDateTime)) && newStartDateTime.before(newEndDateTime)) {
+                                collision = true;
+                            }
+                            /*
+                             * current event for check: -----------------------|----------------|-------------------->
+                             * new event:               ---------------{-------------------------------}------------->
+                             */
+                            else if ((newStartDateTime.before(startDateTime) || newStartDateTime.equals(startDateTime)) && (endDateTime.equals(newEndDateTime) || endDateTime.before(newEndDateTime))) {
+                                collision = true;
+                            }
+                            /*
+                             * current event for check: -----------------------|----------------|-------------------->
+                             * new event:               --------------------------{----------}----------------------->
+                             */
+                            else if (startDateTime.before(newStartDateTime) && newEndDateTime.before(endDateTime)) {
+                                collision = true;
+                            } else if (newStartDateTime.before(startDateTime) && (newEndDateTime.equals(startDateTime) || newEndDateTime.before(startDateTime))) {
+                                collision = true;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return collision;
     }
 
     /**
