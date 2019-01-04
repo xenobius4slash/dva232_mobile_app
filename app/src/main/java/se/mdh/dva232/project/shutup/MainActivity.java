@@ -1,7 +1,6 @@
 package se.mdh.dva232.project.shutup;
 
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
@@ -10,22 +9,17 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.CheckBox;
 import android.widget.Switch;
-import android.widget.TimePicker;
-
-import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    String vibration_check;
-    String extended_mode_check;
-    String close_activation_check;
-    Switch switch_2;
+//    SharedPreferences.Editor vibration_check;
+//    String extended_mode_check;
+//    String close_activation_check;
+//    Switch switch_2;
 
 
 
@@ -35,55 +29,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        switch_2 = (Switch)findViewById(R.id.switch2);
+//        switch_2 = (Switch)findViewById(R.id.switch_extended_mode_extended);
 
-
-
-
-        final SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-        final SharedPreferences.Editor editor = settings.edit();
-        //SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        //SharedPreferences.Editor editor = settings.edit();
-
-        /*switch_2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (switch_2.isEnabled())
-                {
-                    //put extended_mode value to True and save
-                    editor.putString("extended_mode","True");
-                    editor.commit();
-                    Log.d("Check_extended_mode", "extended_mode = ON");
-
-                }
-            }
-        });*/
+        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+        SharedPreferences.Editor settingsEditor = settings.edit();
 
         //if there is no settings put default to false
-        if ((!settings.contains("vibration_check"))|| (!settings.contains("extended_mode_check"))||(!settings.contains("close_activation_check")))
+        if ((!settings.contains("vibration"))|| (!settings.contains("extended_mode")) || (!settings.contains("close_activation")))
         {
-            vibration_check = settings.getString("vibration","False");
-            extended_mode_check = settings.getString("extended_mode","False");
-            close_activation_check = settings.getString("close_after_activation","False");
-            editor.commit();
+            settingsEditor.putBoolean("vibration", false);
+            settingsEditor.putBoolean("extended_mode", true);
+            settingsEditor.putBoolean("close_after_activation", false);
+            settingsEditor.apply();
 
-
-            Log.d("Check_settings", "first vibration_check, should be false: " +vibration_check);
-            Log.d("Check_settings", "first extended_mode_check, should be false: " +extended_mode_check);
-            Log.d("Check_settings", "first close_activation_check, should be false: " +close_activation_check);
+            Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
+            Log.d("Check_settings", "first extended_mode_check, should be false: " + settings.getAll().get("extended_mode") );
+            Log.d("Check_settings", "first close_activation_check, should be false: " + settings.getAll().get("close_after_activation") );
         }
         else
         {
             Log.d("Check_settings", "There are settings");
 
         }
-
-
-
-
-
-
-
 
 
         //put false by default to all setting values

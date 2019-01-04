@@ -120,14 +120,14 @@
         app:layout_constraintTop_toBottomOf="@+id/button7" />
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/switch_extended_mode_normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="148dp"
         android:layout_marginLeft="148dp"
         android:layout_marginTop="22dp"
-        android:text="@string/switch_set"
         android:key="extended_mode"
+        android:text="@string/switch_set"
         app:layout_constraintStart_toEndOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/switch1" />
 
@@ -138,10 +138,10 @@
         android:layout_marginStart="112dp"
         android:layout_marginLeft="112dp"
         android:layout_marginTop="20dp"
-        android:text="@string/switch_set"
         android:key="close_after_activation"
+        android:text="@string/switch_set"
         app:layout_constraintStart_toEndOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/switch2" />
+        app:layout_constraintTop_toBottomOf="@+id/switch_extended_mode_normal" />
 
     <TextView
         android:id="@+id/textView3"
@@ -175,4 +175,5 @@
         android:text="@string/textView4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
 </android.support.constraint.ConstraintLayout>
