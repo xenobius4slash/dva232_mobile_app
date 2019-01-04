@@ -35,21 +35,25 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor settingsEditor = settings.edit();
 
         //if there is no settings put default to false
-        if ((!settings.contains("vibration"))|| (!settings.contains("extended_mode")) || (!settings.contains("close_activation")))
+        Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
+        Log.d("Check_settings", "first extended_mode_check, should be false: " + settings.getAll().get("extended_mode") );
+        Log.d("Check_settings", "first close_activation_check, should be false: " + settings.getAll().get("close_after_activation") );
+        if ((!settings.contains("vibration"))|| (!settings.contains("extended_mode")) || (!settings.contains("close_after_activation")))
         {
+            Log.d("SETTINGS", "no settings detected -> default settings");
             settingsEditor.putBoolean("vibration", false);
-            settingsEditor.putBoolean("extended_mode", true);
+            settingsEditor.putBoolean("extended_mode", false);
             settingsEditor.putBoolean("close_after_activation", false);
             settingsEditor.apply();
-
+            /*
             Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
             Log.d("Check_settings", "first extended_mode_check, should be false: " + settings.getAll().get("extended_mode") );
             Log.d("Check_settings", "first close_activation_check, should be false: " + settings.getAll().get("close_after_activation") );
+            */
         }
         else
         {
-            Log.d("Check_settings", "There are settings");
-
+            Log.d("SETTINGS", "settings detected");
         }
 
 

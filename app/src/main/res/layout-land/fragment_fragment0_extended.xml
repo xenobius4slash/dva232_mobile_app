@@ -24,16 +24,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:timePickerMode="spinner"
-                app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintStart_toStartOf="parent" />
 
             <Button
                 android:id="@+id/f0_extended_btn_duration"
-                android:layout_width="172dp"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
@@ -42,12 +40,13 @@
                 android:text="DURATION"
                 app:layout_constraintEnd_toStartOf="@+id/f0_extended_btn_time"
                 app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/f0_extended_timepicker" />
 
             <Button
                 android:id="@+id/f0_extended_btn_time"
-                android:layout_width="172dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
