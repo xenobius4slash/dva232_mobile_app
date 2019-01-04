@@ -40,7 +40,8 @@ public class Fragment0 extends Fragment {
         // Inflate the layout for this fragment
 
         SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
-        View rootView;
+        View rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);;
+        /*
         View rootViewNormal = inflater.inflate(R.layout.fragment_fragment0, container, false);
         View rootViewExtended = inflater.inflate(R.layout.fragment_fragment0_extended, container, false);
 
@@ -59,7 +60,7 @@ public class Fragment0 extends Fragment {
             rootView = rootViewNormal;
             switchExtendedModeNormal.setChecked(false);
         }
-
+*/
         return rootView;
     }
 

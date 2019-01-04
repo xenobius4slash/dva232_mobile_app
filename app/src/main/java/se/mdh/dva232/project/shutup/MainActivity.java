@@ -29,8 +29,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        switch_2 = (Switch)findViewById(R.id.switch_extended_mode_extended);
-
+/*
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor settingsEditor = settings.edit();
 
@@ -51,46 +50,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Check_settings", "There are settings");
 
         }
-
-
-        //put false by default to all setting values
-
-        //vibration_check = settings.getString("vibration","False");
-        //extended_mode_check = settings.getString("extended_mode","False");
-        //close_activation_check = settings.getString("close_after_activation","False
-
-
-
-
-
-        //editor.putString("vibration", "True");
-        //editor.commit();
-        //Log.d("Check_settings", "last check after true: " + vibration_check);
-
-        //vibration_check = settings.getString("vibration","default");
-        //editor.commit();
-        //Log.d("Check_settings", vibration_check);
-
-
-
-        //String extended_mode_check = settings.getString("extended_mode","");
-        //String close_activation_check = settings.getString("close_after_activation","False");
-
-
-
-        /*if( !settings.contains("vibration") || !settings.contains("extended_mode") || !settings.contains("close") ) {
-            
-            // first start => initial values
-            Log.d("Check_settings","initiallizing values");
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean("vibration", false);
-            editor.putBoolean("extended_mode", false);
-            editor.putBoolean("close", false);
-            Log.d("Check_settings","");
-
-            editor.commit();
-        }*/
-
+*/
 
 
         /*
