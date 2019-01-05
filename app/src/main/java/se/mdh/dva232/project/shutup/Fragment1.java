@@ -57,10 +57,6 @@ public class Fragment1 extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_fragment1, container, false);
         final Calendar myCalendar = Calendar.getInstance();
 
-        Spinner spinner = rootView.findViewById(R.id.spinner);
-        ArrayAdapter <CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),R.array.Select,android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
 
         //set initial time to the actual time
         TextView text = rootView.findViewById(R.id.textView8);
@@ -96,20 +92,21 @@ public class Fragment1 extends Fragment {
         end_minute = myCalendar.get(Calendar.MINUTE);
 
         TimePicker timePicker1 = rootView.findViewById(R.id.timePicker);
-        timePicker1.setHour(this.start_hour);
-        timePicker1.setMinute(this.start_minute);
+        //timePicker1.setHour(this.start_hour);
+        //timePicker1.setMinute(this.start_minute);
         timePicker1.setIs24HourView(true);
 
         timePicker1.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                 Log.d("timepicker1","changing timepicker 1");
+
             }
         });
 
         TimePicker timePicker2 = rootView.findViewById(R.id.timePicker2);
-        timePicker2.setHour(this.end_hour);
-        timePicker2.setMinute(this.end_minute);
+        //timePicker2.setHour(this.end_hour);
+        //timePicker2.setMinute(this.end_minute);
         timePicker2.setIs24HourView(true);
 
         timePicker2.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
@@ -119,19 +116,7 @@ public class Fragment1 extends Fragment {
             }
         });
 
-        timePicker1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("timePicker_1","setting datePicker 1: ");
-            }
-        });
 
-        timePicker2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("timePicker_2","setting datePicker 2: ");
-            }
-        });
 
         return rootView;
     }
