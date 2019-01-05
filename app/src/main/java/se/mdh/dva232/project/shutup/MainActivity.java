@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-/*
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor settingsEditor = settings.edit();
 
@@ -41,16 +40,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Check_settings", "There are settings");
 
         }
-*/
-
-
-        /*
-         * Toolbar with app-name and menu
-         */
-        /*
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        */
 
         /*
          * Frame container
@@ -115,30 +104,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("SAVE Actvity","onRestoreInstanceState");
         super.onRestoreInstanceState(savedInstanceState);
     }
-
-    /*
-     * Menu in the toolbar
-     */
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    */
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 

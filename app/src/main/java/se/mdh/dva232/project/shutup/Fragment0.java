@@ -1,5 +1,6 @@
 package se.mdh.dva232.project.shutup;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -34,26 +35,7 @@ public class Fragment0 extends Fragment {
 
         SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
         View rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);;
-        /*
-        View rootViewNormal = inflater.inflate(R.layout.fragment_fragment0, container, false);
-        View rootViewExtended = inflater.inflate(R.layout.fragment_fragment0_extended, container, false);
 
-        // init switches
-        Switch switchExtendedModeNormal = rootViewNormal.findViewById(R.id.switch_extended_mode_normal);
-        switchExtendedModeNormal.setChecked(false);
-        Switch switchExtendedModeExtended = rootViewExtended.findViewById(R.id.switch_extended_mode_extended);
-        switchExtendedModeExtended.setChecked(false);
-
-        if( (Boolean) settings.getAll().get("extended_mode") ) {
-            rootView = rootViewExtended;
-            Log.d("DEBUG", "switch: " + switchExtendedModeExtended.isChecked() );
-            switchExtendedModeExtended.setChecked(true);
-            Log.d("DEBUG", "switch: " + switchExtendedModeExtended.isChecked() );
-        } else {
-            rootView = rootViewNormal;
-            switchExtendedModeNormal.setChecked(false);
-        }
-*/
         return rootView;
     }
 

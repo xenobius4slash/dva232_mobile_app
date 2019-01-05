@@ -1,16 +1,11 @@
 package se.mdh.dva232.project.shutup;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.text.LoginFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +20,6 @@ import android.widget.TimePicker;
 import java.util.Calendar;
 
 public class Fragment1 extends Fragment {
-
-
     //private Activity rootView;
 
     private int start_hour;
@@ -79,9 +72,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 TextView text = rootView.findViewById(R.id.textView8);
-
                 text.setText(dayOfMonth+"-"+(month+1)+"-"+year);
-
             }
         };
 
@@ -92,12 +83,9 @@ public class Fragment1 extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 new DatePickerDialog( getContext(), dialog, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-
             }
         });
-
 
 
         //code to get values of TimePicker
@@ -107,12 +95,10 @@ public class Fragment1 extends Fragment {
         end_hour = myCalendar.get(Calendar.HOUR_OF_DAY);
         end_minute = myCalendar.get(Calendar.MINUTE);
 
-
         TimePicker timePicker1 = rootView.findViewById(R.id.timePicker);
         timePicker1.setHour(this.start_hour);
         timePicker1.setMinute(this.start_minute);
         timePicker1.setIs24HourView(true);
-
 
         timePicker1.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
@@ -133,10 +119,6 @@ public class Fragment1 extends Fragment {
             }
         });
 
-
-
-
-
         timePicker1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,11 +133,7 @@ public class Fragment1 extends Fragment {
             }
         });
 
-
-
         return rootView;
-
-
     }
 
 
