@@ -94,9 +94,9 @@ class XmlController {
     /**
      * Check for collision by given new event
      * @param newStartDate     String  Format: "yyyy-MM-dd"        start date of the event
-     * @param newStartTime     String  Format: "hh:mm"             start time of the event
+     * @param newStartTime     String  Format: "hh:mm:ss"          start time of the event
      * @param newEndDate       String  Format: "yyyy-MM-dd"        end date of the event
-     * @param newEndTime       String  Format: "hh:mm"             end time of the event
+     * @param newEndTime       String  Format: "hh:mm:ss"          end time of the event
      * @return  Boolean     true: collision found; false: no collision found
      */
     Boolean isCollisionByNewEvent(String newStartDate, String newStartTime, String newEndDate, String newEndTime) {
@@ -112,8 +112,8 @@ class XmlController {
 
         // create compare values from parameters
         try {
-            newStartDateTime = sdf.parse(newStartDate + " " + newStartTime + ":00");
-            newEndDateTime = sdf.parse(newEndDate + " " + newEndTime + ":00");
+            newStartDateTime = sdf.parse(newStartDate + " " + newStartTime);
+            newEndDateTime = sdf.parse(newEndDate + " " + newEndTime);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -130,7 +130,7 @@ class XmlController {
 //                    Log.d("XMLC", "isCollisionByNewEvent -> <start_date> -> " + xmlParser.getText() );
                 } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("start_time")) {
                     xmlParser.next();
-                    startDateTime = sdf.parse(startDateString + " " + xmlParser.getText() + ":00");
+                    startDateTime = sdf.parse(startDateString + " " + xmlParser.getText());
 //                    Log.d("XMLC","isCollisionByNewEvent -> <start_time> -> " + xmlParser.getText() );
                 } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("end_date")) {
                     xmlParser.next();
@@ -138,7 +138,7 @@ class XmlController {
 //                    Log.d("XMLC","isCollisionByNewEvent -> <end_date> -> " + xmlParser.getText() );
                 } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("end_time")) {
                     xmlParser.next();
-                    endDateTime = sdf.parse(endDateString + " " + xmlParser.getText() + ":00");
+                    endDateTime = sdf.parse(endDateString + " " + xmlParser.getText());
 //                    Log.d("XMLC","isCollisionByNewEvent -> <end_time> -> " + xmlParser.getText() );
                 } else if ( xmlParser.getEventType() == XmlPullParser.END_TAG && xmlParser.getName().equals("event")) {
 //                    Log.d("XMLC", "isCollisionByNewEvent -> check for collision");
@@ -189,9 +189,9 @@ class XmlController {
      * Adds an event in order to the XML content string
      * @param id            String  Format: "yyyy-MM-dd_hhmm"   id of the event
      * @param startDate     String  Format: "yyyy-MM-dd"        start date of the event
-     * @param startTime     String  Format: "hh:mm"             start time of the event
+     * @param startTime     String  Format: "hh:mm:ss"          start time of the event
      * @param endDate       String  Format: "yyyy-MM-dd"        end date of the event
-     * @param endTime       String  Format: "hh:mm"             end time of the event
+     * @param endTime       String  Format: "hh:mm:ss"          end time of the event
      * @param name          String                              name of the event
      * @return   Integer     Error-Code
      */
@@ -206,8 +206,8 @@ class XmlController {
             Date newStartDateTime = null;
             Date newEndDateTime = null;
             try {
-                newStartDateTime = sdf.parse(startDate + " " + startTime + ":00");
-                newEndDateTime = sdf.parse(endDate + " " + endTime + ":00");
+                newStartDateTime = sdf.parse(startDate + " " + startTime);
+                newEndDateTime = sdf.parse(endDate + " " + endTime);
             } catch (ParseException e) {
                 e.printStackTrace();
                 errorCode = 1;
@@ -232,8 +232,8 @@ class XmlController {
                         Date startDateTime = null;
                         Date endDateTime = null;
                         try {
-                            startDateTime = sdf.parse(event.item(0).getTextContent() + " " + event.item(1).getTextContent() + ":00");
-                            endDateTime = sdf.parse(event.item(2).getTextContent() + " " + event.item(3).getTextContent() + ":00");
+                            startDateTime = sdf.parse(event.item(0).getTextContent() + " " + event.item(1).getTextContent());
+                            endDateTime = sdf.parse(event.item(2).getTextContent() + " " + event.item(3).getTextContent());
                         } catch (ParseException e) {
                             e.printStackTrace();
                             errorCode = 2;
@@ -345,7 +345,7 @@ class XmlController {
                 Element eEvent = (Element) nRootList.item(i);
                 String id = eEvent.getAttribute("id");                  // id of the event node
                 NodeList nEventList = nRootList.item(i).getChildNodes();    // get childs of the event node
-                String datetimeEnd = nEventList.item(2).getTextContent() + " " + nEventList.item(3).getTextContent() + ":00";
+                String datetimeEnd = nEventList.item(2).getTextContent() + " " + nEventList.item(3).getTextContent();
                 SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 try {
                     Date endDateTime = dateFormater.parse(datetimeEnd);
