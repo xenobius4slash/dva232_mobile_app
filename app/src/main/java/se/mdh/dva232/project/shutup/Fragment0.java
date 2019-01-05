@@ -7,6 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 public class Fragment0 extends Fragment {
 
@@ -33,8 +37,70 @@ public class Fragment0 extends Fragment {
         Log.d("LIFECYCLE Fragment0", "onCreateView(...)");
         // Inflate the layout for this fragment
 
-        SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
-        View rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);;
+        final SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
+        View rootView;
+
+        Switch switchExtendedMode;
+        final SharedPreferences.Editor settingsEditor = settings.edit();
+        if( (Boolean) settings.getAll().get("extended_mode") ) {
+            // extended mode
+            rootView = inflater.inflate(R.layout.fragment_fragment0_extended, container, false);
+            TimePicker timePicker = rootView.findViewById(R.id.f0_extended_timepicker);
+            timePicker.setIs24HourView(true);
+
+            // init switches at extended layout
+            Switch switchVibrationExtendedMode = rootView.findViewById(R.id.f0_extended_switch_vibration);
+            Switch switchModeExtendedMode = rootView.findViewById(R.id.f0_extended_switch_extended_mode);
+            Switch switchCloseExtendedMode = rootView.findViewById(R.id.f0_extended_switch_close_after_activation);
+            // required
+            switchVibrationExtendedMode.setChecked(false);
+            switchModeExtendedMode.setChecked(false);
+            switchCloseExtendedMode.setChecked(false);
+            // set by settings
+            switchVibrationExtendedMode.setChecked( (Boolean) settings.getAll().get("vibration") );
+            switchModeExtendedMode.setChecked( (Boolean) settings.getAll().get("extended_mode") );
+            switchCloseExtendedMode.setChecked( (Boolean) settings.getAll().get("close_after_activation") );
+
+            switchExtendedMode = rootView.findViewById(R.id.f0_extended_switch_extended_mode);
+            switchExtendedMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Log.d("SETTINGS", "extended mode -> extended mode (#1): " + settings.getAll().get("extended_mode") + " // new value should be: " + isChecked );
+                    settingsEditor.putBoolean("extended_mode", isChecked);  // set the setting by the isChecked variable
+                    settingsEditor.apply();
+                    Log.d("SETTINGS", "extended mode -> extended mode (#2): " + settings.getAll().get("extended_mode"));
+                    Toast.makeText( getContext(), "Changes will be effected after restart of the App", Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            // normal mode
+            rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);
+
+            // init switches at normal layout
+            Switch switchVibrationNormalMode = rootView.findViewById(R.id.f0_normal_switch_vibration);
+            Switch switchModeNormalMode = rootView.findViewById(R.id.f0_normal_switch_extended_mode);
+            Switch switchCloseNormalMode = rootView.findViewById(R.id.f0_normal_switch_close_after_activation);
+            // required
+            switchVibrationNormalMode.setChecked(false);
+            switchModeNormalMode.setChecked(false);
+            switchCloseNormalMode.setChecked(false);
+            // set by settings
+            switchVibrationNormalMode.setChecked( (Boolean) settings.getAll().get("vibration") );
+            switchModeNormalMode.setChecked( (Boolean) settings.getAll().get("extended_mode") );
+            switchCloseNormalMode.setChecked( (Boolean) settings.getAll().get("close_after_activation") );
+
+            switchExtendedMode = rootView.findViewById(R.id.f0_normal_switch_extended_mode);
+            switchExtendedMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Log.d("SETTINGS", "normal mode -> extended mode (#1): " + settings.getAll().get("extended_mode")  + " // new value should be: " + isChecked);
+                    settingsEditor.putBoolean("extended_mode", isChecked);  // set the setting by the isChecked variable
+                    settingsEditor.apply();
+                    Log.d("SETTINGS", "normal mode -> extended mode (#2): " + settings.getAll().get("extended_mode"));
+                    Toast.makeText( getContext(), "Changes will be effected after restart of the App", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
 
         return rootView;
     }

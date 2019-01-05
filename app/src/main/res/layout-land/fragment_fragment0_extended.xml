@@ -11,6 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -20,62 +23,60 @@
 
             <TimePicker
                 android:id="@+id/f0_extended_timepicker"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginEnd="8dp"
+
                 android:layout_marginRight="8dp"
                 android:timePickerMode="spinner"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <Button
-                android:id="@+id/f0_extended_btn_duration"
-                android:layout_width="172dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="DURATION"
-                app:layout_constraintEnd_toStartOf="@+id/f0_extended_btn_time"
-                app:layout_constraintHorizontal_bias="0.5"
+                android:visibility="visible"
+                app:layout_constraintEnd_toStartOf="@+id/divider"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/f0_extended_timepicker" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/f0_extended_btn_time"
-                android:layout_width="172dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:baselineAligned="false"
                 android:text="UNTIL"
+                android:visibility="visible"
                 app:layout_constraintBaseline_toBaselineOf="@+id/f0_extended_btn_duration"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toEndOf="@+id/f0_extended_timepicker"
                 app:layout_constraintStart_toEndOf="@+id/f0_extended_btn_duration" />
+
+            <Button
+                android:id="@+id/f0_extended_btn_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:baselineAligned="false"
+                android:text="DURATION"
+                android:visibility="visible"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/f0_extended_timepicker" />
 
             <Button
                 android:id="@+id/f0_extended_btn_duration_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:text="0:30"
+                android:visibility="visible"
+                app:layout_constraintBaseline_toBaselineOf="@+id/f0_extended_btn_duration_2"
                 app:layout_constraintEnd_toStartOf="@+id/f0_extended_btn_duration_2"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/f0_extended_btn_duration" />
+                app:layout_constraintStart_toEndOf="@+id/f0_extended_timepicker" />
 
             <Button
                 android:id="@+id/f0_extended_btn_duration_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1:00"
-                app:layout_constraintBaseline_toBaselineOf="@+id/f0_extended_btn_duration_1"
+                android:visibility="visible"
+                app:layout_constraintBaseline_toBaselineOf="@+id/f0_extended_btn_duration_3"
                 app:layout_constraintEnd_toStartOf="@+id/f0_extended_btn_duration_3"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/f0_extended_btn_duration_1" />
@@ -85,28 +86,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1:30"
-                app:layout_constraintBaseline_toBaselineOf="@+id/f0_extended_btn_duration_2"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/f0_extended_btn_duration_2" />
+                app:layout_constraintStart_toEndOf="@+id/f0_extended_btn_duration_2"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/f0_extended_btn_duration_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:text="2:00"
+                android:visibility="visible"
+                app:layout_constraintBaseline_toBaselineOf="@+id/f0_extended_btn_duration_5"
                 app:layout_constraintEnd_toStartOf="@+id/f0_extended_btn_duration_5"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/f0_extended_btn_duration_1" />
+                app:layout_constraintStart_toEndOf="@+id/f0_extended_timepicker" />
 
             <Button
                 android:id="@+id/f0_extended_btn_duration_5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2:30"
-                app:layout_constraintBaseline_toBaselineOf="@+id/f0_extended_btn_duration_4"
+                android:visibility="visible"
+                app:layout_constraintBaseline_toBaselineOf="@+id/f0_extended_btn_duration_6"
                 app:layout_constraintEnd_toStartOf="@+id/f0_extended_btn_duration_6"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/f0_extended_btn_duration_4" />
@@ -115,93 +118,111 @@
                 android:id="@+id/f0_extended_btn_duration_6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
                 android:text="3:00"
-                app:layout_constraintBaseline_toBaselineOf="@+id/f0_extended_btn_duration_5"
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@+id/f0_extended_btn_deactivate"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/f0_extended_btn_duration_5" />
+                app:layout_constraintStart_toEndOf="@+id/f0_extended_btn_duration_5"
+                app:layout_constraintTop_toBottomOf="@+id/f0_extended_btn_duration_3"
+                app:layout_constraintVertical_bias="0.321" />
 
             <Button
                 android:id="@+id/f0_extended_btn_deactivate"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="DEACTIVATE CURRENT ACTIVE MODE"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="@+id/f0_extended_btn_duration_6"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/f0_extended_btn_duration_4"
                 app:layout_constraintTop_toBottomOf="@+id/f0_extended_btn_duration_5" />
 
             <TextView
                 android:id="@+id/f0_extended_text_switch_vibration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
                 android:text="@string/textView3"
+                android:visibility="visible"
                 app:layout_constraintBaseline_toBaselineOf="@+id/f0_extended_switch_vibration"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="@+id/f0_extended_btn_deactivate" />
 
             <Switch
                 android:id="@+id/f0_extended_switch_vibration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textOn="On"
-                android:textOff="Off"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
                 android:key="vibration"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textOff="Off"
+                android:textOn="On"
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@+id/f0_extended_switch_extended_mode"
+                app:layout_constraintEnd_toEndOf="@+id/f0_extended_btn_deactivate"
                 app:layout_constraintTop_toBottomOf="@+id/f0_extended_btn_deactivate" />
 
             <TextView
                 android:id="@+id/f0_extended_text_switch_extended_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
                 android:text="@string/textView4"
+                android:visibility="visible"
                 app:layout_constraintBaseline_toBaselineOf="@+id/f0_extended_switch_extended_mode"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="@+id/f0_extended_text_switch_vibration" />
 
             <Switch
                 android:id="@+id/f0_extended_switch_extended_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textOn="On"
-                android:textOff="Off"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginBottom="8dp"
                 android:key="extended_mode"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textOff="Off"
+                android:textOn="On"
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@+id/f0_extended_switch_close_after_activation"
+                app:layout_constraintEnd_toEndOf="@+id/f0_extended_switch_vibration"
                 app:layout_constraintTop_toBottomOf="@+id/f0_extended_switch_vibration" />
 
             <TextView
                 android:id="@+id/f0_extended_text_switch_close_after_activation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
                 android:text="@string/textView5"
+                android:visibility="visible"
                 app:layout_constraintBaseline_toBaselineOf="@+id/f0_extended_switch_close_after_activation"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="@+id/f0_extended_text_switch_extended_mode" />
 
             <Switch
                 android:id="@+id/f0_extended_switch_close_after_activation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textOn="On"
-                android:textOff="Off"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
                 android:layout_marginBottom="36dp"
                 android:key="close_after_activation"
+                android:textOff="Off"
+                android:textOn="On"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/f0_extended_switch_extended_mode"
                 app:layout_constraintTop_toBottomOf="@+id/f0_extended_switch_extended_mode" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="@+id/f0_extended_btn_time"
+                app:layout_constraintEnd_toStartOf="@+id/f0_extended_btn_duration_4"
+                app:layout_constraintStart_toEndOf="@+id/f0_extended_btn_time"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

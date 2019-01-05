@@ -1,6 +1,7 @@
 package se.mdh.dva232.project.shutup;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Switch;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("LIFECYCLE Actvity", "onCreate");
+        Log.d("LIFECYCLE_Activity", "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -24,22 +28,35 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor settingsEditor = settings.edit();
 
         //if there is no settings put default to false
-        if ((!settings.contains("vibration"))|| (!settings.contains("extended_mode")) || (!settings.contains("close_activation")))
+        Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
+        Log.d("Check_settings", "first extended_mode_check, should be false: " + settings.getAll().get("extended_mode") );
+        Log.d("Check_settings", "first close_activation_check, should be false: " + settings.getAll().get("close_after_activation") );
+        if ((!settings.contains("vibration"))|| (!settings.contains("extended_mode")) || (!settings.contains("close_after_activation")))
         {
+            Log.d("SETTINGS", "no settings detected -> default settings");
             settingsEditor.putBoolean("vibration", false);
-            settingsEditor.putBoolean("extended_mode", true);
+            settingsEditor.putBoolean("extended_mode", false);
             settingsEditor.putBoolean("close_after_activation", false);
             settingsEditor.apply();
-
+            /*
             Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
             Log.d("Check_settings", "first extended_mode_check, should be false: " + settings.getAll().get("extended_mode") );
             Log.d("Check_settings", "first close_activation_check, should be false: " + settings.getAll().get("close_after_activation") );
+            */
         }
         else
         {
-            Log.d("Check_settings", "There are settings");
-
+            Log.d("SETTINGS", "settings detected");
         }
+
+
+        /*
+         * Toolbar with app-name and menu
+         */
+        /*
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        */
 
         /*
          * Frame container
@@ -55,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            tabLayout.setVisibility(View.GONE);
+        }
+
         /*
          * Dots on bottom
          */
@@ -65,43 +86,43 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        Log.d("LIFECYCLE Actvity", "onStart");
+        Log.d("LIFECYCLE_Activity", "onStart");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.d("LIFECYCLE Actvity", "onResume");
+        Log.d("LIFECYCLE_Activity", "onResume");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.d("LIFECYCLE Actvity", "onPause");
+        Log.d("LIFECYCLE_Activity", "onPause");
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        Log.d("LIFECYCLE Actvity", "onStop");
+        Log.d("LIFECYCLE_Actvity", "onStop");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.d("LIFECYCLE Actvity", "onDestroy");
+        Log.d("LIFECYCLE_Activity", "onDestroy");
         super.onDestroy();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.d("SAVE Actvity","onSaveInstanceState");
+        Log.d("SAVE_Activity","onSaveInstanceState");
         super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.d("SAVE Actvity","onRestoreInstanceState");
+        Log.d("SAVE_Activity","onRestoreInstanceState");
         super.onRestoreInstanceState(savedInstanceState);
     }
 
