@@ -1,5 +1,6 @@
 package se.mdh.dva232.project.shutup;
 
+import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
@@ -8,13 +9,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
-
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,61 +20,37 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String id1 = "2019-01-03_19xx";
-        String dateStart1 = "2019-01-03";
-        String timeStart1 = "19:00";
-        String dateEnd1 = "2019-01-03";
-        String timeEnd1 = "19:50";
-        String name1 = "test name 1";
+/*
+        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+        SharedPreferences.Editor settingsEditor = settings.edit();
 
-        String id2 = "2018-12-20_1800";
-        String dateStart2 = "2018-12-20";
-        String timeStart2 = "18:00";
-        String dateEnd2 = "2018-12-20";
-        String timeEnd2 = "19:00";
-        String name2 = "test name 2";
+        //if there is no settings put default to false
+        if ((!settings.contains("vibration"))|| (!settings.contains("extended_mode")) || (!settings.contains("close_activation")))
+        {
+            settingsEditor.putBoolean("vibration", false);
+            settingsEditor.putBoolean("extended_mode", true);
+            settingsEditor.putBoolean("close_after_activation", false);
+            settingsEditor.apply();
 
-        String id3 = "2018-12-20_0900";
-        String dateStart3 = "2018-12-20";
-        String timeStart3 = "09:00";
-        String dateEnd3 = "2018-12-20";
-        String timeEnd3 = "10:00";
-        String name3 = "test name 3";
+            Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
+            Log.d("Check_settings", "first extended_mode_check, should be false: " + settings.getAll().get("extended_mode") );
+            Log.d("Check_settings", "first close_activation_check, should be false: " + settings.getAll().get("close_after_activation") );
+        }
+        else
+        {
+            Log.d("Check_settings", "There are settings");
 
-        String id4 = "2018-12-20_0900";
-        String dateStart4 = "2018-12-20";
-        String timeStart4 = "14:30";
-        String dateEnd4 = "2018-12-20";
-        String timeEnd4 = "16:00";
-        String name4 = "test name 4";
+        }
+*/
 
-        // 3, 1, 4, 2
 
         /*
-        XmlController xmlC = new XmlController( getBaseContext() );
-        if( xmlC.readXmlFileAndLoad() ) {
-            Log.d("XMLC","reading XML file success");
-            xmlC.createXmlContentSkeleton();    // TODO: del
-
-        } else {
-            Log.d("XMLC", "error while reading XML file -> file not exist");
-            xmlC.createXmlContentSkeleton();
-        }
-        xmlC.logCurrentXmlContent();
-        xmlC.addEventToXmlContent(id1, dateStart1, timeStart1, dateEnd1, timeEnd1, name1);
-        xmlC.logCurrentXmlContent();
-        xmlC.addEventToXmlContent(id2, dateStart2, timeStart2, dateEnd2, timeEnd2, name2);
-        xmlC.logCurrentXmlContent();
-        xmlC.addEventToXmlContent(id3, dateStart3, timeStart3, dateEnd3, timeEnd3, name3);
-        xmlC.logCurrentXmlContent();
-        xmlC.addEventToXmlContent(id4, dateStart4, timeStart4, dateEnd4, timeEnd4, name4);
-        xmlC.logCurrentXmlContent();
-        xmlC.saveXmlContentToFile();
+         * Toolbar with app-name and menu
+         */
+        /*
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         */
-
-        Log.d("MainActivity","START");
-        EventController EC = new EventController( getBaseContext() );
-        EC.activateSilentModeFromNow(dateStart1, timeStart1, dateEnd1, timeEnd1, name1);
 
         /*
          * Frame container
@@ -101,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
          */
         TabLayout tabLayoutTab = findViewById(R.id.tab_layout_dot);
         tabLayoutTab.setupWithViewPager(mViewPager, true);
+
     }
 
     @Override
@@ -145,6 +116,29 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
+    /*
+     * Menu in the toolbar
+     */
+    /*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    */
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 

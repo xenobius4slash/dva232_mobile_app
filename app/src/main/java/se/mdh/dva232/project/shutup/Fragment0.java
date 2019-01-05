@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 public class Fragment0 extends Fragment {
 
@@ -32,32 +31,29 @@ public class Fragment0 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d("LIFECYCLE Fragment0", "onCreateView(...)");
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);
 
-        final AudioController AC = new AudioController(rootView.getContext());
-        AC.logCurrentAudioMode();
-        Button btnSilent = rootView.findViewById(R.id.silent_btn);
-        btnSilent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AC.setPhoneToSilentMode(false);
-            }
-        });
-        Button btnVibration = rootView.findViewById(R.id.vibrate_btn);
-        btnVibration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AC.setPhoneToSilentMode(true);
-            }
-        });
-        Button btnNormal = rootView.findViewById(R.id.normal_btn);
-        btnNormal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AC.setPhoneToPreviousMode();
-            }
-        });
+        SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
+        View rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);;
+        /*
+        View rootViewNormal = inflater.inflate(R.layout.fragment_fragment0, container, false);
+        View rootViewExtended = inflater.inflate(R.layout.fragment_fragment0_extended, container, false);
 
+        // init switches
+        Switch switchExtendedModeNormal = rootViewNormal.findViewById(R.id.switch_extended_mode_normal);
+        switchExtendedModeNormal.setChecked(false);
+        Switch switchExtendedModeExtended = rootViewExtended.findViewById(R.id.switch_extended_mode_extended);
+        switchExtendedModeExtended.setChecked(false);
+
+        if( (Boolean) settings.getAll().get("extended_mode") ) {
+            rootView = rootViewExtended;
+            Log.d("DEBUG", "switch: " + switchExtendedModeExtended.isChecked() );
+            switchExtendedModeExtended.setChecked(true);
+            Log.d("DEBUG", "switch: " + switchExtendedModeExtended.isChecked() );
+        } else {
+            rootView = rootViewNormal;
+            switchExtendedModeNormal.setChecked(false);
+        }
+*/
         return rootView;
     }
 

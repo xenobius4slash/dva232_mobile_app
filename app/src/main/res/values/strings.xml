@@ -4,13 +4,48 @@
     <string name="tab_text_2">DATE-TIME</string>
     <string name="tab_text_3">EVENTS</string>
     <string name="action_settings">Settings</string>
-    <string name="large_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tincidunt mi non feugiat aliquet. Maecenas elementum ornare magna ac rutrum. Pellentesque faucibus tortor in congue pulvinar. Aliquam accumsan nisl et turpis condimentum gravida. Ut hendrerit auctor ligula, at volutpat massa porttitor nec. Pellentesque dignissim justo interdum, bibendum risus ac, fringilla augue. Sed quis venenatis justo. Proin sagittis tristique dolor. Vivamus felis erat, cursus hendrerit finibus ut, eleifend quis augue. Praesent massa ligula, efficitur non eros sed, blandit fermentum eros. Nullam tempor lectus nisi, ac imperdiet velit blandit porttitor. Etiam ultricies nisi at dolor suscipit egestas.
+    <string name="textView1">CURRENT MODE</string>
+    <string name="textView2">Select Duration: </string>
+    <string name="btn_0_duration_1">0:30</string>
+    <string name="btn_0_duration_2">1:00</string>
+    <string name="btn_0_duration_3">1:30</string>
+    <string name="btn_0_duration_4">2:00</string>
+    <string name="btn_0_duration_5">2:30</string>
+    <string name="btn_0_duration_6">3:00</string>
+    <string name="button_deactivation">DEACTIVATE CURRENT ACTIVE MODE</string>
+    <string name="button_duration">DURATION</string>
+    <string name="button_until">UNTIL</string>
+    <string name="textView3">Vibration in Silent Mode</string>
+    <string name="textView4">Extended Mode</string>
+    <string name="textView5">Close after activation</string>
+    <string name="switch_set_on">ON</string>
+    <string name="switch_set_off">OFF</string>
+    <string name="button_date">SELECT DATE</string>
+    <string name="f1_start_time">Start time</string>
+    <string name="f1_end_time">End time</string>
+    <string name="f1_event_name">Event Name:</string>
+    <string name="f1_text_event_name">Name</string>
+    <string name="f1_repeat">Repeat</string>
+    <string name="f1_select_date_text"> - </string>
+    <string name="f1_activate_button">ACTIVATE</string>
 
-In finibus, odio eu semper sagittis, ante sem tempus diam, non rhoncus risus erat sed tortor. Nam dictum nisl sit amet sagittis accumsan. Suspendisse aliquet magna est, eget semper ipsum pharetra non. Nullam metus leo, pretium fermentum lacinia auctor, lobortis id orci. Sed orci velit, faucibus gravida molestie vel, consequat eu risus. In egestas sem lacus. Cras aliquam semper bibendum. Sed nulla erat, porttitor a massa quis, volutpat faucibus odio. Praesent ultricies molestie feugiat. Phasellus ut odio eget tellus faucibus pharetra sit amet a mauris. Nulla non nibh nunc. Sed luctus eleifend rutrum.
 
-Maecenas sit amet pharetra nibh. Vestibulum bibendum libero quis aliquam feugiat. Curabitur maximus aliquet metus. Curabitur ac est est. Suspendisse malesuada porttitor mollis. Suspendisse porta convallis libero, eget pharetra dui pulvinar vitae. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Curabitur iaculis sollicitudin convallis. Aenean id augue est. Suspendisse viverra nisi non consequat ultrices. Vestibulum eleifend molestie tincidunt. Cras iaculis, magna id laoreet elementum, ipsum libero consectetur libero, nec sagittis ante metus sit amet massa. Nam justo diam, malesuada viverra tellus non, imperdiet lacinia nisi. Cras gravida bibendum consectetur. Donec dui magna, consectetur nec lectus nec, commodo efficitur metus.
+    <string-array name="Select">
+        <item>One</item>
+        <item>Two</item>
+        <item>Three</item>
+        <item>Four</item>
+        <item>Five</item>
+    </string-array>
 
-Maecenas sodales arcu ultrices diam ultrices tristique. Sed lobortis, erat quis viverra vestibulum, purus mauris condimentum odio, a feugiat nibh lectus quis sem. Ut quis elit aliquet mauris lacinia gravida. Aenean posuere nisl ac quam tincidunt vestibulum. Donec commodo, ligula eu ultrices finibus, eros libero suscipit tortor, faucibus feugiat dui nulla imperdiet quam. Praesent scelerisque porttitor dignissim. Sed varius justo sit amet lacus hendrerit viverra. Pellentesque pellentesque risus at convallis consequat. Donec nec rhoncus metus. Integer at arcu iaculis, gravida nisl ac, ornare dui. Vestibulum malesuada porta nulla, eget consequat arcu tristique in.
 
-Vivamus blandit mi sapien, sit amet fermentum orci vehicula at. Quisque velit ipsum, iaculis in tincidunt quis, scelerisque quis tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a nunc dolor. Pellentesque non risus commodo, lobortis tortor sed, cursus massa. Vestibulum sit amet semper magna. Curabitur ut ex velit. Proin consectetur vestibulum ipsum. Integer lobortis quam at molestie dapibus.</string>
+
+
+
+
+
+
+
+
+
 </resources>
