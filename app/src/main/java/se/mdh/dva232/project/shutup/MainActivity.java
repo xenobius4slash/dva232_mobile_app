@@ -1,6 +1,7 @@
 package se.mdh.dva232.project.shutup;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Switch;
 
 
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("LIFECYCLE Actvity", "onCreate");
+        Log.d("LIFECYCLE_Activity", "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         /*if( !settings.contains("vibration") || !settings.contains("extended_mode") || !settings.contains("close") ) {
-            
+
             // first start => initial values
             Log.d("Check_settings","initiallizing values");
             SharedPreferences.Editor editor = settings.edit();
@@ -121,6 +123,10 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            tabLayout.setVisibility(View.GONE);
+        }
+
         /*
          * Dots on bottom
          */
@@ -134,43 +140,43 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        Log.d("LIFECYCLE Actvity", "onStart");
+        Log.d("LIFECYCLE_Activity", "onStart");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.d("LIFECYCLE Actvity", "onResume");
+        Log.d("LIFECYCLE_Activity", "onResume");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.d("LIFECYCLE Actvity", "onPause");
+        Log.d("LIFECYCLE_Activity", "onPause");
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        Log.d("LIFECYCLE Actvity", "onStop");
+        Log.d("LIFECYCLE_Actvity", "onStop");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.d("LIFECYCLE Actvity", "onDestroy");
+        Log.d("LIFECYCLE_Activity", "onDestroy");
         super.onDestroy();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.d("SAVE Actvity","onSaveInstanceState");
+        Log.d("SAVE_Activity","onSaveInstanceState");
         super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.d("SAVE Actvity","onRestoreInstanceState");
+        Log.d("SAVE_Activity","onRestoreInstanceState");
         super.onRestoreInstanceState(savedInstanceState);
     }
 

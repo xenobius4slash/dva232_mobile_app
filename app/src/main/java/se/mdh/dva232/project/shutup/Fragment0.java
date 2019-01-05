@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class Fragment0 extends Fragment {
@@ -61,6 +62,8 @@ public class Fragment0 extends Fragment {
         if( (Boolean) settings.getAll().get("extended_mode") ) {
             // extended mode
             rootView = inflater.inflate(R.layout.fragment_fragment0_extended, container, false);
+            TimePicker timePicker = rootView.findViewById(R.id.f0_extended_timepicker);
+            timePicker.setIs24HourView(true);
 
             // init switches at extended layout
             Switch switchVibrationExtendedMode = rootView.findViewById(R.id.f0_extended_switch_vibration);
