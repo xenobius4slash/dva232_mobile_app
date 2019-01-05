@@ -96,8 +96,8 @@ public class Fragment1 extends Fragment {
         end_minute = myCalendar.get(Calendar.MINUTE);
 
         TimePicker timePicker1 = rootView.findViewById(R.id.timePicker);
-        timePicker1.setHour(this.start_hour);
-        timePicker1.setMinute(this.start_minute);
+//        timePicker1.setHour(this.start_hour);
+//        timePicker1.setMinute(this.start_minute);
         timePicker1.setIs24HourView(true);
 
         timePicker1.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
@@ -108,8 +108,8 @@ public class Fragment1 extends Fragment {
         });
 
         TimePicker timePicker2 = rootView.findViewById(R.id.timePicker2);
-        timePicker2.setHour(this.end_hour);
-        timePicker2.setMinute(this.end_minute);
+//        timePicker2.setHour(this.end_hour);
+//        timePicker2.setMinute(this.end_minute);
         timePicker2.setIs24HourView(true);
 
         timePicker2.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {

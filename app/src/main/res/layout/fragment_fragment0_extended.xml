@@ -7,7 +7,7 @@
 
 
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/f0_scroll_extended"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
@@ -32,7 +32,7 @@
 
             <Button
                 android:id="@+id/f0_extended_btn_duration"
-                android:layout_width="172dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
@@ -47,7 +47,7 @@
 
             <Button
                 android:id="@+id/f0_extended_btn_time"
-                android:layout_width="172dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
@@ -123,9 +123,13 @@
 
             <Button
                 android:id="@+id/f0_extended_btn_deactivate"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 android:text="DEACTIVATE CURRENT ACTIVE MODE"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"

@@ -1,5 +1,6 @@
 package se.mdh.dva232.project.shutup;
 
+import android.arch.lifecycle.Lifecycle;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,10 +8,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Fragment0 extends Fragment {
 
@@ -75,6 +83,54 @@ public class Fragment0 extends Fragment {
         } else {
             // normal mode
             rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);
+
+            final EventController EC = new EventController( getContext() );
+
+            // enable/disable button for deactivating an active silent mode manually
+            final Button btnDeactivateSilentMode = rootView.findViewById(R.id.f0_normal_btn_deactivate);
+            Log.d("SETTINGS", "silent_mode_active: " + settings.getAll().get("silent_mode_active"));
+            if ( (Boolean) settings.getAll().get("silent_mode_active") ) {
+                Log.d("SETTINGS", "silent_mode_active -> true -> Button clickable");
+                btnDeactivateSilentMode.setEnabled(true);
+            } else {
+                Log.d("SETTINGS", "silent_mode_active -> false -> Button not clickable");
+              btnDeactivateSilentMode.setEnabled(false);
+            }
+
+            // deactivate an active silent mode manually
+            btnDeactivateSilentMode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getContext(), "I'm the button for deactivate a active silent mode", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            // activate silent mode by duration button
+            final Date now = Calendar.getInstance().getTime();
+            final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+            final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
+            final Button btnDuration1 = rootView.findViewById(R.id.f0_normal_btn_duration_1);
+            btnDuration1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getContext(), "I was hurt from " + btnDuration1.getText().toString(), Toast.LENGTH_SHORT).show();
+
+//                    String[] match = "2:30".split(":");
+                    String[] match = btnDuration1.getText().toString().split(":");
+                    Integer hour = Integer.parseInt(match[0]);
+                    Integer minute = Integer.parseInt(match[1]);
+                    Log.d("F0_ASM", "duration: " +hour+":"+minute+ " -> minutes: " + (minute + (60 * hour)) );
+
+                    Calendar endCal = Calendar.getInstance();
+                    endCal.setTime(now);
+                    endCal.add( Calendar.MINUTE, (minute + (60 * hour)) );
+                    Date end = endCal.getTime();
+
+                    Log.d("F0_ASM", "start: "+now.toString()+" // end: " + end.toString() );
+                    EC.activateSilentModeFromNow(sdfDate.format(now), sdfTime.format(now), sdfDate.format(end), sdfTime.format(end), "Current");
+
+                }
+            });
 
             // init switches at normal layout
             Switch switchVibrationNormalMode = rootView.findViewById(R.id.f0_normal_switch_vibration);

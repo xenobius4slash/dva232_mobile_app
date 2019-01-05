@@ -317,13 +317,14 @@ class XmlController {
      * Removes one event by given id from the XML content string
      * @param id    String  Format: "yyyy-MM-dd_hhii"
      */
-    private void removeEventFromXmlContent(String id) {
-        if(debug) { Log.d("XMLC", "removeEventFromXmlContent()"); }
+    void removeEventFromXmlContent(String id) {
+        if(debug) { Log.d("XMLC", "removeEventFromXmlContent("+id+")"); }
         Document doc = getDocumentOfXmlContent();
         if (doc != null) {
             Node nToRemove = doc.getElementById(id);
             nToRemove.getParentNode().removeChild( nToRemove );
             writeChangesToXmlContent(doc);
+            Log.d("XMLC","Node deleted");
         } else {
             Log.d("XMLC","Node not found");
         }

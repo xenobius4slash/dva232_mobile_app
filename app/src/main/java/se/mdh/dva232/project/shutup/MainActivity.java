@@ -11,7 +11,6 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Switch;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -31,21 +30,19 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
         Log.d("Check_settings", "first extended_mode_check, should be false: " + settings.getAll().get("extended_mode") );
         Log.d("Check_settings", "first close_activation_check, should be false: " + settings.getAll().get("close_after_activation") );
-        if ((!settings.contains("vibration"))|| (!settings.contains("extended_mode")) || (!settings.contains("close_after_activation")))
-        {
+        if ((!settings.contains("vibration"))|| (!settings.contains("extended_mode")) || (!settings.contains("close_after_activation")) || (!settings.contains("silent_mode_active"))) {
             Log.d("SETTINGS", "no settings detected -> default settings");
             settingsEditor.putBoolean("vibration", false);
             settingsEditor.putBoolean("extended_mode", false);
             settingsEditor.putBoolean("close_after_activation", false);
+            settingsEditor.putBoolean("silent_mode_active", false);
             settingsEditor.apply();
             /*
             Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
             Log.d("Check_settings", "first extended_mode_check, should be false: " + settings.getAll().get("extended_mode") );
             Log.d("Check_settings", "first close_activation_check, should be false: " + settings.getAll().get("close_after_activation") );
             */
-        }
-        else
-        {
+        } else {
             Log.d("SETTINGS", "settings detected");
         }
 
