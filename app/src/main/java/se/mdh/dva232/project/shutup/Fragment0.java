@@ -1,5 +1,6 @@
 package se.mdh.dva232.project.shutup;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
@@ -52,6 +53,10 @@ public class Fragment0 extends Fragment {
 
         Switch switchExtendedMode;
         final SharedPreferences.Editor settingsEditor = settings.edit();
+
+
+
+
         if( (Boolean) settings.getAll().get("extended_mode") ) {
             // extended mode
             rootView = inflater.inflate(R.layout.fragment_fragment0_extended, container, false);
@@ -258,6 +263,21 @@ public class Fragment0 extends Fragment {
                     Toast.makeText( getContext(), "Changes will be effected after restart of the App", Toast.LENGTH_LONG).show();
                 }
             });
+
+            switchCloseExtendedMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Log.d("SETTINGS", "close after activation mode");
+                    settingsEditor.putBoolean("close_after_activation",isChecked);
+                    settingsEditor.apply();
+                    //moveTaskToBack(true);
+                    //finishAndRemoveTask();
+                    getActivity().moveTaskToBack(true);
+                    System.exit(1);
+
+                }
+            });
+
         } else {
             // normal mode
             rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);
@@ -278,6 +298,15 @@ public class Fragment0 extends Fragment {
             f0_button_6.setText((CharSequence) settings.getAll().get("btn_duration_6"));
 
 
+
+            f0_button_1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if( (Boolean) settings.getAll().get("close_after_activation") )
+
+                        getActivity().moveTaskToBack(true);
+                }
+            });
             //show the time set by the user and show - for f0_button_1.
             final TimePickerDialog.OnTimeSetListener dialog1 = new TimePickerDialog.OnTimeSetListener() {
                 @Override
@@ -452,6 +481,18 @@ public class Fragment0 extends Fragment {
                     settingsEditor.apply();
                     Log.d("SETTINGS", "normal mode -> extended mode (#2): " + settings.getAll().get("extended_mode"));
                     Toast.makeText( getContext(), "Changes will be effected after restart of the App", Toast.LENGTH_LONG).show();
+                }
+            });
+
+            switchCloseNormalMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Log.d("SETTINGS", "close after activation mode");
+                    settingsEditor.putBoolean("close_after_activation",isChecked);
+                    settingsEditor.apply();
+
+
+
                 }
             });
         }
