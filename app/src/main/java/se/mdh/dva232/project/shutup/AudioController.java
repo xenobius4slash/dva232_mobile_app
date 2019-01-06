@@ -85,7 +85,7 @@ class AudioController {
     /**
      * Log the current audio mode of the device.
      */
-    void logCurrentAudioMode() {
+    private void logCurrentAudioMode() {
         AudioManager AM = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         Log.d("AUDIOC", "Current RingerMode: " + AM.getRingerMode() + " (normal: "+AudioManager.RINGER_MODE_NORMAL+", vibrate: "+AudioManager.RINGER_MODE_VIBRATE+", silent: "+AudioManager.RINGER_MODE_SILENT+")");
     }

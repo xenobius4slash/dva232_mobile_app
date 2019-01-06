@@ -15,7 +15,7 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    SectionsPagerAdapter mSectionsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +27,10 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor settingsEditor = settings.edit();
 
         //if there is no settings put default to false
-        Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
-        Log.d("Check_settings", "first extended_mode_check, should be false: " + settings.getAll().get("extended_mode") );
-        Log.d("Check_settings", "first close_activation_check, should be false: " + settings.getAll().get("close_after_activation") );
+        Log.d("Check_settings","vibration: " + settings.getAll().get("vibration") );
+        Log.d("Check_settings","extended_mode: " + settings.getAll().get("extended_mode") );
+        Log.d("Check_settings","close_after_activation: " + settings.getAll().get("close_after_activation") );
+        Log.d("Check_settings","silent_mode_active: " + settings.getAll().get("silent_mode_active" ));
         if ((!settings.contains("vibration"))|| (!settings.contains("extended_mode")) || (!settings.contains("close_after_activation")) || (!settings.contains("silent_mode_active"))) {
             Log.d("SETTINGS", "no settings detected -> default settings");
             settingsEditor.putBoolean("vibration", false);

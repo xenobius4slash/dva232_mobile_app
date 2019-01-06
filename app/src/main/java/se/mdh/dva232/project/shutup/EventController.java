@@ -1,5 +1,6 @@
 package se.mdh.dva232.project.shutup;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -51,18 +52,18 @@ class Event {
     }
 
     String getId() { return id; }
-    String getStartDate() { return startDate; }
-    String getStartTime() { return startTime; }
-    String getEndDate() { return endDate; }
-    String getEndTime() { return endTime; }
+    private String getStartDate() { return startDate; }
+    private String getStartTime() { return startTime; }
+    private String getEndDate() { return endDate; }
+    private String getEndTime() { return endTime; }
 
     Date getEndDateTime() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.parse(getEndDate() + " " + getEndTime());
     }
 
     Date getStartDateTime() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.parse(getStartDate() + " " + getStartTime());
     }
 
@@ -98,7 +99,6 @@ class EventController {
         if(debug) { Log.d("EVENTC", "constructor"); }
         context = c;
         settings = context.getSharedPreferences("UserInfo", 0);
-        Log.d("EVENTC", "setting 'vibration': " + settings.getAll().get("vibration"));
     }
 
     //
@@ -106,18 +106,17 @@ class EventController {
     //
 
     /**
-     * Activate the silent mode from now
+     * Activate the silent mode from now --> ONLY for Fragment 0
      * @param newStartDate     String  Format: "yyyy-MM-dd"        start date of the event
      * @param newStartTime     String  Format: "hh:mm:ss"          start time of the event
      * @param newEndDate       String  Format: "yyyy-MM-dd"        end date of the event
      * @param newEndTime       String  Format: "hh:mm:ss"          end time of the event
-     * @param newName          String                              name of the event
      */
-    void activateSilentModeFromNow(String newStartDate, String newStartTime, String newEndDate, String newEndTime, String newName) {
-        if(debug) { Log.d("EVENTC", "activateSilentModeFromNow("+newStartDate+", "+newStartTime+", "+newEndDate+", "+newEndTime+", "+newName+")"); }
+    void activateSilentModeFromNow(String newStartDate, String newStartTime, String newEndDate, String newEndTime) {
+        if(debug) { Log.d("EVENTC", "activateSilentModeFromNow("+newStartDate+", "+newStartTime+", "+newEndDate+", "+newEndTime+")"); }
 
-        if ( (Boolean) settings.getAll().get("silent_mode_active") ) {
-            Toast.makeText(context, "currently silent mode is active", Toast.LENGTH_SHORT).show();
+        if ( settings.getBoolean("silent_mode_active", false) ) {
+            Toast.makeText(context, "currently the silent mode is active", Toast.LENGTH_SHORT).show();
         } else {
             // create objects
             AudioController AC = new AudioController(context);
@@ -135,8 +134,8 @@ class EventController {
                 XC.createXmlContentSkeleton();
             } else {
                 Log.d("EVENTC", "XML file exist and is loaded");
-                XC.resetXmlContent();           // TODO: remove
-                XC.createXmlContentSkeleton();  // TODO: remove
+//                XC.resetXmlContent();           // TODO: remove
+//                XC.createXmlContentSkeleton();  // TODO: remove
             }
             XC.logCurrentXmlContent();
             String eventId = newStartDate.concat("_").concat(newStartTime.replace(":", ""));
@@ -147,7 +146,7 @@ class EventController {
                 if (debug) { Log.d("EVENTC", "activateSilentModeFromNow -> no collision detected"); }
                 createCurrentEventAndSave(eventId, newStartDate, newStartTime, newEndDate, newEndTime);
                 Log.d("EVENTC", "content currentEvent: " + currentEvent.getContent());
-                XC.addEventToXmlContent(eventId, newStartDate, newStartTime, newEndDate, newEndTime, newName);
+                XC.addEventToXmlContent(eventId, newStartDate, newStartTime, newEndDate, newEndTime, "Current");
                 XC.saveXmlContentToFile();
                 XC.logCurrentXmlContent();
                 Log.d("EVENTC", "currentEvent before check: " + getCurrentEvent().getContent() );
@@ -201,20 +200,19 @@ class EventController {
      * checks for switching back to the previous sound mode regarding the current event and call the deactivation
      */
     private void checkForSwitchToPreviousSoundModeAndDoIt() {
-        if(debug) { Log.d("XMLC", "checkForSwitchToPreviousSoundModeAndDoIt()"); }
+        if(debug) { Log.d("EVENTC", "checkForSwitchToPreviousSoundModeAndDoIt()"); }
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 final Timer timer = new Timer();
                 try {
                     timer.schedule(new TimerTask() {
-                        Integer count = 0;
                         Integer tick = 0;
                         Date eventEnd = getCurrentEvent().getEndDateTime();
                         @Override
                         public void run() {
                             tick = tick + 1;
-                            if ( eventEnd.before(Calendar.getInstance().getTime()) || eventEnd.equals(Calendar.getInstance().getTime()) || !(Boolean) settings.getAll().get("silent_mode_active")) {
+                            if ( eventEnd.before(Calendar.getInstance().getTime()) || eventEnd.equals(Calendar.getInstance().getTime()) || !settings.getBoolean("silent_mode_active",false)) {
                                 timer.cancel();
                                 timer.purge();
                                 Log.d("TIMER","stop timer by end of event");
@@ -229,7 +227,7 @@ class EventController {
                 }
             }
         });
-        Log.d("XMLC","checkForSwitchToPreviousSoundMode() -> end");
+        Log.d("EVENTC","checkForSwitchToPreviousSoundMode() -> end -> asyncrone process should run");
     }
 
     /**
@@ -247,12 +245,14 @@ class EventController {
 
         //remove event in XML
         Log.d("EVENTC", "deactivateSilentMode() -> id: " + getCurrentEvent().getId() );
-        XC.logCurrentXmlContent();
-        XC.removeEventFromXmlContent( getCurrentEvent().getId() );
-        XC.saveXmlContentToFile();
-        XC.logCurrentXmlContent();
+        if (getCurrentEvent().existEvent()) {
+            XC.logCurrentXmlContent();
+            XC.removeEventFromXmlContent(getCurrentEvent().getId());
+            XC.saveXmlContentToFile();
+            XC.logCurrentXmlContent();
 
-        // delete event in Event-Controlller
-        deleteCurrentEvent();
+            // delete event in Event Controller
+            deleteCurrentEvent();
+        }
     }
 }

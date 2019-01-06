@@ -1,5 +1,6 @@
 package se.mdh.dva232.project.shutup;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.util.Xml;
@@ -102,7 +103,7 @@ class XmlController {
     Boolean isCollisionByNewEvent(String newStartDate, String newStartTime, String newEndDate, String newEndTime) {
         if(debug) { Log.d("XMLC", "isCollisionByNewEvent("+newStartDate+", "+newStartTime+", "+newEndDate+", "+newEndTime+")"); }
         Boolean collision = false;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date newStartDateTime = null;
         Date newEndDateTime = null;
         String startDateString = null;
@@ -200,7 +201,7 @@ class XmlController {
         Integer errorCode = 0;
         Document doc = getDocumentOfXmlContent();
         if (doc != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
             // create compare values from parameters
             Date newStartDateTime = null;
@@ -346,7 +347,7 @@ class XmlController {
                 String id = eEvent.getAttribute("id");                  // id of the event node
                 NodeList nEventList = nRootList.item(i).getChildNodes();    // get childs of the event node
                 String datetimeEnd = nEventList.item(2).getTextContent() + " " + nEventList.item(3).getTextContent();
-                SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 try {
                     Date endDateTime = dateFormater.parse(datetimeEnd);
                     if (new Date().after(endDateTime)) {    // is "endDateTime" after now?

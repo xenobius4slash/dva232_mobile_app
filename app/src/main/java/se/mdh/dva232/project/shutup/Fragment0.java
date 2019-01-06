@@ -1,7 +1,8 @@
 package se.mdh.dva232.project.shutup;
 
-import android.arch.lifecycle.Lifecycle;
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,8 +15,6 @@ import android.widget.Switch;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.sql.Time;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,15 +46,69 @@ public class Fragment0 extends Fragment {
 
         final EventController EC = new EventController( getContext() );
         final SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
-        View rootView;
-
-        Switch switchExtendedMode;
         final SharedPreferences.Editor settingsEditor = settings.edit();
-        if( (Boolean) settings.getAll().get("extended_mode") ) {
-            // extended mode
+        final View rootView;
+
+        if( settings.getBoolean("extended_mode", false)) {
+            /* ###################
+             * ## EXTENDED mode ##
+             * ###################
+             */
             rootView = inflater.inflate(R.layout.fragment_fragment0_extended, container, false);
-            TimePicker timePicker = rootView.findViewById(R.id.f0_extended_timepicker);
+            final TimePicker timePicker = rootView.findViewById(R.id.f0_extended_timepicker);
             timePicker.setIs24HourView(true);
+
+            /*
+             *  Button: deactivate an active silent mode manually
+             */
+            final Button btnDeactivateSilentMode = rootView.findViewById(R.id.f0_extended_btn_deactivate);
+            Log.d("SETTINGS", "silent_mode_active: " + settings.getAll().get("silent_mode_active"));
+            btnDeactivateSilentMode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if ( settings.getBoolean("silent_mode_active", true) ) {
+                        doDeactivateSilentModeByButton();
+                    } else {
+                        Toast.makeText(getContext(), "no silent mode active", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            /*
+             *  Buttons: below the TimePicker
+             */
+            Button btnDurationByTimePicker = rootView.findViewById(R.id.f0_extended_btn_duration);
+            btnDurationByTimePicker.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Integer hour;
+                    Integer minute;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        hour = timePicker.getHour();
+                        minute = timePicker.getMinute();
+                    } else {
+                        hour = timePicker.getCurrentHour();
+                        minute = timePicker.getCurrentMinute();
+                    }
+                    doActivateSilentModeFromNowByButton(EC, hour+":"+minute, "duration");
+                }
+            } );
+            Button btnTimeByTimePicker = rootView.findViewById(R.id.f0_extended_btn_time);
+            btnTimeByTimePicker.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Integer hour;
+                    Integer minute;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        hour = timePicker.getHour();
+                        minute = timePicker.getMinute();
+                    } else {
+                        hour = timePicker.getCurrentHour();
+                        minute = timePicker.getCurrentMinute();
+                    }
+                    doActivateSilentModeFromNowByButton(EC, hour+":"+minute, "time");
+                }
+            });
 
             /*
              *  Switches
@@ -69,9 +122,9 @@ public class Fragment0 extends Fragment {
             switchModeExtendedMode.setChecked(false);
             switchCloseExtendedMode.setChecked(false);
             // set by settings
-            switchVibrationExtendedMode.setChecked( (Boolean) settings.getAll().get("vibration") );
-            switchModeExtendedMode.setChecked( (Boolean) settings.getAll().get("extended_mode") );
-            switchCloseExtendedMode.setChecked( (Boolean) settings.getAll().get("close_after_activation") );
+            switchVibrationExtendedMode.setChecked( settings.getBoolean("vibration", false) );
+            switchModeExtendedMode.setChecked( settings.getBoolean("extended_mode", false) );
+            switchCloseExtendedMode.setChecked( settings.getBoolean("close_after_activation", false) );
             // Listener
             switchVibrationExtendedMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -95,30 +148,30 @@ public class Fragment0 extends Fragment {
                     settingsEditor.apply();
                 }
             });
-        } else {    // normal mode
+        } else {
+            /* #################
+             * ## NORMAL mode ##
+             * #################
+             */
             rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);
+
 
             /*
              *  Button: deactivate an active silent mode manually
              */
-            // enable/disable button for deactivating an active silent mode manually
             final Button btnDeactivateSilentMode = rootView.findViewById(R.id.f0_normal_btn_deactivate);
             Log.d("SETTINGS", "silent_mode_active: " + settings.getAll().get("silent_mode_active"));
-            if ( (Boolean) settings.getAll().get("silent_mode_active") ) {
-                Log.d("SETTINGS", "silent_mode_active -> true -> Button clickable");
-                btnDeactivateSilentMode.setEnabled(true);
-            } else {
-                Log.d("SETTINGS", "silent_mode_active -> false -> Button not clickable");
-                btnDeactivateSilentMode.setEnabled(false);
-            }
             btnDeactivateSilentMode.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SharedPreferences.Editor settingsEditor = settings.edit();
-                    settingsEditor.putBoolean("silent_mode_active", false);
-                    settingsEditor.apply();
+                    if ( settings.getBoolean("silent_mode_active", true) ) {
+                        doDeactivateSilentModeByButton();
+                    } else {
+                        Toast.makeText(getContext(), "no silent mode active", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
+
 
             /*
              *  Buttons: for duration
@@ -127,7 +180,9 @@ public class Fragment0 extends Fragment {
             final Button btnDuration1 = rootView.findViewById(R.id.f0_normal_btn_duration_1);
             btnDuration1.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) { doActivateSilentModeFromNowByButton(EC, btnDuration1.getText().toString()); btnDeactivateSilentMode.setEnabled(true); }
+                public void onClick(View v) {
+                    doActivateSilentModeFromNowByButton(EC, btnDuration1.getText().toString(),"duration");
+                }
             });
 
 
@@ -143,9 +198,9 @@ public class Fragment0 extends Fragment {
             switchModeNormalMode.setChecked(false);
             switchCloseNormalMode.setChecked(false);
             // set by settings
-            switchVibrationNormalMode.setChecked( (Boolean) settings.getAll().get("vibration") );
-            switchModeNormalMode.setChecked( (Boolean) settings.getAll().get("extended_mode") );
-            switchCloseNormalMode.setChecked( (Boolean) settings.getAll().get("close_after_activation") );
+            switchVibrationNormalMode.setChecked( settings.getBoolean("vibration", false) );
+            switchModeNormalMode.setChecked( settings.getBoolean("extended_mode", false) );
+            switchCloseNormalMode.setChecked( settings.getBoolean("close_after_activation", false) );
             // Listener
             switchVibrationNormalMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -204,23 +259,64 @@ public class Fragment0 extends Fragment {
         super.onDestroy();
     }
 
+    private void doDeactivateSilentModeByButton() {
+        SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
+        Toast.makeText(getContext(), "Current silent mode deactivated", Toast.LENGTH_SHORT).show();
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putBoolean("silent_mode_active", false);
+        settingsEditor.apply();
+    }
 
-    private void doActivateSilentModeFromNowByButton(EventController EC, String btnText) {
-        Date now = Calendar.getInstance().getTime();
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
+    /**
+     * prepare the inputs for calling the activate silent mode function regarding the mode (for duration or until time)
+     * @param EC            EventController         Object
+     * @param btnText       String                  Format: "HH:mm"
+     * @param mode          String                  ["duration", "time"]
+     */
+    private void doActivateSilentModeFromNowByButton(EventController EC, String btnText, String mode) {
+        Calendar nowCal = Calendar.getInstance();
+        Date now = nowCal.getTime();
+        Boolean addDay = false;
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfTimeShort = new SimpleDateFormat("HH:mm");
 
         String[] match = btnText.split(":");
         Integer hour = Integer.parseInt(match[0]);
         Integer minute = Integer.parseInt(match[1]);
         Log.d("F0_ASM", "duration: " +hour+":"+minute+ " -> minutes: " + (minute + (60 * hour)) );
 
-        Calendar endCal = Calendar.getInstance();
-        endCal.setTime(now);
-        endCal.add( Calendar.MINUTE, (minute + (60 * hour)) );
-        Date end = endCal.getTime();
+        Date end = null;
+        if (mode.equals("duration")) {
+            Calendar endCal = Calendar.getInstance();
+//          endCal.setTime(now);
+            endCal.add(Calendar.MINUTE, (minute + (60 * hour)));
+            end = endCal.getTime();
+        } else if (mode.equals("time")) {
+            Calendar endCal = Calendar.getInstance();
+            endCal.set(nowCal.get(Calendar.YEAR), nowCal.get(Calendar.MONTH), nowCal.get(Calendar.DAY_OF_MONTH), hour, minute, 0);
+            end = endCal.getTime();
+            if (!end.after(now)) {
+                // selected time by TimePicker is less than the current time, therefore add one day
+                Log.d("F0_ASM", "selected time by TimePicker is less than the current time -> add one day (current end date: "+end.toString()+")");
+                addDay = true;
+                endCal.add(Calendar.DAY_OF_MONTH, 1);
+                end = endCal.getTime();
+            }
+        }
 
-        Log.d("F0_ASM", "start: "+now.toString()+" // end: " + end.toString() );
-        EC.activateSilentModeFromNow(sdfDate.format(now), sdfTime.format(now), sdfDate.format(end), sdfTime.format(end), "Current");
+        if (end != null) {
+            Log.d("F0_ASM", "start: " + now.toString() + " // end: " + end.toString());
+            if (mode.equals("time")) {
+                if (addDay) {
+                    Toast.makeText(getContext(), "Silent until " + sdfTimeShort.format(end) + " next day", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Silent until " + sdfTimeShort.format(end), Toast.LENGTH_SHORT).show();
+                }
+            } else if (mode.equals("duration")){
+                Toast.makeText(getContext(), "Silent until " + sdfTimeShort.format(end), Toast.LENGTH_SHORT).show();
+            }
+            EC.activateSilentModeFromNow(sdfDate.format(now), sdfTime.format(now), sdfDate.format(end), sdfTime.format(end));
+        }
     }
 }
