@@ -31,12 +31,25 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Check_settings","extended_mode: " + settings.getAll().get("extended_mode") );
         Log.d("Check_settings","close_after_activation: " + settings.getAll().get("close_after_activation") );
         Log.d("Check_settings","silent_mode_active: " + settings.getAll().get("silent_mode_active" ));
-        if ((!settings.contains("vibration"))|| (!settings.contains("extended_mode")) || (!settings.contains("close_after_activation")) || (!settings.contains("silent_mode_active"))) {
+        Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
+        Log.d("Check_settings", "first extended_mode_check, should be false: " + settings.getAll().get("extended_mode") );
+        Log.d("Check_settings", "first close_activation_check, should be false: " + settings.getAll().get("close_after_activation") );
+        if ((!settings.contains("vibration"))|| (!settings.contains("extended_mode")) || (!settings.contains("close_after_activation"))||(!settings.contains("btn_duration_1"))
+                ||(!settings.contains("btn_duration_2")) ||(!settings.contains("btn_duration_3")) ||(!settings.contains("btn_duration_4")) ||(!settings.contains("btn_duration_5"))
+                ||(!settings.contains("btn_duration_6")))
+        {
             Log.d("SETTINGS", "no settings detected -> default settings");
             settingsEditor.putBoolean("vibration", false);
             settingsEditor.putBoolean("extended_mode", false);
             settingsEditor.putBoolean("close_after_activation", false);
             settingsEditor.putBoolean("silent_mode_active", false);
+            settingsEditor.putString("btn_duration_1","0:30");
+            settingsEditor.putString("btn_duration_2","1:00");
+            settingsEditor.putString("btn_duration_3","1:30");
+            settingsEditor.putString("btn_duration_4","2:00");
+            settingsEditor.putString("btn_duration_5","2:30");
+            settingsEditor.putString("btn_duration_6","3:00");
+
             settingsEditor.apply();
             /*
             Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
