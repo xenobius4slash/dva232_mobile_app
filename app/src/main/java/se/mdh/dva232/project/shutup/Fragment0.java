@@ -1,40 +1,35 @@
 package se.mdh.dva232.project.shutup;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
-
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 public class Fragment0 extends Fragment {
+
+    private static Boolean debugLifecycle = false;
 
     public Fragment0() {
         // Required empty public constructor
     }
 
     public static Fragment0 newInstance() {
-        Log.d("LIFECYCLE Fragment0", "newInstance()");
+        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "newInstance()"); }
         Fragment0 fragment = new Fragment0();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -43,13 +38,13 @@ public class Fragment0 extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d("LIFECYCLE Fragment0", "onCreate");
+        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onCreate"); }
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("LIFECYCLE Fragment0", "onCreateView(...)");
+        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onCreateView(...)"); }
         // Inflate the layout for this fragment
 
         final EventController EC = new EventController( getContext() );
@@ -57,214 +52,21 @@ public class Fragment0 extends Fragment {
         final SharedPreferences.Editor settingsEditor = settings.edit();
         final Calendar myCalendar = Calendar.getInstance();
         final View rootView;
-
-        Switch switchExtendedMode;
-
+        
         if( settings.getBoolean("extended_mode", false)) {
             /* ###################
              * ## EXTENDED mode ##
              * ###################
              */
-
-
-
-
-        if( (Boolean) settings.getAll().get("extended_mode") ) {
-            // extended mode
             rootView = inflater.inflate(R.layout.fragment_fragment0_extended, container, false);
-            final Button f0_button_1_extended = rootView.findViewById(R.id.f0_extended_btn_duration_1);
-            final Button f0_button_2_extended = rootView.findViewById(R.id.f0_extended_btn_duration_2);
-            final Button f0_button_3_extended = rootView.findViewById(R.id.f0_extended_btn_duration_3);
-            final Button f0_button_4_extended = rootView.findViewById(R.id.f0_extended_btn_duration_4);
-            final Button f0_button_5_extended = rootView.findViewById(R.id.f0_extended_btn_duration_5);
-            final Button f0_button_6_extended = rootView.findViewById(R.id.f0_extended_btn_duration_6);
-
-            //initiallize buttons
-            f0_button_1_extended.setText((CharSequence) settings.getAll().get("btn_duration_1"));
-            f0_button_2_extended.setText((CharSequence) settings.getAll().get("btn_duration_2"));
-            f0_button_3_extended.setText((CharSequence) settings.getAll().get("btn_duration_3"));
-            f0_button_4_extended.setText((CharSequence) settings.getAll().get("btn_duration_4"));
-            f0_button_5_extended.setText((CharSequence) settings.getAll().get("btn_duration_5"));
-            f0_button_6_extended.setText((CharSequence) settings.getAll().get("btn_duration_6"));
 
 
-            //show the time set by the user and show - for f0_button_1_extended.
-            final TimePickerDialog.OnTimeSetListener dialog = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    Log.d("check_longclick","we are printing the value to the button");
-                    f0_button_1_extended.setText(hourOfDay+":"+minute);
-                    settingsEditor.putString("btn_duration_1",hourOfDay+":"+minute);
-                    settingsEditor.apply();
-                }
-            };
-
-            //show the dialog to the user - for f0_button_1
-            f0_button_1_extended.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("check_longclick","we are inside long click listner");
-                    //new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    //createTimeDialog();
-                    new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    return false;
-                }
-
-
-
-            });
-
-            //show the time set by the user and show - for f0_button_2_extended
-            final TimePickerDialog.OnTimeSetListener dialog2 = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    Log.d("check_longclick","we are printing the value to the button");
-                    f0_button_2_extended.setText(hourOfDay+":"+minute);
-                    settingsEditor.putString("btn_duration_2",hourOfDay+":"+minute);
-                    settingsEditor.apply();
-                }
-            };
-
-            //show the dialog to the user - for button 2
-            f0_button_2_extended.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("check_longclick","we are inside long click listner");
-                    //new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    //createTimeDialog();
-                    new TimePickerDialog(getContext(),dialog2,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    return false;
-                }
-
-
-
-            });
-
-            //show the time set by the user and show - for f0_button_3_extended.
-            final TimePickerDialog.OnTimeSetListener dialog3 = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    Log.d("check_longclick","we are printing the value to the button");
-                    f0_button_3_extended.setText(hourOfDay+":"+minute);
-                    settingsEditor.putString("btn_duration_3",hourOfDay+":"+minute);
-                    settingsEditor.apply();
-                }
-            };
-
-            //show the dialog to the user - for f0_button_3
-            f0_button_3_extended.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("check_longclick","we are inside long click listner");
-                    //new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    //createTimeDialog();
-                    new TimePickerDialog(getContext(),dialog3,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    return false;
-                }
-
-
-
-            });
-
-            //show the time set by the user and show - for f0_button_4_extended.
-            final TimePickerDialog.OnTimeSetListener dialog4 = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    Log.d("check_longclick","we are printing the value to the button");
-                    f0_button_4_extended.setText(hourOfDay+":"+minute);
-                    settingsEditor.putString("btn_duration_4",hourOfDay+":"+minute);
-                    settingsEditor.apply();
-                }
-            };
-
-            //show the dialog to the user - for f0_button_4
-            f0_button_4_extended.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("check_longclick","we are inside long click listner");
-                    //new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    //createTimeDialog();
-                    new TimePickerDialog(getContext(),dialog4,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    return false;
-                }
-
-
-
-            });
-
-            //show the time set by the user and show - for f0_button_5_extended.
-            final TimePickerDialog.OnTimeSetListener dialog5 = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    Log.d("check_longclick","we are printing the value to the button");
-                    f0_button_5_extended.setText(hourOfDay+":"+minute);
-                    settingsEditor.putString("btn_duration_5",hourOfDay+":"+minute);
-                    settingsEditor.apply();
-                }
-            };
-
-            //show the dialog to the user - for f0_button_5
-            f0_button_5_extended.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("check_longclick","we are inside long click listner");
-                    //new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    //createTimeDialog();
-                    new TimePickerDialog(getContext(),dialog5,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    return false;
-                }
-
-
-
-            });
-
-            //show the time set by the user and show - for f0_button_6_extended.
-            final TimePickerDialog.OnTimeSetListener dialog6 = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    Log.d("check_longclick","we are printing the value to the button");
-                    f0_button_6_extended.setText(hourOfDay+":"+minute);
-                    settingsEditor.putString("btn_duration_6",hourOfDay+":"+minute);
-                    settingsEditor.apply();
-                }
-            };
-
-            //show the dialog to the user - for f0_button_6
-            f0_button_6_extended.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("check_longclick","we are inside long click listner");
-                    //new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    //createTimeDialog();
-                    new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    return false;
-                }
-
-
-
-            });
-
-
-
-            TimePicker timePicker = rootView.findViewById(R.id.f0_extended_timepicker);
+            /*
+             *  TimePicker
+             */
             final TimePicker timePicker = rootView.findViewById(R.id.f0_extended_timepicker);
             timePicker.setIs24HourView(true);
 
-            /*
-             *  Button: deactivate an active silent mode manually
-             */
-            final Button btnDeactivateSilentMode = rootView.findViewById(R.id.f0_extended_btn_deactivate);
-            Log.d("SETTINGS", "silent_mode_active: " + settings.getAll().get("silent_mode_active"));
-            btnDeactivateSilentMode.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if ( settings.getBoolean("silent_mode_active", true) ) {
-                        doDeactivateSilentModeByButton();
-                    } else {
-                        Toast.makeText(getContext(), "no silent mode active", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
 
             /*
              *  Buttons: below the TimePicker
@@ -302,6 +104,144 @@ public class Fragment0 extends Fragment {
                 }
             });
 
+
+            /*
+             *  Buttons: silent for duration
+             */
+            final Button btnDuration1 = rootView.findViewById(R.id.f0_extended_btn_duration_1);
+            final Button btnDuration2 = rootView.findViewById(R.id.f0_extended_btn_duration_2);
+            final Button btnDuration3 = rootView.findViewById(R.id.f0_extended_btn_duration_3);
+            final Button btnDuration4 = rootView.findViewById(R.id.f0_extended_btn_duration_4);
+            final Button btnDuration5 = rootView.findViewById(R.id.f0_extended_btn_duration_5);
+            final Button btnDuration6 = rootView.findViewById(R.id.f0_extended_btn_duration_6);
+
+            // set value for buttons from the settings
+            btnDuration1.setText( settings.getString("btn_duration_1", "0:30") );
+            btnDuration2.setText( settings.getString("btn_duration_2", "1:00") );
+            btnDuration3.setText( settings.getString("btn_duration_3", "1:30") );
+            btnDuration4.setText( settings.getString("btn_duration_4", "2:00") );
+            btnDuration5.setText( settings.getString("btn_duration_5", "2:30") );
+            btnDuration6.setText( settings.getString("btn_duration_6", "3:00") );
+
+            // Button for duration 1 -> click: activate the silent mode & if activated move app to background
+            btnDuration1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doActivateSilentModeFromNowByButton(EC, btnDuration1.getText().toString(),"duration");
+                    goToBackgroundIfIsActivated();
+                }
+            });
+            // Button for duration 1 -> hold: show TimePickerDialog
+            btnDuration1.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openTimePickerDialog(btnDuration1, 1);
+                    return false;
+                }
+            });
+
+            // Button for duration 2 -> click: activate the silent mode & if activated move app to background
+            btnDuration2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doActivateSilentModeFromNowByButton(EC, btnDuration2.getText().toString(),"duration");
+                    goToBackgroundIfIsActivated();
+                }
+            });
+            // Button for duration 2 -> hold: show TimePickerDialog
+            btnDuration2.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openTimePickerDialog(btnDuration2, 2);
+                    return false;
+                }
+            });
+
+            // Button for duration 3 -> click: activate the silent mode & if activated move app to background
+            btnDuration3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doActivateSilentModeFromNowByButton(EC, btnDuration3.getText().toString(),"duration");
+                    goToBackgroundIfIsActivated();
+                }
+            });
+            // Button for duration 3 -> hold: show TimePickerDialog
+            btnDuration3.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openTimePickerDialog(btnDuration3, 3);
+                    return false;
+                }
+            });
+
+            // Button for duration 4 -> click: activate the silent mode & if activated move app to background
+            btnDuration4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doActivateSilentModeFromNowByButton(EC, btnDuration4.getText().toString(),"duration");
+                    goToBackgroundIfIsActivated();
+                }
+            });
+            // Button for duration 4 -> hold: show TimePickerDialog
+            btnDuration4.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openTimePickerDialog(btnDuration4, 4);
+                    return false;
+                }
+            });
+
+            // Button for duration 5 -> click: activate the silent mode & if activated move app to background
+            btnDuration5.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doActivateSilentModeFromNowByButton(EC, btnDuration5.getText().toString(),"duration");
+                    goToBackgroundIfIsActivated();
+                }
+            });
+            // Button for duration 5 -> hold: show TimePickerDialog
+            btnDuration5.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openTimePickerDialog(btnDuration5, 5);
+                    return false;
+                }
+            });
+
+            // Button for duration 6 -> click: activate the silent mode & if activated move app to background
+            btnDuration6.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doActivateSilentModeFromNowByButton(EC, btnDuration6.getText().toString(),"duration");
+                    goToBackgroundIfIsActivated();
+                }
+            });
+            // Button for duration 6 -> hold: show TimePickerDialog
+            btnDuration6.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openTimePickerDialog(btnDuration6, 6);
+                    return false;
+                }
+            });
+
+
+            /*
+             *  Button: deactivate an active silent mode manually
+             */
+            final Button btnDeactivateSilentMode = rootView.findViewById(R.id.f0_extended_btn_deactivate);
+            btnDeactivateSilentMode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if ( settings.getBoolean("silent_mode_active", true) ) {
+                        doDeactivateSilentModeByButton();
+                    } else {
+                        Toast.makeText(getContext(), "no silent mode active", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+
             /*
              *  Switches
              */
@@ -337,14 +277,8 @@ public class Fragment0 extends Fragment {
             switchCloseExtendedMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Log.d("SETTINGS", "close after activation mode");
                     settingsEditor.putBoolean("close_after_activation",isChecked);
                     settingsEditor.apply();
-                    //moveTaskToBack(true);
-                    //finishAndRemoveTask();
-                    getActivity().moveTaskToBack(true);
-                    System.exit(1);
-
                 }
             });
         } else {
@@ -354,213 +288,126 @@ public class Fragment0 extends Fragment {
              */
             rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);
 
-            final Button f0_button_1 = rootView.findViewById(R.id.f0_normal_btn_duration_1);
-            final Button f0_button_2 = rootView.findViewById(R.id.f0_normal_btn_duration_2);
-            final Button f0_button_3 = rootView.findViewById(R.id.f0_normal_btn_duration_3);
-            final Button f0_button_4 = rootView.findViewById(R.id.f0_normal_btn_duration_4);
-            final Button f0_button_5 = rootView.findViewById(R.id.f0_normal_btn_duration_5);
-            final Button f0_button_6 = rootView.findViewById(R.id.f0_normal_btn_duration_6);
-
-            //initiallize buttons
-            f0_button_1.setText((CharSequence) settings.getAll().get("btn_duration_1"));
-            f0_button_2.setText((CharSequence) settings.getAll().get("btn_duration_2"));
-            f0_button_3.setText((CharSequence) settings.getAll().get("btn_duration_3"));
-            f0_button_4.setText((CharSequence) settings.getAll().get("btn_duration_4"));
-            f0_button_5.setText((CharSequence) settings.getAll().get("btn_duration_5"));
-            f0_button_6.setText((CharSequence) settings.getAll().get("btn_duration_6"));
-
-
-
-            f0_button_1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if( (Boolean) settings.getAll().get("close_after_activation") )
-
-                        getActivity().moveTaskToBack(true);
-                }
-            });
-            //show the time set by the user and show - for f0_button_1.
-            final TimePickerDialog.OnTimeSetListener dialog1 = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    Log.d("check_longclick","we are printing the value to the button");
-                    f0_button_1.setText(hourOfDay+":"+minute);
-                    settingsEditor.putString("btn_duration_1",hourOfDay+":"+minute);
-                    settingsEditor.apply();
-                }
-            };
-
-            //show the dialog to the user - for f0_button_1
-            f0_button_1.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("check_longclick","we are inside long click listner");
-                    //new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    //createTimeDialog();
-                    new TimePickerDialog(getContext(),dialog1,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    return false;
-                }
-
-
-
-            });
-
-            //show the time set by the user and show - for f0_button_2.
-            final TimePickerDialog.OnTimeSetListener dialog2 = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    Log.d("check_longclick","we are printing the value to the button");
-                    f0_button_2.setText(hourOfDay+":"+minute);
-                    settingsEditor.putString("btn_duration_2",hourOfDay+":"+minute);
-                    settingsEditor.apply();
-                }
-            };
-
-            //show the dialog to the user - for f0_button_2
-            f0_button_2.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("check_longclick","we are inside long click listner");
-                    //new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    //createTimeDialog();
-                    new TimePickerDialog(getContext(),dialog2,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    return false;
-                }
-
-            });
-
-            //show the time set by the user and show - for f0_button_3.
-            final TimePickerDialog.OnTimeSetListener dialog3 = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    Log.d("check_longclick","we are printing the value to the button");
-                    f0_button_3.setText(hourOfDay+":"+minute);
-                    settingsEditor.putString("btn_duration_3",hourOfDay+":"+minute);
-                    settingsEditor.apply();
-                }
-            };
-
-            //show the dialog to the user - for f0_button_3
-            f0_button_3.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("check_longclick","we are inside long click listner");
-                    //new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    //createTimeDialog();
-                    new TimePickerDialog(getContext(),dialog3,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    return false;
-                }
-
-            });
-
-            //show the time set by the user and show - for f0_button_4.
-            final TimePickerDialog.OnTimeSetListener dialog4 = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    Log.d("check_longclick","we are printing the value to the button");
-                    f0_button_4.setText(hourOfDay+":"+minute);
-                    settingsEditor.putString("btn_duration_4",hourOfDay+":"+minute);
-                    settingsEditor.apply();
-                }
-            };
-
-            //show the dialog to the user - for f0_button_4
-            f0_button_4.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("check_longclick","we are inside long click listner");
-                    //new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    //createTimeDialog();
-                    new TimePickerDialog(getContext(),dialog4,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    return false;
-                }
-
-            });
-
-            //show the time set by the user and show - for f0_button_5.
-            final TimePickerDialog.OnTimeSetListener dialog5 = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    Log.d("check_longclick","we are printing the value to the button");
-                    f0_button_5.setText(hourOfDay+":"+minute);
-                    settingsEditor.putString("btn_duration_5",hourOfDay+":"+minute);
-                    settingsEditor.apply();
-                }
-            };
-
-            //show the dialog to the user - for f0_button_5
-            f0_button_5.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("check_longclick","we are inside long click listner");
-                    //new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    //createTimeDialog();
-                    new TimePickerDialog(getContext(),dialog5,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    return false;
-                }
-
-
-
-            });
-
-            //show the time set by the user and show - for f0_button_6.
-            final TimePickerDialog.OnTimeSetListener dialog6 = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    Log.d("check_longclick","we are printing the value to the button");
-                    f0_button_6.setText(hourOfDay+":"+minute);
-                    settingsEditor.putString("btn_duration_6",hourOfDay+":"+minute);
-                    settingsEditor.apply();
-                }
-            };
-
-            //show the dialog to the user - for f0_button_6
-            f0_button_6.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d("check_longclick","we are inside long click listner");
-                    //new TimePickerDialog(getContext(),dialog,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    //createTimeDialog();
-                    new TimePickerDialog(getContext(),dialog6,myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),DateFormat.is24HourFormat(getContext())).show();
-                    return false;
-                }
-
-
-
-            });
-
-
-
 
             /*
-             *  Button: deactivate an active silent mode manually
+             *  Buttons: silent for duration
              */
-            final Button btnDeactivateSilentMode = rootView.findViewById(R.id.f0_normal_btn_deactivate);
-            Log.d("SETTINGS", "silent_mode_active: " + settings.getAll().get("silent_mode_active"));
-            btnDeactivateSilentMode.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if ( settings.getBoolean("silent_mode_active", true) ) {
-                        doDeactivateSilentModeByButton();
-                    } else {
-                        Toast.makeText(getContext(), "no silent mode active", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-
-            /*
-             *  Buttons: for duration
-             */
-            // activate silent mode by duration button & enable button deactivate running silent mode
             final Button btnDuration1 = rootView.findViewById(R.id.f0_normal_btn_duration_1);
+            final Button btnDuration2 = rootView.findViewById(R.id.f0_normal_btn_duration_2);
+            final Button btnDuration3 = rootView.findViewById(R.id.f0_normal_btn_duration_3);
+            final Button btnDuration4 = rootView.findViewById(R.id.f0_normal_btn_duration_4);
+            final Button btnDuration5 = rootView.findViewById(R.id.f0_normal_btn_duration_5);
+            final Button btnDuration6 = rootView.findViewById(R.id.f0_normal_btn_duration_6);
+
+            // set value for buttons from the settings
+            btnDuration1.setText( settings.getString("btn_duration_1", "0:30") );
+            btnDuration2.setText( settings.getString("btn_duration_2", "1:00") );
+            btnDuration3.setText( settings.getString("btn_duration_3", "1:30") );
+            btnDuration4.setText( settings.getString("btn_duration_4", "2:00") );
+            btnDuration5.setText( settings.getString("btn_duration_5", "2:30") );
+            btnDuration6.setText( settings.getString("btn_duration_6", "3:00") );
+
+            // Button for duration 1 -> click: activate the silent mode & if activated move app to background
             btnDuration1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     doActivateSilentModeFromNowByButton(EC, btnDuration1.getText().toString(),"duration");
+                    goToBackgroundIfIsActivated();
+                }
+            });
+            // Button for duration 1 -> hold: show TimePickerDialog
+            btnDuration1.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openTimePickerDialog(btnDuration1, 1);
+                    return false;
                 }
             });
 
+            // Button for duration 2 -> click: activate the silent mode & if activated move app to background
+            btnDuration2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doActivateSilentModeFromNowByButton(EC, btnDuration2.getText().toString(),"duration");
+                    goToBackgroundIfIsActivated();
+                }
+            });
+            // Button for duration 2 -> hold: show TimePickerDialog
+            btnDuration2.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openTimePickerDialog(btnDuration2, 2);
+                    return false;
+                }
+            });
+
+            // Button for duration 3 -> click: activate the silent mode & if activated move app to background
+            btnDuration3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doActivateSilentModeFromNowByButton(EC, btnDuration3.getText().toString(),"duration");
+                    goToBackgroundIfIsActivated();
+                }
+            });
+            // Button for duration 3 -> hold: show TimePickerDialog
+            btnDuration3.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openTimePickerDialog(btnDuration3, 3);
+                    return false;
+                }
+            });
+
+            // Button for duration 4 -> click: activate the silent mode & if activated move app to background
+            btnDuration4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doActivateSilentModeFromNowByButton(EC, btnDuration4.getText().toString(),"duration");
+                    goToBackgroundIfIsActivated();
+                }
+            });
+            // Button for duration 4 -> hold: show TimePickerDialog
+            btnDuration4.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openTimePickerDialog(btnDuration4, 4);
+                    return false;
+                }
+            });
+
+            // Button for duration 5 -> click: activate the silent mode & if activated move app to background
+            btnDuration5.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doActivateSilentModeFromNowByButton(EC, btnDuration5.getText().toString(),"duration");
+                    goToBackgroundIfIsActivated();
+                }
+            });
+            // Button for duration 5 -> hold: show TimePickerDialog
+            btnDuration5.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openTimePickerDialog(btnDuration5, 5);
+                    return false;
+                }
+            });
+
+            // Button for duration 6 -> click: activate the silent mode & if activated move app to background
+            btnDuration6.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doActivateSilentModeFromNowByButton(EC, btnDuration6.getText().toString(),"duration");
+                    goToBackgroundIfIsActivated();
+                }
+            });
+            // Button for duration 6 -> hold: show TimePickerDialog
+            btnDuration6.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openTimePickerDialog(btnDuration6, 6);
+                    return false;
+                }
+            });
 
             /*
              *  Switches
@@ -607,34 +454,79 @@ public class Fragment0 extends Fragment {
 
     @Override
     public void onStart() {
-        Log.d("LIFECYCLE Fragment0", "onStart");
+        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onStart"); }
         super.onStart();
     }
 
     @Override
     public void onResume() {
-        Log.d("LIFECYCLE Fragment0", "onResume");
+        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onResume"); }
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        Log.d("LIFECYCLE Fragment0", "onPause");
+        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onPause"); }
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        Log.d("LIFECYCLE Fragment0", "onStop");
+        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onStop"); }
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Log.d("LIFECYCLE Fragment0", "onDestroy");
+        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onDestroy"); }
         super.onDestroy();
     }
 
+    /**
+     * open a dialog with a TimePicker
+     * @param btnDuration       Button      Object
+     * @param btnNumber         Integer     Button number
+     */
+    private void openTimePickerDialog(final Button btnDuration, final Integer btnNumber) {
+        String[] match = btnDuration.getText().toString().split(":");
+        new TimePickerDialog(
+                getContext(),                                   // Context of the TimePickerDialog
+                new TimePickerDialog.OnTimeSetListener() {      // Listener of the TimePickerDialog
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        if (hourOfDay == 0 && minute == 0){
+                            Toast.makeText(getContext(), "Select a time greater than 0:00",Toast.LENGTH_SHORT).show();
+                        } else {
+                            String minuteString;
+                            if (minute < 10) {
+                                minuteString = "0" + minute;
+                            } else {
+                                minuteString = String.valueOf(minute);
+                            }
+                            btnDuration.setText(hourOfDay+":"+minuteString);
+                            SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
+                            SharedPreferences.Editor settingsEditor = settings.edit();
+                            switch(btnNumber) {
+                                case 1: settingsEditor.putString("btn_duration_1", hourOfDay + ":" + minuteString); break;
+                                case 2: settingsEditor.putString("btn_duration_2", hourOfDay + ":" + minuteString); break;
+                                case 3: settingsEditor.putString("btn_duration_3", hourOfDay + ":" + minuteString); break;
+                                case 4: settingsEditor.putString("btn_duration_4", hourOfDay + ":" + minuteString); break;
+                                case 5: settingsEditor.putString("btn_duration_5", hourOfDay + ":" + minuteString); break;
+                                case 6: settingsEditor.putString("btn_duration_6", hourOfDay + ":" + minuteString); break;
+                            }
+                            settingsEditor.apply();
+                        }
+                    }
+                },
+                Integer.parseInt(match[0]),     // Hour of the TimePickerDialog
+                Integer.parseInt(match[1]),     // Minute of the TimePickerDialog
+                true               // 24 hours of the TimePickerDialog
+        ).show();
+    }
+
+    /**
+     * Deactivate an active silent mode
+     */
     private void doDeactivateSilentModeByButton() {
         SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
         Toast.makeText(getContext(), "Current silent mode deactivated", Toast.LENGTH_SHORT).show();
@@ -644,55 +536,67 @@ public class Fragment0 extends Fragment {
     }
 
     /**
+     * The app move to background if activated
+     */
+    private void goToBackgroundIfIsActivated() {
+        SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
+        if( (Boolean) settings.getAll().get("close_after_activation") ) {
+            getActivity().moveTaskToBack(true);
+        }
+    }
+
+    /**
      * prepare the inputs for calling the activate silent mode function regarding the mode (for duration or until time)
      * @param EC            EventController         Object
      * @param btnText       String                  Format: "HH:mm"
      * @param mode          String                  ["duration", "time"]
      */
     private void doActivateSilentModeFromNowByButton(EventController EC, String btnText, String mode) {
-        Calendar nowCal = Calendar.getInstance();
-        Date now = nowCal.getTime();
-        Boolean addDay = false;
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfTimeShort = new SimpleDateFormat("HH:mm");
+        SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
+        if( settings.getBoolean("silent_mode_active", true) ) {
+            Toast.makeText(getContext(), "Currently a silent mode is active", Toast.LENGTH_SHORT).show();
+        } else {
+            Calendar nowCal = Calendar.getInstance();
+            Date now = nowCal.getTime();
+            Boolean addDay = false;
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfTimeShort = new SimpleDateFormat("HH:mm");
 
-        String[] match = btnText.split(":");
-        Integer hour = Integer.parseInt(match[0]);
-        Integer minute = Integer.parseInt(match[1]);
-        Log.d("F0_ASM", "duration: " +hour+":"+minute+ " -> minutes: " + (minute + (60 * hour)) );
+            String[] match = btnText.split(":");
+            Integer hour = Integer.parseInt(match[0]);
+            Integer minute = Integer.parseInt(match[1]);
 
-        Date end = null;
-        if (mode.equals("duration")) {
-            Calendar endCal = Calendar.getInstance();
+            Date end = null;
+            if (mode.equals("duration")) {
+                Calendar endCal = Calendar.getInstance();
 //          endCal.setTime(now);
-            endCal.add(Calendar.MINUTE, (minute + (60 * hour)));
-            end = endCal.getTime();
-        } else if (mode.equals("time")) {
-            Calendar endCal = Calendar.getInstance();
-            endCal.set(nowCal.get(Calendar.YEAR), nowCal.get(Calendar.MONTH), nowCal.get(Calendar.DAY_OF_MONTH), hour, minute, 0);
-            end = endCal.getTime();
-            if (!end.after(now)) {
-                // selected time by TimePicker is less than the current time, therefore add one day
-                Log.d("F0_ASM", "selected time by TimePicker is less than the current time -> add one day (current end date: "+end.toString()+")");
-                addDay = true;
-                endCal.add(Calendar.DAY_OF_MONTH, 1);
+                endCal.add(Calendar.MINUTE, (minute + (60 * hour)));
                 end = endCal.getTime();
+            } else if (mode.equals("time")) {
+                Calendar endCal = Calendar.getInstance();
+                endCal.set(nowCal.get(Calendar.YEAR), nowCal.get(Calendar.MONTH), nowCal.get(Calendar.DAY_OF_MONTH), hour, minute, 0);
+                end = endCal.getTime();
+                if (!end.after(now)) {
+                    // selected time by TimePicker is less than the current time, therefore add one day
+                    addDay = true;
+                    endCal.add(Calendar.DAY_OF_MONTH, 1);
+                    end = endCal.getTime();
+                }
             }
-        }
 
-        if (end != null) {
-            Log.d("F0_ASM", "start: " + now.toString() + " // end: " + end.toString());
-            if (mode.equals("time")) {
-                if (addDay) {
-                    Toast.makeText(getContext(), "Silent until " + sdfTimeShort.format(end) + " next day", Toast.LENGTH_SHORT).show();
-                } else {
+            if (end != null) {
+                if (mode.equals("time")) {
+                    if (addDay) {
+                        Toast.makeText(getContext(), "Silent until " + sdfTimeShort.format(end) + " next day", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "Silent until " + sdfTimeShort.format(end), Toast.LENGTH_SHORT).show();
+                    }
+                } else if (mode.equals("duration")) {
                     Toast.makeText(getContext(), "Silent until " + sdfTimeShort.format(end), Toast.LENGTH_SHORT).show();
                 }
-            } else if (mode.equals("duration")){
-                Toast.makeText(getContext(), "Silent until " + sdfTimeShort.format(end), Toast.LENGTH_SHORT).show();
+                EC.activateSilentModeFromNow(sdfDate.format(now), sdfTime.format(now), sdfDate.format(end), sdfTime.format(end));
             }
-            EC.activateSilentModeFromNow(sdfDate.format(now), sdfTime.format(now), sdfDate.format(end), sdfTime.format(end));
         }
     }
 }

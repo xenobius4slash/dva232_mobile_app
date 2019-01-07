@@ -15,11 +15,13 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static Boolean debugLifecycle = false;
+    private static Boolean debugSettings = false;
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("LIFECYCLE_Activity", "onCreate");
+        if (debugLifecycle) { Log.d("LIFECYCLE_Activity", "onCreate"); }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -27,18 +29,11 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor settingsEditor = settings.edit();
 
         //if there is no settings put default to false
-        Log.d("Check_settings","vibration: " + settings.getAll().get("vibration") );
-        Log.d("Check_settings","extended_mode: " + settings.getAll().get("extended_mode") );
-        Log.d("Check_settings","close_after_activation: " + settings.getAll().get("close_after_activation") );
-        Log.d("Check_settings","silent_mode_active: " + settings.getAll().get("silent_mode_active" ));
-        Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
-        Log.d("Check_settings", "first extended_mode_check, should be false: " + settings.getAll().get("extended_mode") );
-        Log.d("Check_settings", "first close_activation_check, should be false: " + settings.getAll().get("close_after_activation") );
-        if ((!settings.contains("vibration"))|| (!settings.contains("extended_mode")) || (!settings.contains("close_after_activation"))||(!settings.contains("btn_duration_1"))
-                ||(!settings.contains("btn_duration_2")) ||(!settings.contains("btn_duration_3")) ||(!settings.contains("btn_duration_4")) ||(!settings.contains("btn_duration_5"))
-                ||(!settings.contains("btn_duration_6")))
+        if ( !settings.contains("vibration") || !settings.contains("extended_mode") || !settings.contains("close_after_activation") || !settings.contains("btn_duration_1")
+                || !settings.contains("btn_duration_2") || !settings.contains("btn_duration_3") || !settings.contains("btn_duration_4") || !settings.contains("btn_duration_5")
+                || !settings.contains("btn_duration_6") )
         {
-            Log.d("SETTINGS", "no settings detected -> default settings");
+            if (debugSettings) { Log.d("SETTINGS", "no settings detected -> load default values"); }
             settingsEditor.putBoolean("vibration", false);
             settingsEditor.putBoolean("extended_mode", false);
             settingsEditor.putBoolean("close_after_activation", false);
@@ -49,25 +44,18 @@ public class MainActivity extends AppCompatActivity {
             settingsEditor.putString("btn_duration_4","2:00");
             settingsEditor.putString("btn_duration_5","2:30");
             settingsEditor.putString("btn_duration_6","3:00");
-
             settingsEditor.apply();
-            /*
-            Log.d("Check_settings", "first vibration_check, should be false: " + settings.getAll().get("vibration") );
-            Log.d("Check_settings", "first extended_mode_check, should be false: " + settings.getAll().get("extended_mode") );
-            Log.d("Check_settings", "first close_activation_check, should be false: " + settings.getAll().get("close_after_activation") );
-            */
         } else {
-            Log.d("SETTINGS", "settings detected");
+            if (debugSettings) { Log.d("SETTINGS", "settings detected"); }
         }
 
-
-        /*
-         * Toolbar with app-name and menu
-         */
-        /*
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        */
+        if (debugSettings) {
+            Log.d("SETTINGS","vibration: " + settings.getAll().get("vibration") );
+            Log.d("SETTINGS","extended_mode: " + settings.getAll().get("extended_mode") );
+            Log.d("SETTINGS","close_after_activation: " + settings.getAll().get("close_after_activation") );
+            Log.d("SETTINGS","silent_mode_active: " + settings.getAll().get("silent_mode_active" ));
+            Log.d("SETTINGS","btn_duration_1: " + settings.getAll().get("btn_duration_1") );
+        }
 
         /*
          * Frame container
@@ -82,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabs);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
+        // hide tabs if orientation is landscape
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             tabLayout.setVisibility(View.GONE);
         }
@@ -92,48 +80,47 @@ public class MainActivity extends AppCompatActivity {
          */
         TabLayout tabLayoutTab = findViewById(R.id.tab_layout_dot);
         tabLayoutTab.setupWithViewPager(mViewPager, true);
-
     }
 
     @Override
     protected void onStart() {
-        Log.d("LIFECYCLE_Activity", "onStart");
+        if (debugLifecycle) { Log.d("LIFECYCLE_Activity", "onStart"); }
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.d("LIFECYCLE_Activity", "onResume");
+        if (debugLifecycle) { Log.d("LIFECYCLE_Activity", "onResume"); }
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.d("LIFECYCLE_Activity", "onPause");
+        if (debugLifecycle) { Log.d("LIFECYCLE_Activity", "onPause"); }
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        Log.d("LIFECYCLE_Actvity", "onStop");
+        if (debugLifecycle) { Log.d("LIFECYCLE_Actvity", "onStop"); }
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.d("LIFECYCLE_Activity", "onDestroy");
+        if (debugLifecycle) { Log.d("LIFECYCLE_Activity", "onDestroy"); }
         super.onDestroy();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.d("SAVE_Activity","onSaveInstanceState");
+        if (debugLifecycle) { Log.d("LIFECYCLE_Activity","onSaveInstanceState"); }
         super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.d("SAVE_Activity","onRestoreInstanceState");
+        if (debugLifecycle) { Log.d("LIFECYCLE_Activity","onRestoreInstanceState"); }
         super.onRestoreInstanceState(savedInstanceState);
     }
 
