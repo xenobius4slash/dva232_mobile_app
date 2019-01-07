@@ -409,6 +409,23 @@ public class Fragment0 extends Fragment {
                 }
             });
 
+
+            /*
+             *  Button: deactivate an active silent mode manually
+             */
+            final Button btnDeactivateSilentMode = rootView.findViewById(R.id.f0_normal_btn_deactivate);
+            btnDeactivateSilentMode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if ( settings.getBoolean("silent_mode_active", true) ) {
+                        doDeactivateSilentModeByButton();
+                    } else {
+                        Toast.makeText(getContext(), "no silent mode active", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+
             /*
              *  Switches
              */
@@ -492,6 +509,7 @@ public class Fragment0 extends Fragment {
         new TimePickerDialog(
                 getContext(),                                   // Context of the TimePickerDialog
                 new TimePickerDialog.OnTimeSetListener() {      // Listener of the TimePickerDialog
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         if (hourOfDay == 0 && minute == 0){
@@ -540,7 +558,7 @@ public class Fragment0 extends Fragment {
      */
     private void goToBackgroundIfIsActivated() {
         SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
-        if( (Boolean) settings.getAll().get("close_after_activation") ) {
+        if( settings.getBoolean("close_after_activation", false) ) {
             getActivity().moveTaskToBack(true);
         }
     }

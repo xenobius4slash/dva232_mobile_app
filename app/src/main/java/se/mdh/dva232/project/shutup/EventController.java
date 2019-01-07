@@ -134,8 +134,8 @@ class EventController {
                 XC.createXmlContentSkeleton();
             } else {
                 Log.d("EVENTC", "XML file exist and is loaded");
-//                XC.resetXmlContent();           // TODO: remove
-//                XC.createXmlContentSkeleton();  // TODO: remove
+                XC.resetXmlContent();           // TODO: remove
+                XC.createXmlContentSkeleton();  // TODO: remove
             }
             XC.logCurrentXmlContent();
             String eventId = newStartDate.concat("_").concat(newStartTime.replace(":", ""));
