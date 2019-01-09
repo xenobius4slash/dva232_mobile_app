@@ -41,6 +41,16 @@ class AudioController {
     }
 
     /**
+     * Get the current sound mode of the device
+     * @return      Integer         [0: silent without vibration; 1: silent with vibration; 2: normal sound mode]
+     */
+    Integer getCurrentSoundMode() {
+        if(debug) { Log.d("AUDIOC","getCurrentSoundMode()"); }
+        AudioManager AM = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        return AM.getRingerMode();
+    }
+
+    /**
      * Set the silent mode.
      */
     private void setSilentMode() {

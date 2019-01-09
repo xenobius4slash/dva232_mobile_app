@@ -39,9 +39,29 @@ import javax.xml.transform.stream.StreamResult;
 
 
 class Collision {
-    private Boolean collision = false;
-    private Integer collisionCode = 0;
-    private String collisionMessage = null;
+    private Boolean collision;
+    private Integer collisionCode;
+    private String collisionMessage;
+    private String collisionEventId;
+
+    /**
+     * Constructor
+     */
+    Collision() {
+        collision = false;
+        collisionCode = null;
+        collisionMessage = null;
+        collisionEventId = null;
+    }
+
+    Boolean getCollision() { return collision; }
+    void setCollision(Boolean value) { collision = value; }
+    Integer getCollisionCode() { return collisionCode; }
+    void setCollisionCode(Integer value) { collisionCode = value; }
+    String getCollisionMessage() { return collisionMessage; }
+    void setCollisionMessage(String value) { collisionMessage = value; }
+    String getCollisionEventId() { return collisionEventId; }
+    void setCollisionEventId(String value) { collisionEventId = value; }
 }
 
 /**
@@ -53,6 +73,7 @@ class XmlController {
     private String xmlFilename = "events.xml";
     private String xmlContent = null;
     private Boolean debug = true;       // true: with Log.d output; false: without Log.d output
+    private Collision currentCollision = null;
 
     /**
      * Constructor for these class
@@ -93,11 +114,11 @@ class XmlController {
     }
 
     /**
-     * Check for collision by given new event
-     * @param newStartDate     String  Format: "yyyy-MM-dd"        start date of the event
-     * @param newStartTime     String  Format: "hh:mm:ss"          start time of the event
-     * @param newEndDate       String  Format: "yyyy-MM-dd"        end date of the event
-     * @param newEndTime       String  Format: "hh:mm:ss"          end time of the event
+     * Check for the first collision by given new event
+     * @param newStartDate     String   Format: "yyyy-MM-dd"        start date of the event
+     * @param newStartTime     String   Format: "hh:mm:ss"          start time of the event
+     * @param newEndDate       String   Format: "yyyy-MM-dd"        end date of the event
+     * @param newEndTime       String   Format: "hh:mm:ss"          end time of the event
      * @return  Boolean     true: collision found; false: no collision found
      */
     Boolean isCollisionByNewEvent(String newStartDate, String newStartTime, String newEndDate, String newEndTime) {
@@ -124,8 +145,13 @@ class XmlController {
             XmlPullParser xmlParser = xmlFactory.newPullParser();
             xmlParser.setInput( new StringReader( getXmlContent() ));
 
+            createCurrentCollisionAndSave();    // init of the Collision Struct
+            String eventId = null;
+
             while(xmlParser.next() != XmlPullParser.END_DOCUMENT && !collision) {
-                if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("start_date")) {
+                if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("event")) {
+                    eventId = xmlParser.getAttributeValue("","id");
+                } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("start_date")) {
                     xmlParser.next();
                     startDateString = xmlParser.getText();
 //                    Log.d("XMLC", "isCollisionByNewEvent -> <start_date> -> " + xmlParser.getText() );
@@ -143,36 +169,12 @@ class XmlController {
 //                    Log.d("XMLC","isCollisionByNewEvent -> <end_time> -> " + xmlParser.getText() );
                 } else if ( xmlParser.getEventType() == XmlPullParser.END_TAG && xmlParser.getName().equals("event")) {
 //                    Log.d("XMLC", "isCollisionByNewEvent -> check for collision");
-                    /*
-                     * current event for check: -----------------------|----------------|-------------------->
-                     * new event:               -----------{--------------------}---------------------------->
-                     */
-                    if (startDateTime.before(newEndDateTime) && (newEndDateTime.before(endDateTime) || newEndDateTime.equals(endDateTime))) {
-                        collision = true;
+                    checkForCollision(startDateTime, endDateTime, newStartDateTime, newEndDateTime);
+
+                    if( getCurrentCollision().getCollision() ) {
+                        getCurrentCollision().setCollisionEventId(eventId);
                     }
-                    /*
-                     * current event for check: -----------------------|----------------|-------------------->
-                     * new event:               --------------------------------{---------------}------------>
-                     */
-                    else if ((startDateTime.before(newStartDateTime) || startDateTime.equals(newStartDateTime)) && newStartDateTime.before(newEndDateTime)) {
-                        collision = true;
-                    }
-                    /*
-                     * current event for check: -----------------------|----------------|-------------------->
-                     * new event:               ---------------{-------------------------------}------------->
-                     */
-                    else if ((newStartDateTime.before(startDateTime) || newStartDateTime.equals(startDateTime)) && (endDateTime.equals(newEndDateTime) || endDateTime.before(newEndDateTime))) {
-                        collision = true;
-                    }
-                    /*
-                     * current event for check: -----------------------|----------------|-------------------->
-                     * new event:               --------------------------{----------}----------------------->
-                     */
-                    else if (startDateTime.before(newStartDateTime) && newEndDateTime.before(endDateTime)) {
-                        collision = true;
-                    } else if (newStartDateTime.before(startDateTime) && (newEndDateTime.equals(startDateTime) || newEndDateTime.before(startDateTime))) {
-                        collision = true;
-                    }
+                    collision = getCurrentCollision().getCollision();
                 }
             }
         } catch (XmlPullParserException e) {
@@ -185,6 +187,7 @@ class XmlController {
 
         return collision;
     }
+
 
     /**
      * Adds an event in order to the XML content string
@@ -475,6 +478,111 @@ class XmlController {
      */
     void logCurrentXmlContent() {
         Log.d("XMLC", "XML content: " + getXmlContent() );
+    }
+
+
+    /**
+     * set the current collision in the class
+     * @param c     Collision-Object
+     */
+    private void setCurrentCollision(Collision c) {
+        currentCollision = c;
+    }
+
+    /**
+     * get the current collision in the class
+     * @return      Collision       Struct
+     */
+    private Collision getCurrentCollision() {
+        return currentCollision;
+    }
+
+    /**
+     * delete the content of the current collision
+     */
+    private void deleteCurrentCollision() {
+        currentCollision = null;
+    }
+
+    /**
+     * create the current collision and save it in the class
+     */
+    private void createCurrentCollisionAndSave() {
+        Collision c = new Collision();
+        setCurrentCollision(c);
+    }
+
+
+    /**
+     * Conditions for collision checking
+     * @param startDateTime             Date                    start datetime of the current checking event
+     * @param endDateTime               Date                    end datetime of the current checking event
+     * @param newStartDateTime          Date                    start datetime of the new event
+     * @param newEndDateTime            Date                    end datetime of the new event
+     * @return      Collision Struct
+     */
+    private void checkForCollision(Date startDateTime, Date endDateTime, Date newStartDateTime, Date newEndDateTime) {
+        if (debug) { Log.d("XMLC", "checkForCollision(...)" ); }
+        /*
+         * current event for check: -----------------------|----------------|-------------------->
+         * new event:               -----------{--------------------}---------------------------->
+         * collision code: 10
+         */
+        if (startDateTime.before(newEndDateTime) && (newEndDateTime.before(endDateTime) || newEndDateTime.equals(endDateTime))) {
+            getCurrentCollision().setCollision(true);
+            getCurrentCollision().setCollisionCode(10);
+            getCurrentCollision().setCollisionMessage("The end of the new event is in collision");
+            // from now: modify the event which is in collision to the new event by set new start for the event -> startDateTime = newEndDateTime
+        }
+        /*
+         * current event for check: -----------------------|----------------|-------------------->
+         * new event:               --------------------------------{---------------}------------>
+         * collision code: 20
+         */
+        else if ((startDateTime.before(newStartDateTime) || startDateTime.equals(newStartDateTime)) && newStartDateTime.before(newEndDateTime)) {
+            getCurrentCollision().setCollision(true);
+            getCurrentCollision().setCollisionCode(20);
+            getCurrentCollision().setCollisionMessage("The start of the new event is in collision");
+            // from now: that should not be happen by silent from now
+        }
+        /*
+         * current event for check: -----------------------|----------------|-------------------->
+         * new event:               ---------------{-------------------------------}------------->
+         * collision code: 30
+         */
+        else if ((newStartDateTime.before(startDateTime) || newStartDateTime.equals(startDateTime)) && (endDateTime.equals(newEndDateTime) || endDateTime.before(newEndDateTime))) {
+            getCurrentCollision().setCollision(true);
+            getCurrentCollision().setCollisionCode(30);
+            getCurrentCollision().setCollisionMessage("The new event overlapped another event");
+            // from now: delete the event which is in collision to the new event, but check again for collision. maybe there is another saved event
+        }
+        /*
+         * current event for check: -----------------------|----------------|-------------------->
+         * new event:               --------------------------{----------}----------------------->
+         * collision code: 40
+         */
+        else if (startDateTime.before(newStartDateTime) && newEndDateTime.before(endDateTime)) {
+            getCurrentCollision().setCollision(true);
+            getCurrentCollision().setCollisionCode(40);
+            getCurrentCollision().setCollisionMessage("An existing event overlapped the new event");
+            // from now: that should not be happen by silent from now
+        }
+    }
+
+    /**
+     * Called only by a silent mode from now
+     * Modifies saved events which are in collision with the new event
+     * @param newStartDate
+     * @param newStartTime
+     * @param newEndDate
+     * @param newEndTime
+     */
+    void modifySavedEventsRegardingCollisionInXmlContent(String newStartDate, String newStartTime, String newEndDate, String newEndTime) {
+        if (debug) { Log.d("XMLC", "modifySavedEventsRegardingCollisionInXmlContent(...)"); }
+        if ( getCurrentCollision().getCollision() ) {
+            Log.d("XMLC_COLLISION","collision: TRUE // collisionEventId: "+getCurrentCollision().getCollisionEventId()+" // collisionCode: "+getCurrentCollision().getCollisionCode()+" // collisionMessage: " + getCurrentCollision().getCollisionMessage() );
+
+        }
     }
 
 
