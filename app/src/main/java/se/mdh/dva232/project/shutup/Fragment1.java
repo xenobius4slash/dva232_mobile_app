@@ -29,7 +29,7 @@ public class Fragment1 extends Fragment {
     }
 
     public static Fragment1 newInstance() {
-        Log.d("LIFECYCLE Fragment11111", "newInstance()");
+        Log.d("LIFECYCLE Fragment1", "newInstance()");
         Fragment1 fragment = new Fragment1();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -43,33 +43,6 @@ public class Fragment1 extends Fragment {
 
     }
 
-    /**
-     *
-     * @param timePickerStart
-     * @param timePickerEnd
-     * @param textNextDay
-     */
-    void checkVisibilityTextByTimePicker(TimePicker timePickerStart, TimePicker timePickerEnd, TextView textNextDay) {
-        Integer startTimeHour, startTimeMinute, endTimeHour, endTimeMinute;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            startTimeHour = timePickerStart.getHour();
-            startTimeMinute = timePickerStart.getMinute();
-            endTimeHour = timePickerEnd.getHour();
-            endTimeMinute = timePickerEnd.getMinute();
-        } else {
-            startTimeHour = timePickerStart.getCurrentHour();
-            startTimeMinute = timePickerStart.getCurrentMinute();
-            endTimeHour = timePickerEnd.getCurrentHour();
-            endTimeMinute = timePickerEnd.getCurrentMinute();
-        }
-        if ( startTimeHour > endTimeHour ) {
-            textNextDay.setVisibility(View.VISIBLE);
-        } else if( (startTimeHour == endTimeHour) && (startTimeMinute < endTimeMinute) ) {
-            textNextDay.setVisibility(View.VISIBLE);
-        } else {
-            textNextDay.setVisibility(View.GONE);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -82,25 +55,23 @@ public class Fragment1 extends Fragment {
         /*
          * TimePicker
          */
-        TextView textNextDay = rootView.findViewById(R.id.f1_text_end_time_next_day);
-
-
+        final TextView textNextDay = rootView.findViewById(R.id.f1_text_end_time_next_day);
         final TimePicker timePickerStart = rootView.findViewById(R.id.f1_timePicker_start);
+        final TimePicker timePickerEnd = rootView.findViewById(R.id.f1_timePicker_end);
+
         timePickerStart.setIs24HourView(true);
         timePickerStart.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                Log.d("F1_TIMEPICKER","changing timepicker start");
+                setVisibilityTextByTimePicker(timePickerStart, timePickerEnd, textNextDay);
             }
         });
 
-        final TimePicker timePickerEnd = rootView.findViewById(R.id.f1_timePicker_end);
         timePickerEnd.setIs24HourView(true);
         timePickerEnd.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-
-                Log.d("F1_TIMEPICKER","changing timepicker end");
+                setVisibilityTextByTimePicker(timePickerStart, timePickerEnd, textNextDay);
             }
         });
 
@@ -136,7 +107,11 @@ public class Fragment1 extends Fragment {
         });
 
 
+        /*
+         * Event name
+         */
         final EditText editTextEventName = rootView.findViewById(R.id.f1_edittext_event_name);
+
 
         /*
          * Button for activation
@@ -211,7 +186,45 @@ public class Fragment1 extends Fragment {
         super.onDestroy();
     }
 
+    /**
+     * show or hide the text which indicated that the end time is on the next day
+     * @param timePickerStart
+     * @param timePickerEnd
+     * @param textNextDay
+     */
+    void setVisibilityTextByTimePicker(TimePicker timePickerStart, TimePicker timePickerEnd, TextView textNextDay) {
+        Log.d("F1-ACTIVATE", "setVisibilityTextByTimePicker(...)");
+        Integer startTimeHour, startTimeMinute, endTimeHour, endTimeMinute;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            startTimeHour = timePickerStart.getHour();
+            startTimeMinute = timePickerStart.getMinute();
+            endTimeHour = timePickerEnd.getHour();
+            endTimeMinute = timePickerEnd.getMinute();
+        } else {
+            startTimeHour = timePickerStart.getCurrentHour();
+            startTimeMinute = timePickerStart.getCurrentMinute();
+            endTimeHour = timePickerEnd.getCurrentHour();
+            endTimeMinute = timePickerEnd.getCurrentMinute();
+        }
+        if ( startTimeHour > endTimeHour ) {
+            textNextDay.setText(R.string.f1_text_end_time_next_day_string);
+            textNextDay.setVisibility(View.VISIBLE);
+        } else if( (startTimeHour == endTimeHour) && (startTimeMinute > endTimeMinute) ) {
+            textNextDay.setText(R.string.f1_text_end_time_next_day_string);
+            textNextDay.setVisibility(View.VISIBLE);
+        } else {
+            textNextDay.setVisibility(View.GONE);
+        }
+    }
 
+    /**
+     * prepare the inputs for calling the activate silent mode function regarding the mode (for duration or until time)
+     * @param EC
+     * @param startDate
+     * @param startTime
+     * @param endTime
+     * @param eventName
+     */
     private void doActivateSilentMode(EventController EC, Date startDate, String startTime, String endTime, String eventName) {
         Log.d("F1_ACTIVATE","doActivateSilentMode(..., "+startDate+", "+startTime+", "+endTime+", "+eventName+")");
 
@@ -219,6 +232,7 @@ public class Fragment1 extends Fragment {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfDateTimeOutput = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 
         try {
             Date startDateTime = sdfDateTime.parse( sdfDate.format(startDate)+" "+startTime+":00");
@@ -233,6 +247,7 @@ public class Fragment1 extends Fragment {
                     temp.setTime(endDateTime);
                     temp.add(Calendar.DAY_OF_MONTH, 1);
                     endDateTime = temp.getTime();
+                    addDay = true;
                     Log.d("F1_ACTIVATE", "add one day -> start: " + sdfDateTime.format(startDateTime) + " // end: " + sdfDateTime.format(endDateTime));
                 } else {
                     Log.d("F1_ACTIVATE", "start: " + sdfDateTime.format(startDateTime) + " // end: " + sdfDateTime.format(endDateTime));
@@ -240,9 +255,9 @@ public class Fragment1 extends Fragment {
 
                 Log.d("F1_ACTIVATE", "EC.activateSilentModeByStartAndEnd( " + sdfDate.format(startDateTime) + ", " + sdfTime.format(startDateTime) + ", " + sdfDate.format(endDateTime) + ", " + sdfTime.format(endDateTime) + ")");
                 if (EC.activateSilentModeByStartAndEnd(sdfDate.format(startDateTime), sdfTime.format(startDateTime), sdfDate.format(endDateTime), sdfTime.format(endDateTime), eventName)) {
-                    Toast.makeText(getContext(), "Silent event is added", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Event is added and starts on " + sdfDateTimeOutput.format(startDateTime), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), "Silent event is not added, because there are collisions", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Event is not added, because there are collisions", Toast.LENGTH_SHORT).show();
                 }
             }
         } catch (ParseException e) {

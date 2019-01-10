@@ -27,7 +27,7 @@
     <string name="f1_text_event_name">Name</string>
     <string name="f1_repeat">Repeat</string>
     <string name="f1_select_date_text"> - </string>
-    <string name="f1_activate_button">ACTIVATE</string>
+    <string name="f1_activate_button">ACTIVATE EVENT</string>
     <string name="f1_text_end_time_next_day_string">next day</string>
 
 

@@ -58,6 +58,20 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/f1_text_start_time" />
 
+            <TextView
+                android:id="@+id/f1_text_end_time_next_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="TextView"
+                android:textColor="@android:color/holo_red_dark"
+                android:visibility="gone"
+                app:layout_constraintBaseline_toBaselineOf="@+id/f1_text_end_time"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/f1_text_end_time"
+                tools:text="@string/f1_text_end_time_next_day_string" />
+
             <TimePicker
                 android:id="@+id/f1_timePicker_start"
                 android:layout_width="0dp"
@@ -147,19 +161,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/f1_text_event_name" />
 
-            <TextView
-                android:id="@+id/f1_text_end_time_next_day"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:text="TextView"
-                android:textColor="@android:color/holo_red_dark"
-                android:visibility="gone"
-                app:layout_constraintBaseline_toBaselineOf="@+id/f1_text_end_time"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/f1_text_end_time"
-                tools:text="@string/f1_text_end_time_next_day_string" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
