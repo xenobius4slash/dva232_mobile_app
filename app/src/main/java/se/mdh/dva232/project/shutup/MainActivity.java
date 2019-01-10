@@ -1,5 +1,7 @@
 package se.mdh.dva232.project.shutup;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.support.design.widget.TabLayout;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor settingsEditor = settings.edit();
 
+
         //if there is no settings put default to false
         if ( !settings.contains("vibration") || !settings.contains("extended_mode") || !settings.contains("close_after_activation") || !settings.contains("btn_duration_1")
                 || !settings.contains("btn_duration_2") || !settings.contains("btn_duration_3") || !settings.contains("btn_duration_4") || !settings.contains("btn_duration_5")
@@ -45,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
             settingsEditor.putString("btn_duration_5","2:30");
             settingsEditor.putString("btn_duration_6","3:00");
             settingsEditor.apply();
+            showStartDialog();      //show starting dialog
+
         } else {
             if (debugSettings) { Log.d("SETTINGS", "settings detected"); }
         }
@@ -142,5 +147,24 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() { return 3; }
+    }
+
+    //show a starting dialog every time the user starts the application for the first time
+    private void showStartDialog()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("one time dialog")
+                .setMessage("This text only appear once at start of application")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();   //close the dialog
+
+
+                    }
+                })
+                .create().show();
+        //other code...
+
     }
 }
