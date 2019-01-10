@@ -55,13 +55,7 @@ public class Fragment0 extends Fragment {
         final Calendar myCalendar = Calendar.getInstance();
         final View rootView;
 
-        //check if there are settings
-        boolean start_dialog = settings.getBoolean("first_start",true);
-        //if ( !settings.contains("vibration") || !settings.contains("extended_mode") || !settings.contains("close_after_activation") )
-        if (start_dialog)
-        {
-            showStartDialog();
-        }
+
 
 
 
@@ -631,23 +625,5 @@ public class Fragment0 extends Fragment {
         }
     }
 
-    //show a starting dialog every time the user starts the application for the first time
-    private void showStartDialog()
-    {
-        new AlertDialog.Builder(getContext())
-                .setTitle("one time dialog")
-                .setMessage("This text only appear once at start of application")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();   //close the dialog
-                    }
-                })
-                .create().show();
-        //other code...
-        SharedPreferences preferences = getContext().getSharedPreferences("UserInfo", 0);
-        SharedPreferences.Editor settingsEditor = preferences.edit();
-        settingsEditor.putBoolean("first_start",true);
-        settingsEditor.apply();
-    }
+
 }
