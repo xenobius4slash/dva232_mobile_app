@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
@@ -125,7 +126,7 @@
                 android:layout_marginRight="8dp"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="@string/f1_text_event_name"
+                android:hint="@string/f1_text_event_name"
                 app:layout_constraintBaseline_toBaselineOf="@+id/f1_text_event_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/f1_text_event_name" />
@@ -145,6 +146,20 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/f1_text_event_name" />
+
+            <TextView
+                android:id="@+id/f1_text_end_time_next_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="TextView"
+                android:textColor="@android:color/holo_red_dark"
+                android:visibility="gone"
+                app:layout_constraintBaseline_toBaselineOf="@+id/f1_text_end_time"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/f1_text_end_time"
+                tools:text="@string/f1_text_end_time_next_day_string" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

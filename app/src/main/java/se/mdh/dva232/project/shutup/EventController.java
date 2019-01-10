@@ -158,9 +158,12 @@ class EventController {
      * @param newStartTime     String  Format: "hh:mm:ss"          start time of the event
      * @param newEndDate       String  Format: "yyyy-MM-dd"        end date of the event
      * @param newEndTime       String  Format: "hh:mm:ss"          end time of the event
+     * @param eventName        String                              name of the event
+     * @return      Boolean
      */
-    void activateSilentModeByStartAndEnd(String newStartDate, String newStartTime, String newEndDate, String newEndTime) {
-        if(debug) { Log.d("EVENTC", "activateSilentModeByStartAndEnd("+newStartDate+", "+newStartTime+", "+newEndDate+", "+newEndTime+")"); }
+    Boolean activateSilentModeByStartAndEnd(String newStartDate, String newStartTime, String newEndDate, String newEndTime, String eventName) {
+        if(debug) { Log.d("EVENTC", "activateSilentModeByStartAndEnd("+newStartDate+", "+newStartTime+", "+newEndDate+", "+newEndTime+", "+eventName+")"); }
+        XC = new XmlController(context);
 
         // load or create XML content
         if (!XC.readXmlFileAndLoad()) {
@@ -174,16 +177,17 @@ class EventController {
         Log.d("EVENTC", "ID of the new event: " + eventId);
         if (XC.isCollisionByNewEvent(newStartDate, newStartTime, newEndDate, newEndTime)) {
             if (debug) { Log.d("EVENTC", "activateSilentModeByStartAndEnd -> collision detected"); }
-
+            return false;
         } else {
             if (debug) { Log.d("EVENTC", "activateSilentModeByStartAndEnd -> no collision detected"); }
             createCurrentEventAndSave(eventId, newStartDate, newStartTime, newEndDate, newEndTime);
             Log.d("EVENTC", "content currentEvent: " + currentEvent.getContent());
-            XC.addEventToXmlContent(eventId, newStartDate, newStartTime, newEndDate, newEndTime, "Current");
+            XC.addEventToXmlContent(eventId, newStartDate, newStartTime, newEndDate, newEndTime, eventName);
             XC.saveXmlContentToFile();
             XC.logCurrentXmlContent();
             checkForSwitchToSilentSoundModeAndDoIt();       // Async Task
             Log.d("EVENTC", "after checkForSwitchToSilentSoundModeAndDoIt()");
+            return true;
         }
     }
 
@@ -258,7 +262,7 @@ class EventController {
                                 Log.d("TIMER","stop timer by end of the event");
                                 deactivateSilentMode();
                             } else {
-                                Log.d("TIMER","tick: "+tick+" -> timer is running (now: " + Calendar.getInstance().getTime() + " // event-end: " + eventEnd + ")");
+                                Log.d("TIMER","switch to previous tick: "+tick+" -> timer is running (now: " + Calendar.getInstance().getTime() + " // event-end: " + eventEnd + ")");
                             }
                         }
                     }, 1000, 1000);     // TODO: modify period and delay depending on the time till end -> period from big to small (60 sec -> 30 sec -> 10 sec -> 1 sec)
@@ -286,13 +290,13 @@ class EventController {
                         @Override
                         public void run() {
                             tick = tick + 1;
-                            if ( eventStart.equals(Calendar.getInstance().getTime()) || eventStart.after(Calendar.getInstance().getTime()) || settings.getBoolean("silent_mode_active",true)) {
+                            if ( eventStart.equals(Calendar.getInstance().getTime()) || eventStart.before(Calendar.getInstance().getTime()) || settings.getBoolean("silent_mode_active",true)) {
                                 timer.cancel();
                                 timer.purge();
                                 Log.d("TIMER","stop timer by start of the event");
                                 activateSilentMode();
                             } else {
-                                Log.d("TIMER","tick: "+tick+" -> timer is running (now: " + Calendar.getInstance().getTime() + " // event-start: " + eventStart + ")");
+                                Log.d("TIMER","switch to silent tick: "+tick+" -> timer is running (now: " + Calendar.getInstance().getTime() + " // event-start: " + eventStart + ")");
                             }
                         }
                     }, 1000, 1000);     // TODO: modify period and delay depending on the time till start -> period from big to small (60 sec -> 30 sec -> 10 sec -> 1 sec)

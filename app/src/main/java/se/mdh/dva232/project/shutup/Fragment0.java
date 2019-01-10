@@ -45,12 +45,10 @@ public class Fragment0 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onCreateView(...)"); }
-        // Inflate the layout for this fragment
 
         final EventController EC = new EventController( getContext() );
         final SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
         final SharedPreferences.Editor settingsEditor = settings.edit();
-        final Calendar myCalendar = Calendar.getInstance();
         final View rootView;
         
         if( settings.getBoolean("extended_mode", false)) {
@@ -588,7 +586,6 @@ public class Fragment0 extends Fragment {
             Date end = null;
             if (mode.equals("duration")) {
                 Calendar endCal = Calendar.getInstance();
-//          endCal.setTime(now);
                 endCal.add(Calendar.MINUTE, (minute + (60 * hour)));
                 end = endCal.getTime();
             } else if (mode.equals("time")) {
