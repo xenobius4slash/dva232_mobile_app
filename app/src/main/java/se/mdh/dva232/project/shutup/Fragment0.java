@@ -1,7 +1,9 @@
 package se.mdh.dva232.project.shutup;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,6 +54,17 @@ public class Fragment0 extends Fragment {
         final SharedPreferences.Editor settingsEditor = settings.edit();
         final Calendar myCalendar = Calendar.getInstance();
         final View rootView;
+
+        //check if there are settings
+        boolean start_dialog = settings.getBoolean("first_start",true);
+        //if ( !settings.contains("vibration") || !settings.contains("extended_mode") || !settings.contains("close_after_activation") )
+        if (start_dialog)
+        {
+            showStartDialog();
+        }
+
+
+
         
         if( settings.getBoolean("extended_mode", false)) {
             /* ###################
@@ -616,5 +629,25 @@ public class Fragment0 extends Fragment {
                 EC.activateSilentModeFromNow(sdfDate.format(now), sdfTime.format(now), sdfDate.format(end), sdfTime.format(end));
             }
         }
+    }
+
+    //show a starting dialog every time the user starts the application for the first time
+    private void showStartDialog()
+    {
+        new AlertDialog.Builder(getContext())
+                .setTitle("one time dialog")
+                .setMessage("This text only appear once at start of application")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();   //close the dialog
+                    }
+                })
+                .create().show();
+        //other code...
+        SharedPreferences preferences = getContext().getSharedPreferences("UserInfo", 0);
+        SharedPreferences.Editor settingsEditor = preferences.edit();
+        settingsEditor.putBoolean("first_start",true);
+        settingsEditor.apply();
     }
 }
