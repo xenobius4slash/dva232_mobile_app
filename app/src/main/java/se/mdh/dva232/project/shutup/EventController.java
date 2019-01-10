@@ -53,6 +53,7 @@ class Event {
 
     String getId() { return id; }
     private String getStartDate() { return startDate; }
+
     private String getStartTime() { return startTime; }
     private String getEndDate() { return endDate; }
     private String getEndTime() { return endTime; }
@@ -104,6 +105,30 @@ class EventController {
     //
     //  public methods
     //
+
+
+    /**
+     * Task which have to run at the start
+     * 1. remove all past events
+     * 2. check for upcoming events and if one is present start the timer (async task)
+     */
+    void initTask() {
+        if(debug) { Log.d("EVENTC", "initTask()"); }
+        XmlController XC = new XmlController(context);
+        if (!XC.readXmlFileAndLoad()) {
+            Log.d("EVENTC", "XML file doesn't exist and is created");
+        } else {
+            Log.d("EVENTC", "XML file exist and is loaded");
+            XC.logCurrentXmlContent();
+            if ( XC.removeAllPastEventsFromXmlContent() ) {
+                XC.saveXmlContentToFile();
+            }
+            setCurrentEvent( XC.getFirstUpcommingEvent() );
+            if ( getCurrentEvent().existEvent() ) {
+                checkForSwitchToSilentSoundModeAndDoIt();
+            }
+        }
+    }
 
     /**
      * Activate the silent mode from now --> ONLY for Fragment 0
@@ -200,6 +225,7 @@ class EventController {
         return AC.getCurrentSoundMode();
     }
 
+
     //
     //  private methods
     //
@@ -238,6 +264,27 @@ class EventController {
     private void createCurrentEventAndSave(String id, String newStartDate, String newStartTime, String newEndDate, String newEndTime) {
         Event e = new Event(id, newStartDate, newStartTime, newEndDate, newEndTime);
         setCurrentEvent(e);
+    }
+
+    /**
+     * initialize the current event with NULL and save it in the class
+     */
+    private void initCurrentEventAndSave() {
+        Event e = new Event();
+        setCurrentEvent(e);
+    }
+
+    private Boolean existUpcomingEvent() {
+        if (debug) { Log.d("EVENTC", "existUpcomingEvent()"); }
+        XC = new XmlController(context);
+        // load or create XML content
+        if (!XC.readXmlFileAndLoad()) {
+            return false;
+        } else {
+            setCurrentEvent( XC.getFirstUpcommingEvent() );
+            Log.d("EVENTC", "XML file exist and is loaded");
+            return getCurrentEvent().existEvent();
+        }
     }
 
     /**
@@ -340,6 +387,14 @@ class EventController {
         //remove event in XML
         Log.d("EVENTC", "deactivateSilentMode() -> id: " + getCurrentEvent().getId() );
         if (getCurrentEvent().existEvent()) {
+            XmlController XC = new XmlController( context );
+            // load or create XML content
+            if (!XC.readXmlFileAndLoad()) {
+                Log.d("EVENTC", "XML file doesn't exist and is created");
+                XC.createXmlContentSkeleton();
+            } else {
+                Log.d("EVENTC", "XML file exist and is loaded");
+            }
             XC.logCurrentXmlContent();
             XC.removeEventFromXmlContent(getCurrentEvent().getId());
             XC.saveXmlContentToFile();
