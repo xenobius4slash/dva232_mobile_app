@@ -121,12 +121,12 @@
         android:id="@+id/f0_normal_switch_vibration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textOn="On"
-        android:textOff="Off"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:key="vibration"
+        android:textOff="Off"
+        android:textOn="On"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/f0_normal_btn_deactivate" />
 
@@ -144,12 +144,12 @@
         android:id="@+id/f0_normal_switch_extended_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textOn="On"
-        android:textOff="Off"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:key="extended_mode"
+        android:textOff="Off"
+        android:textOn="On"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/f0_normal_switch_vibration" />
 
@@ -175,5 +175,35 @@
         android:textOn="On"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/f0_normal_switch_extended_mode" />
+
+    <ImageView
+        android:id="@+id/normal_image"
+        android:layout_width="77dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/f0_normal_text_current_mode"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/silent_image"
+        android:layout_width="77dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/f0_normal_text_current_mode"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/vibration_image"
+        android:layout_width="77dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/f0_normal_text_current_mode"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
