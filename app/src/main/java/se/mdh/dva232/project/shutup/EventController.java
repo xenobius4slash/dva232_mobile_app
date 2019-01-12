@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -109,24 +110,36 @@ class EventController {
 
     /**
      * Task which have to run at the start
-     * 1. remove all past events
-     * 2. check for upcoming events and if one is present start the timer (async task)
+     * 1. reset semaphore
+     * 2. remove all past events
+     * 3. check for upcoming events and if one is present start the timer (async task)
      */
     void initTask() {
         if(debug) { Log.d("EVENTC", "initTask()"); }
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putString("semaphore_async_task", null);
+        settingsEditor.putBoolean("kill_all_async_tasks", true);
+        settingsEditor.apply();
+        // wait that time all async tasks are notice the kill signal and disable it afterwards
+        SystemClock.sleep(2000);
+        settingsEditor.putBoolean("kill_all_async_tasks", false);
+        settingsEditor.apply();
+        Log.d("EVENTC", "[ASYNC TASKS] kill_all_async_tasks -> TRUE -> FALSE");
+
         XmlController XC = new XmlController(context);
-        if (!XC.readXmlFileAndLoad()) {
-            Log.d("EVENTC", "XML file doesn't exist and is created");
-        } else {
-            Log.d("EVENTC", "XML file exist and is loaded");
+        if (XC.readXmlFileAndLoad()) {
+ //           XC.resetXmlContent();             // TODO: remove
+ //           XC.createXmlContentSkeleton();    // TODO: remove
+ //           XC.saveXmlContentToFile();        // TODO: remove
             XC.logCurrentXmlContent();
             if ( XC.removeAllPastEventsFromXmlContent() ) {
                 XC.saveXmlContentToFile();
             }
             setCurrentEvent( XC.getFirstUpcommingEvent() );
             if ( getCurrentEvent().existEvent() ) {
-                checkForSwitchToSilentSoundModeAndDoIt();
+                checkForSwitchToSilentSoundModeAndDoIt(true);
             }
+            XC.logCurrentXmlContent();
         }
     }
 
@@ -148,31 +161,25 @@ class EventController {
 
             // load or create XML content
             if (!XC.readXmlFileAndLoad()) {
-                Log.d("EVENTC", "XML file doesn't exist and is created");
                 XC.createXmlContentSkeleton();
-            } else {
-                Log.d("EVENTC", "XML file exist and is loaded");
-                XC.resetXmlContent();           // TODO: remove
-                XC.createXmlContentSkeleton();  // TODO: remove
             }
             XC.logCurrentXmlContent();
             String eventId = newStartDate.concat("_").concat(newStartTime.replace(":", ""));
-            Log.d("EVENTC", "ID of the new event: " + eventId);
             if (XC.isCollisionByNewEvent(newStartDate, newStartTime, newEndDate, newEndTime)) {
                 if (debug) { Log.d("EVENTC", "activateSilentModeFromNow -> collision detected"); }
                 Toast.makeText(context, "Collision exist -> modify upcomming events", Toast.LENGTH_SHORT).show();
-
                 XC.modifySavedEventsRegardingCollisionInXmlContent(newStartDate, newStartTime, newEndDate, newEndTime);
-            } else {
-                if (debug) { Log.d("EVENTC", "activateSilentModeFromNow -> no collision detected"); }
-                createCurrentEventAndSave(eventId, newStartDate, newStartTime, newEndDate, newEndTime);
-                Log.d("EVENTC", "content currentEvent: " + currentEvent.getContent());
                 XC.addEventToXmlContent(eventId, newStartDate, newStartTime, newEndDate, newEndTime, "Current");
                 XC.saveXmlContentToFile();
                 XC.logCurrentXmlContent();
-                Log.d("EVENTC", "currentEvent before check: " + getCurrentEvent().getContent() );
                 checkForSwitchToPreviousSoundModeAndDoIt();     // Async Task
-                Log.d("EVENTC", "after checkForSwitchToPreviousSoundModeAndDoIt()");
+            } else {
+                if (debug) { Log.d("EVENTC", "activateSilentModeFromNow -> no collision detected"); }
+                createCurrentEventAndSave(eventId, newStartDate, newStartTime, newEndDate, newEndTime);
+                XC.addEventToXmlContent(eventId, newStartDate, newStartTime, newEndDate, newEndTime, "Current");
+                XC.saveXmlContentToFile();
+                XC.logCurrentXmlContent();
+                checkForSwitchToPreviousSoundModeAndDoIt();     // Async Task
             }
         }
     }
@@ -192,10 +199,7 @@ class EventController {
 
         // load or create XML content
         if (!XC.readXmlFileAndLoad()) {
-            Log.d("EVENTC", "XML file doesn't exist and is created");
             XC.createXmlContentSkeleton();
-        } else {
-            Log.d("EVENTC", "XML file exist and is loaded");
         }
         XC.logCurrentXmlContent();
         String eventId = newStartDate.concat("_").concat(newStartTime.replace(":", ""));
@@ -205,12 +209,14 @@ class EventController {
             return false;
         } else {
             if (debug) { Log.d("EVENTC", "activateSilentModeByStartAndEnd -> no collision detected"); }
+            Log.d("EVENTC","[ASYNC TASKS] 'semaphore_async_task': "+ settings.getAll().get("semaphore_async_task")+ " // 'kill_all_async_tasks': " + settings.getAll().get("kill_all_async_tasks"));
             createCurrentEventAndSave(eventId, newStartDate, newStartTime, newEndDate, newEndTime);
+            Log.d("EVENTC","[ASYNC TASKS] #2 current event: " + getCurrentEvent().getContent());
             Log.d("EVENTC", "content currentEvent: " + currentEvent.getContent());
             XC.addEventToXmlContent(eventId, newStartDate, newStartTime, newEndDate, newEndTime, eventName);
             XC.saveXmlContentToFile();
             XC.logCurrentXmlContent();
-            checkForSwitchToSilentSoundModeAndDoIt();       // Async Task
+            checkForSwitchToSilentSoundModeAndDoIt(false);       // Async Task
             Log.d("EVENTC", "after checkForSwitchToSilentSoundModeAndDoIt()");
             return true;
         }
@@ -282,7 +288,6 @@ class EventController {
             return false;
         } else {
             setCurrentEvent( XC.getFirstUpcommingEvent() );
-            Log.d("EVENTC", "XML file exist and is loaded");
             return getCurrentEvent().existEvent();
         }
     }
@@ -295,6 +300,10 @@ class EventController {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
+                Log.d("EVENTC", "SEMAPHORE (backToPrev): set semaphore to: " + getCurrentEvent().getId() );
+                SharedPreferences.Editor settingsEditor = settings.edit();
+                settingsEditor.putString("semaphore_async_task", getCurrentEvent().getId());
+                settingsEditor.apply();
                 final Timer timer = new Timer();
                 try {
                     timer.schedule(new TimerTask() {
@@ -303,13 +312,28 @@ class EventController {
                         @Override
                         public void run() {
                             tick = tick + 1;
-                            if ( eventEnd.before(Calendar.getInstance().getTime()) || eventEnd.equals(Calendar.getInstance().getTime()) || !settings.getBoolean("silent_mode_active",false)) {
+                            Boolean holdSemaphore = true;
+                            if ( !(settings.getString("semaphore_async_task", null).equals(getCurrentEvent().getId())) ) {
+                                holdSemaphore = false;
+                            }
+                            // cancel timer and delete running event if end time for silent mode is arrived/past or the silent mode is canceled by the user or another async task is allowed to be active
+                            if (eventEnd.before(Calendar.getInstance().getTime()) || eventEnd.equals(Calendar.getInstance().getTime()) || !settings.getBoolean("silent_mode_active", false) || !holdSemaphore ) {
                                 timer.cancel();
                                 timer.purge();
-                                Log.d("TIMER","stop timer by end of the event");
-                                deactivateSilentMode();
+                                if (holdSemaphore) {
+                                    Log.d("TIMER", "stop timer by end of the event");
+                                } else {
+                                    Log.d("TIMER", "[toPrev] stop timer (event id: "+getCurrentEvent().getId()+") by preemption ("+settings.getString("semaphore_async_task", null)+")");
+                                }
+                                Log.d("EVENTC", "checkForSwitchToPreviousSoundModeAndDoIt() -> TIMER stopped -> currentEvent: " + getCurrentEvent().getContent());
+                                deactivateSilentMode( holdSemaphore );
+                            }
+                            if( settings.getBoolean("kill_all_async_tasks", true) ) {
+                                timer.cancel();
+                                timer.purge();
+                                Log.d("TIMER", "[toPrev] stop timer because of the signal 'kill_all_async_tasks'");
                             } else {
-                                Log.d("TIMER","switch to previous tick: "+tick+" -> timer is running (now: " + Calendar.getInstance().getTime() + " // event-end: " + eventEnd + ")");
+                                Log.d("TIMER","switch to previous tick: "+tick+" -> timer for event-id '"+getCurrentEvent().getId()+"' is running (now: " + Calendar.getInstance().getTime() + " // event-end: " + eventEnd + ")");
                             }
                         }
                     }, 1000, 1000);     // TODO: modify period and delay depending on the time till end -> period from big to small (60 sec -> 30 sec -> 10 sec -> 1 sec)
@@ -322,48 +346,34 @@ class EventController {
     }
 
     /**
-     * checks for switching to the silent sound mode regarding the current event and call the activation
+     * Process for deactivating a current silent mode
      */
-    private void checkForSwitchToSilentSoundModeAndDoIt() {
-        if(debug) { Log.d("EVENTC", "checkForSwitchToSilentSoundModeAndDoIt()"); }
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                final Timer timer = new Timer();
-                try {
-                    timer.schedule(new TimerTask() {
-                        Integer tick = 0;
-                        Date eventStart = getCurrentEvent().getStartDateTime();
-                        @Override
-                        public void run() {
-                            tick = tick + 1;
-                            if ( eventStart.equals(Calendar.getInstance().getTime()) || eventStart.before(Calendar.getInstance().getTime()) || settings.getBoolean("silent_mode_active",true)) {
-                                timer.cancel();
-                                timer.purge();
-                                Log.d("TIMER","stop timer by start of the event");
-                                activateSilentMode();
-                            } else {
-                                Log.d("TIMER","switch to silent tick: "+tick+" -> timer is running (now: " + Calendar.getInstance().getTime() + " // event-start: " + eventStart + ")");
-                            }
-                        }
-                    }, 1000, 1000);     // TODO: modify period and delay depending on the time till start -> period from big to small (60 sec -> 30 sec -> 10 sec -> 1 sec)
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        Log.d("EVENTC","checkForSwitchToPreviousSoundMode() -> end -> asyncrone process should run");
-    }
+    private void deactivateSilentMode(Boolean holdSemaphore) {
+        if (debug) { Log.d("EVENTC", "deactivateSilentMode()"); }
+        doPreviousSoundMode();
 
-    /**
-     * Activate silent mode and set setting
-     */
-    private void doSilentMode() {
-        AudioController AC = new AudioController(context);
-        AC.setPhoneToSilentMode((Boolean) settings.getAll().get("vibration"));
-        SharedPreferences.Editor settingsEditor = settings.edit();
-        settingsEditor.putBoolean("silent_mode_active", true);
-        settingsEditor.apply();
+        //remove event in XML
+        Log.d("EVENTC", "deactivateSilentMode() -> id: " + getCurrentEvent().getId() );
+        if (getCurrentEvent().existEvent()) {
+            XmlController XC = new XmlController( context );
+            // load or create XML content
+            if (!XC.readXmlFileAndLoad()) {
+                XC.createXmlContentSkeleton();
+            }
+            XC.logCurrentXmlContent();
+            Log.d("EVENTC", "deactivateSilentMode() -> XC.removeEventFromXmlContent("+getCurrentEvent().getId()+")");
+            XC.removeEventFromXmlContent(getCurrentEvent().getId());
+            XC.saveXmlContentToFile();
+            XC.logCurrentXmlContent();
+
+            // delete event in Event Controller
+            deleteCurrentEvent();
+        }
+
+        if (holdSemaphore) {
+            // no preemption -> check for upcoming events. IF there are one -> run checkForSwitchToSilentSoundModeAndDoIt() ELSE nothing
+            initTask();
+        }
     }
 
     /**
@@ -378,41 +388,80 @@ class EventController {
     }
 
     /**
-     * Process for deactivating a current silent mode
+     * checks for switching to the silent sound mode regarding the current event and call the activation
      */
-    private void deactivateSilentMode() {
-        if (debug) { Log.d("EVENTC", "deactivateSilentMode()"); }
-        doPreviousSoundMode();
+    private void checkForSwitchToSilentSoundModeAndDoIt(Boolean initTask) {
+        if(debug) { Log.d("EVENTC", "checkForSwitchToSilentSoundModeAndDoIt("+initTask+")"); }
 
-        //remove event in XML
-        Log.d("EVENTC", "deactivateSilentMode() -> id: " + getCurrentEvent().getId() );
-        if (getCurrentEvent().existEvent()) {
-            XmlController XC = new XmlController( context );
-            // load or create XML content
-            if (!XC.readXmlFileAndLoad()) {
-                Log.d("EVENTC", "XML file doesn't exist and is created");
-                XC.createXmlContentSkeleton();
-            } else {
-                Log.d("EVENTC", "XML file exist and is loaded");
-            }
-            XC.logCurrentXmlContent();
-            XC.removeEventFromXmlContent(getCurrentEvent().getId());
-            XC.saveXmlContentToFile();
-            XC.logCurrentXmlContent();
+        Log.d("EVENTC","[ASYNC TASKS] 'semaphore_async_task': "+ settings.getAll().get("semaphore_async_task")+ " // 'kill_all_async_tasks': " + settings.getAll().get("kill_all_async_tasks"));
+        Log.d("EVENTC","[ASYNC TASKS] #3 current event: " + getCurrentEvent().getContent());
 
-            // delete event in Event Controller
-            deleteCurrentEvent();
+        final SharedPreferences.Editor settingsEditor = settings.edit();
+        Log.d("EVENTC", "[ASYNC TASKS]: IF( current_event="+getCurrentEvent().getId()+"  !=  semaphore="+settings.getString("semaphore_async_task", null) +" )");
+        if ( !getCurrentEvent().getId().equals( settings.getString("semaphore_async_task", null))) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("EVENTC", "SEMAPHORE (ToSilent): set semaphore to: " + getCurrentEvent().getId());
+                    settingsEditor.putString("semaphore_async_task", getCurrentEvent().getId());
+                    settingsEditor.apply();
+                    final Timer timer = new Timer();
+                    try {
+                        timer.schedule(new TimerTask() {
+                            Integer tick = 0;
+                            Date eventStart = getCurrentEvent().getStartDateTime();
+
+                            @Override
+                            public void run() {
+                                tick = tick + 1;
+                                // cancel timer and activate the silent mode if start time for silent mode is arrived/past
+                                if (eventStart.equals(Calendar.getInstance().getTime()) || eventStart.before(Calendar.getInstance().getTime())) {
+                                    timer.cancel();
+                                    timer.purge();
+                                    Log.d("TIMER", "stop timer by start of the event");
+                                    activateSilentMode();
+                                } else if (settings.getBoolean("kill_all_async_tasks", true)) {
+                                    timer.cancel();
+                                    timer.purge();
+                                    Log.d("TIMER", "[toSilent] stop timer because of the signal 'kill_all_async_tasks'");
+                                }
+                                // cancel timer if another async task is allowed to be active
+                                else if (!settings.getString("semaphore_async_task", null).equals(getCurrentEvent().getId())) {
+                                    timer.cancel();
+                                    timer.purge();
+                                    Log.d("TIMER", "[toSilent] stop timer (event id: " + getCurrentEvent().getId() + ") by preemption (" + settings.getString("semaphore_async_task", null) + ")");
+                                } else {
+                                    Log.d("TIMER", "switch to silent tick: " + tick + " -> timer for event-id '" + getCurrentEvent().getId() + "' is running (now: " + Calendar.getInstance().getTime() + " // event-start: " + eventStart + ")");
+                                }
+                            }
+                        }, 1000, 1000);     // TODO: modify period and delay depending on the time till start -> period from big to small (60 sec -> 30 sec -> 10 sec -> 1 sec)
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            Log.d("EVENTC","checkForSwitchToPreviousSoundMode() -> end -> asyncrone process should run");
         }
-
-        // TODO: check for upcomming events. IF there are one -> run checkForSwitchToSilentSoundModeAndDoIt() ELSE nothing
     }
-
 
     /**
      * Process for activate silent mode
      */
     private void activateSilentMode() {
+        if (debug) { Log.d("EVENTC", "activateSilentMode()"); }
         doSilentMode();
         checkForSwitchToPreviousSoundModeAndDoIt();     // Async Task
+    }
+
+    /**
+     * Activate silent mode and set setting
+     */
+    private void doSilentMode() {
+        if (debug) { Log.d("EVENTC", "doSilentMode()"); }
+        AudioController AC = new AudioController(context);
+        AC.setPhoneToSilentMode((Boolean) settings.getAll().get("vibration"));
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putBoolean("silent_mode_active", true);
+        settingsEditor.apply();
     }
 }

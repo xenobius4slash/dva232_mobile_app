@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
             settingsEditor.putBoolean("extended_mode", false);
             settingsEditor.putBoolean("close_after_activation", false);
             settingsEditor.putBoolean("silent_mode_active", false);
+            settingsEditor.putString("semaphore_async_task", null);
+            settingsEditor.putBoolean("kill_all_async_tasks", true);
             settingsEditor.putString("btn_duration_1", String.valueOf(R.string.btn_0_duration_1));
             settingsEditor.putString("btn_duration_2", String.valueOf(R.string.btn_0_duration_2));
             settingsEditor.putString("btn_duration_3", String.valueOf(R.string.btn_0_duration_3));
@@ -56,7 +58,14 @@ public class MainActivity extends AppCompatActivity {
             Log.d("SETTINGS","extended_mode: " + settings.getAll().get("extended_mode") );
             Log.d("SETTINGS","close_after_activation: " + settings.getAll().get("close_after_activation") );
             Log.d("SETTINGS","silent_mode_active: " + settings.getAll().get("silent_mode_active" ));
+            Log.d("SETTINGS","semaphore_async_task: " + settings.getAll().get("semaphore_async_task" ));
+            Log.d("SETTINGS","kill_all_async_tasks: " + settings.getAll().get("kill_all_async_tasks" ));
             Log.d("SETTINGS","btn_duration_1: " + settings.getAll().get("btn_duration_1") );
+            Log.d("SETTINGS","btn_duration_2: " + settings.getAll().get("btn_duration_2") );
+            Log.d("SETTINGS","btn_duration_3: " + settings.getAll().get("btn_duration_3") );
+            Log.d("SETTINGS","btn_duration_4: " + settings.getAll().get("btn_duration_4") );
+            Log.d("SETTINGS","btn_duration_5: " + settings.getAll().get("btn_duration_5") );
+            Log.d("SETTINGS","btn_duration_6: " + settings.getAll().get("btn_duration_6") );
         }
 
         /*
