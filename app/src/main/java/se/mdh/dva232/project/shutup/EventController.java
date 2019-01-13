@@ -281,6 +281,19 @@ class EventController {
         }
     }
 
+    void deleteEventById(String eventId) {
+        if(debug) { Log.d("EVENTC", "deleteEventById()"); }
+        XmlController XC = new XmlController( context );
+        // load or create XML content
+        if (XC.readXmlFileAndLoad()) {
+            XC.logCurrentXmlContent();
+            Log.d("EVENTC", "deactivateSilentMode() -> XC.removeEventFromXmlContent(" + eventId + ")");
+            XC.removeEventFromXmlContent(eventId);
+            XC.saveXmlContentToFile();
+            XC.logCurrentXmlContent();
+        }
+    }
+
     //
     //  private methods
     //

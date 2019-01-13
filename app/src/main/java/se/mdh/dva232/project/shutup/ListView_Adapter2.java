@@ -1,6 +1,9 @@
 package se.mdh.dva232.project.shutup;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,19 +41,41 @@ public class ListView_Adapter2 extends ArrayAdapter<EventOutput> {
 
 
         // Gets the AndroidFlavor object from the ArrayAdapter at the appropriate position
-        element e = getItem(position);
+        final EventOutput e = getItem(position);
 
         //set values
-        NameView.setText(e.name);
-        NumberView.setText(e.start_time+" - "+e.end_time);
-        DateView.setText(e.date);
+        NameView.setText(e.getName());
+        NumberView.setText(e.getStartTime()+" - "+e.getEndTime());
+        DateView.setText(e.getStartDate());
         button.setImageResource(R.drawable.baseline_delete_black_18dp);
 
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(),"button clicked",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(),"button clicked",Toast.LENGTH_SHORT).show();
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setCancelable(true);
+                builder.setTitle(getContext().getString(R.string.f3_confirm_delete_title));
+                //builder.setMessage("Message");
+                builder.setPositiveButton("Confirm",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.d("confirmation dialog","positive which: "+which+" id: "+e.getId());
+                                EventController EC = new EventController(getContext());
+                                EC.deleteEventById(e.getId());
+                            }
+                        });
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("confirmation dialog","negative which: "+which);
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 

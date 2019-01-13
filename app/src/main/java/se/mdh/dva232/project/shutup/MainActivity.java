@@ -182,8 +182,13 @@ public class MainActivity extends AppCompatActivity {
     private void showStartDialog()
     {
         new AlertDialog.Builder(this)
-                .setTitle("one time dialog")
-                .setMessage("This text only appear once at start of application")
+                .setTitle(getString(R.string.manual_title))
+                /*
+                It is possible to change the default value of each button (time) at the page "NOW".
+                For changing the value press and hold the button.
+                */
+
+                .setMessage(getString(R.string.manual_message))
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

@@ -29,7 +29,14 @@
     <string name="f1_select_date_text"> - </string>
     <string name="f1_activate_button">ACTIVATE EVENT</string>
     <string name="f1_text_end_time_next_day_string">next day</string>
-    <string name="f2_text_current_events">CURRENT EVENTS</string>
+    <string name="f2_text_current_events">SAVED EVENTS</string>
+    <string name="f3_confirm_delete_title">Delete Event?</string>
+    <string name="f3_confirm_delete_message"></string>
+    <string name="manual_message">It is possible to change the default value of each button (time) at the page \"NOW\".\n
+                For changing the value press and hold the button.</string>
+    <string name="manual_title">MANUAL</string>
+
+
 
 
     <string-array name="Select">

@@ -22,11 +22,7 @@ public class Fragment2 extends Fragment {
 
 
 
-    element[] values = {
-            new element( "event 1", "12/07/2019","12:54","13:00"),
-            new element("event 2","17/09/2019","12:45","13:56"),
-            new element("event 3","11/03/2019","10:34","11:45"),
-    };
+
 
 
     public Fragment2() {

@@ -7,29 +7,16 @@
     android:windowSoftInputMode="stateAlwaysHidden">
 
     <TextView
-        android:id="@+id/f0_normal_text_current_mode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/textView1"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/f0_normal_text_select_duration"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/f0_normal_text_select_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/textView2"
         app:layout_constraintBottom_toTopOf="@+id/f0_normal_btn_duration_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/f0_normal_text_current_mode" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/f0_normal_btn_duration_1"
@@ -177,35 +164,5 @@
         android:layout_marginRight="16dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/f0_normal_btn_deactivate"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/silent_image"
-        android:layout_width="105dp"
-        android:layout_height="82dp"
-        android:layout_marginStart="136dp"
-        android:layout_marginLeft="136dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintStart_toEndOf="@+id/f0_normal_text_current_mode"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/normal_image"
-        android:layout_width="105dp"
-        android:layout_height="82dp"
-        android:layout_marginStart="136dp"
-        android:layout_marginLeft="136dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintStart_toEndOf="@+id/f0_normal_text_current_mode"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/vibration_image"
-        android:layout_width="105dp"
-        android:layout_height="82dp"
-        android:layout_marginStart="136dp"
-        android:layout_marginLeft="136dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintStart_toEndOf="@+id/f0_normal_text_current_mode"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
