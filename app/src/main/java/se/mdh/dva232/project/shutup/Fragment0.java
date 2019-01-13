@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -292,10 +293,9 @@ public class Fragment0 extends Fragment {
             rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);
 
             //imageviews
-            ImageView silent_image = rootView.findViewById(R.id.silent_image);
-            ImageView normal_image = rootView.findViewById(R.id.normal_image);
-            ImageView vibration_image = rootView.findViewById(R.id.vibration_image);
-
+            final ImageView silent_image = rootView.findViewById(R.id.silent_image);
+            final ImageView normal_image = rootView.findViewById(R.id.normal_image);
+            final ImageView vibration_image = rootView.findViewById(R.id.vibration_image);
 
             selectAudioModeForImage(silent_image,normal_image,vibration_image);
 
@@ -322,6 +322,7 @@ public class Fragment0 extends Fragment {
                 @Override
                 public void onClick(View v) {
                     doActivateSilentModeFromNowByButton(EC, btnDuration1.getText().toString(),"duration");
+                    selectAudioModeForImage(silent_image,normal_image,vibration_image);
                     goToBackgroundIfIsActivated();
                 }
             });
@@ -339,6 +340,7 @@ public class Fragment0 extends Fragment {
                 @Override
                 public void onClick(View v) {
                     doActivateSilentModeFromNowByButton(EC, btnDuration2.getText().toString(),"duration");
+                    selectAudioModeForImage(silent_image,normal_image,vibration_image);
                     goToBackgroundIfIsActivated();
                 }
             });
@@ -356,6 +358,7 @@ public class Fragment0 extends Fragment {
                 @Override
                 public void onClick(View v) {
                     doActivateSilentModeFromNowByButton(EC, btnDuration3.getText().toString(),"duration");
+                    selectAudioModeForImage(silent_image,normal_image,vibration_image);
                     goToBackgroundIfIsActivated();
                 }
             });
@@ -373,6 +376,7 @@ public class Fragment0 extends Fragment {
                 @Override
                 public void onClick(View v) {
                     doActivateSilentModeFromNowByButton(EC, btnDuration4.getText().toString(),"duration");
+                    selectAudioModeForImage(silent_image,normal_image,vibration_image);
                     goToBackgroundIfIsActivated();
                 }
             });
@@ -390,6 +394,7 @@ public class Fragment0 extends Fragment {
                 @Override
                 public void onClick(View v) {
                     doActivateSilentModeFromNowByButton(EC, btnDuration5.getText().toString(),"duration");
+                    selectAudioModeForImage(silent_image,normal_image,vibration_image);
                     goToBackgroundIfIsActivated();
                 }
             });
@@ -407,6 +412,7 @@ public class Fragment0 extends Fragment {
                 @Override
                 public void onClick(View v) {
                     doActivateSilentModeFromNowByButton(EC, btnDuration6.getText().toString(),"duration");
+                    selectAudioModeForImage(silent_image,normal_image,vibration_image);
                     goToBackgroundIfIsActivated();
                 }
             });
@@ -429,6 +435,7 @@ public class Fragment0 extends Fragment {
                 public void onClick(View v) {
                     if ( settings.getBoolean("silent_mode_active", true) ) {
                         doDeactivateSilentModeByButton();
+                        selectAudioModeForImage(silent_image,normal_image,vibration_image);
                     } else {
                         Toast.makeText(getContext(), "no silent mode active", Toast.LENGTH_SHORT).show();
                     }
@@ -631,17 +638,29 @@ public class Fragment0 extends Fragment {
 
     private void selectAudioModeForImage(ImageView silent, ImageView normal, ImageView vibration)
     {
-        AudioManager AM = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+        SystemClock.sleep(1000);
+        AudioManager AM = (AudioManager) getContext().getSystemService(getContext().AUDIO_SERVICE);
         int current_mode = AM.getRingerMode();
+        Log.d("F0", "current sound mode: " + AM.getRingerMode() );
+
         switch(current_mode)
         {
             case 0: Log.d("checking_images", "silent  "+current_mode);
+                normal.setVisibility(View.GONE);
+                vibration.setVisibility(View.GONE);
+                silent.setVisibility(View.VISIBLE);
                 silent.setImageResource(R.drawable.baseline_volume_off_black_18dp);
                 break;
             case 1: Log.d("checking_images", "vibrate  "+current_mode);
+                normal.setVisibility(View.GONE);
+                vibration.setVisibility(View.VISIBLE);
+                silent.setVisibility(View.GONE);
                 vibration.setImageResource(R.drawable.baseline_vibration_black_18dp);
                 break;
             case 2: Log.d("checking_images", "normal  "+current_mode);
+                normal.setVisibility(View.VISIBLE);
+                vibration.setVisibility(View.GONE);
+                silent.setVisibility(View.GONE);
                 normal.setImageResource(R.drawable.baseline_volume_up_black_18dp);
                 break;
             default: Log.d("checking_images", "default  "+current_mode);
