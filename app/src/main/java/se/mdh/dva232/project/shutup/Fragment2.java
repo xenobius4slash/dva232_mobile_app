@@ -9,25 +9,23 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.sql.Struct;
+import java.util.Arrays;
 
 public class Fragment2 extends Fragment {
 
     //define variables
     ListView list;
-
-    //struct that contains the elements of each item
-    /*class elements
-    {
-        public String name;
-        public String duration;
-    }*/
+    private ListView_Adapter2 data;
 
 
-    String [] item_elements =
-            {"event 1","11:00 - 12:00"};
-            //{"event 2","12:00 - 13:00"},
-           // {"event 3","13:00 - 14:00"},
-    //};
+
+
+    element[] values = {
+            new element( "event 1", "12/07/2019","12:54","13:00"),
+            new element("event 2","17/09/2019","12:45","13:56"),
+            new element("event 3","11/03/2019","10:34","11:45"),
+    };
+
 
     public Fragment2() {
         // Required empty public constructor
@@ -54,11 +52,19 @@ public class Fragment2 extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_fragment2, container, false);
 
-        list = rootView.findViewById(R.id.listView_Items);
+        //list = rootView.findViewById(R.id.listView_Items);
 
-        Log.d("set adapter", "setting listi view and item");
 
-        list.setAdapter(new ListView_Adapter(getContext(),item_elements));
+        //Log.d("set adapter", "setting listi view and item");
+
+
+       // list.setAdapter(new ListView_Adapter(getContext(),item_elements));
+
+        data = new ListView_Adapter2(getContext(),Arrays.asList(values));
+
+        // Get a reference to the ListView, and attach this adapter to it.
+        ListView listView = (ListView) rootView.findViewById(R.id.listView_Items);
+        listView.setAdapter(data);
 
         return rootView;
     }

@@ -35,7 +35,7 @@ public class ListView_Adapter extends BaseAdapter{
     {
         Log.d("getView","entering getView function");
         //Declare variables
-        final View view = inflater.inflate(R.layout.list_item,null);
+        final View view = inflater.inflate(R.layout.list_item,parent,false);
 
         TextView name = (TextView) view.findViewById(R.id.item_name);
         TextView duration = (TextView) view.findViewById(R.id.item_duration);
