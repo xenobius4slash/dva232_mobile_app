@@ -15,9 +15,9 @@
     <string name="button_deactivation">DEACTIVATE CURRENT ACTIVE MODE</string>
     <string name="button_duration">DURATION</string>
     <string name="button_until">UNTIL</string>
-    <string name="textView3">Vibration in Silent Mode</string>
-    <string name="textView4">Extended Mode</string>
-    <string name="textView5">Close after activation</string>
+    <string name="f0_text_switch_vibration">Vibration in Silent Mode</string>
+    <string name="f0_text_switch_extended_mode">Extended Mode</string>
+    <string name="f0_text_switch_close_after_activation">Close after activation</string>
     <string name="switch_set_on">ON</string>
     <string name="switch_set_off">OFF</string>
     <string name="button_date">SELECT DATE</string>
@@ -29,6 +29,7 @@
     <string name="f1_select_date_text"> - </string>
     <string name="f1_activate_button">ACTIVATE EVENT</string>
     <string name="f1_text_end_time_next_day_string">next day</string>
+    <string name="f2_text_current_events">CURRENT EVENTS</string>
 
 
     <string-array name="Select">

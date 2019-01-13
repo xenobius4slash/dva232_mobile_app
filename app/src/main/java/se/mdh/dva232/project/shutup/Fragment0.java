@@ -56,14 +56,6 @@ public class Fragment0 extends Fragment {
         final SharedPreferences.Editor settingsEditor = settings.edit();
         final View rootView;
 
-
-
-
-
-
-
-
-
         if( settings.getBoolean("extended_mode", false)) {
             /* ###################
              * ## EXTENDED mode ##

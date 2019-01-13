@@ -56,7 +56,7 @@ public class Fragment2 extends Fragment {
         data = new ListView_Adapter2(getContext(),Arrays.asList(values));
 
         // Get a reference to the ListView, and attach this adapter to it.
-        ListView listView = (ListView) rootView.findViewById(R.id.listView_Items);
+        ListView listView = rootView.findViewById(R.id.listView_Items);
         listView.setAdapter(data);
 
 

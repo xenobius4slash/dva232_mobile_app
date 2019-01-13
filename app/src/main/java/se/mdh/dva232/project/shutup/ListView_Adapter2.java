@@ -30,10 +30,10 @@ public class ListView_Adapter2 extends ArrayAdapter<element> {
         }
 
         //define variables
-        TextView NameView = (TextView) convertView.findViewById(R.id.item_name);
-        TextView DateView = (TextView) convertView.findViewById(R.id.date_view);
-        TextView NumberView = (TextView) convertView.findViewById(R.id.item_duration);
-        ImageButton button = (ImageButton) convertView.findViewById(R.id.delete_button);
+        TextView NameView = convertView.findViewById(R.id.item_name);
+        TextView DateView = convertView.findViewById(R.id.date_view);
+        TextView NumberView = convertView.findViewById(R.id.item_duration);
+        ImageButton button = convertView.findViewById(R.id.delete_button);
 
 
         // Gets the AndroidFlavor object from the ArrayAdapter at the appropriate position
