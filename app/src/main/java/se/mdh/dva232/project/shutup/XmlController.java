@@ -386,7 +386,7 @@ class XmlController {
                     if (now.after(endDateTime)) {    // is "endDateTime" after now?
                         // event is past => remove event
                         Log.d("XMLC","removeAllPastEventsFromXmlContent() -> IF("+now.toString()+" is after "+endDateTime.toString()+") is TRUE -> remove event with id " + id);
-                        nRoot.removeChild( nRootList.item(i) );     // removeEventFromXmlContent(id);  // TODO: replace
+                        nRoot.removeChild( nRootList.item(i) );
                         deletion = true;
                     }
                 } catch (ParseException e) {
@@ -518,7 +518,7 @@ class XmlController {
                 Document doc = getDocumentOfXmlContent();
                 if(doc != null) {
                     Node node = doc.getElementById(getCurrentCollision().getCollisionEventId());
-                    // TODO: change id to new id
+                    ((Element) node).setAttribute("id", newEndDate.concat("_").concat(newEndTime.replace(":", "")));    // change id
                     NodeList nodeList = node.getChildNodes();
                     nodeList.item(0).setTextContent(newEndDate);    // set start date of saved event to end date of new event
                     nodeList.item(1).setTextContent(newEndTime);    // set start time of saved event to end time of new event

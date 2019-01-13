@@ -12,18 +12,41 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
+ * Generate a random salt for the Event-ID
+ * @author Sylvio Ujvari
+ */
+/*
+class RandomSalt {
+    private static Random salt;
+
+    RandomSalt() {
+        salt = new Random();
+        salt.setSeed( Calendar.getInstance().getTimeInMillis() );
+    }
+
+    static Integer getSalt() {
+        return salt.nextInt(100000);
+    }
+}
+*/
+
+/**
  * Struct for an event
+ * @author Sylvio Ujvari
  */
 class Event {
     private String id;
+    private String idSemaphore;
     private String startDate;
     private String startTime;
     private String endDate;
     private String endTime;
+    private Random salt;
 
     /**
      * constructor with no parameter
@@ -46,15 +69,17 @@ class Event {
      */
     Event(String newId, String newStartDate, String newStartTime, String newEndDate, String newEndTime) {
         id = newId;
+        idSemaphore = newId + "#" + getRandomSalt();
         startDate = newStartDate;
         startTime = newStartTime;
         endDate = newEndDate;
         endTime = newEndTime;
+        Log.d("EVENTC_EVENT", "create Event("+id+" ("+idSemaphore+"), "+startDate+", "+startTime+", "+endDate+", "+endTime+")");
     }
 
     String getId() { return id; }
+    String getIdSemaphore() { return idSemaphore; }
     private String getStartDate() { return startDate; }
-
     private String getStartTime() { return startTime; }
     private String getEndDate() { return endDate; }
     private String getEndTime() { return endTime; }
@@ -80,7 +105,18 @@ class Event {
             return true;
         }
     }
+
+    /**
+     * generates a random salt for the event id which is uses in the semaphore
+     * @return      Integer     random salt
+     */
+    private static Integer getRandomSalt() {
+        Random salt = new Random();
+        salt.setSeed( Calendar.getInstance().getTimeInMillis() );
+        return salt.nextInt(100000);
+    }
 }
+
 
 /**
  * That class is the master class of the controllers and functioned as the interface. Only that methods should be call by the main code.
@@ -203,16 +239,12 @@ class EventController {
         }
         XC.logCurrentXmlContent();
         String eventId = newStartDate.concat("_").concat(newStartTime.replace(":", ""));
-        Log.d("EVENTC", "ID of the new event: " + eventId);
         if (XC.isCollisionByNewEvent(newStartDate, newStartTime, newEndDate, newEndTime)) {
             if (debug) { Log.d("EVENTC", "activateSilentModeByStartAndEnd -> collision detected"); }
             return false;
         } else {
             if (debug) { Log.d("EVENTC", "activateSilentModeByStartAndEnd -> no collision detected"); }
-            Log.d("EVENTC","[ASYNC TASKS] 'semaphore_async_task': "+ settings.getAll().get("semaphore_async_task")+ " // 'kill_all_async_tasks': " + settings.getAll().get("kill_all_async_tasks"));
             createCurrentEventAndSave(eventId, newStartDate, newStartTime, newEndDate, newEndTime);
-            Log.d("EVENTC","[ASYNC TASKS] #2 current event: " + getCurrentEvent().getContent());
-            Log.d("EVENTC", "content currentEvent: " + currentEvent.getContent());
             XC.addEventToXmlContent(eventId, newStartDate, newStartTime, newEndDate, newEndTime, eventName);
             XC.saveXmlContentToFile();
             XC.logCurrentXmlContent();
@@ -300,9 +332,9 @@ class EventController {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                Log.d("EVENTC", "SEMAPHORE (backToPrev): set semaphore to: " + getCurrentEvent().getId() );
+                Log.d("EVENTC", "SEMAPHORE (backToPrev): set semaphore to: " + getCurrentEvent().getIdSemaphore() );
                 SharedPreferences.Editor settingsEditor = settings.edit();
-                settingsEditor.putString("semaphore_async_task", getCurrentEvent().getId());
+                settingsEditor.putString("semaphore_async_task", getCurrentEvent().getIdSemaphore());
                 settingsEditor.apply();
                 final Timer timer = new Timer();
                 try {
@@ -313,7 +345,7 @@ class EventController {
                         public void run() {
                             tick = tick + 1;
                             Boolean holdSemaphore = true;
-                            if ( !(settings.getString("semaphore_async_task", null).equals(getCurrentEvent().getId())) ) {
+                            if ( !(settings.getString("semaphore_async_task", null).equals(getCurrentEvent().getIdSemaphore())) ) {
                                 holdSemaphore = false;
                             }
                             // cancel timer and delete running event if end time for silent mode is arrived/past or the silent mode is canceled by the user or another async task is allowed to be active
@@ -392,18 +424,14 @@ class EventController {
      */
     private void checkForSwitchToSilentSoundModeAndDoIt(Boolean initTask) {
         if(debug) { Log.d("EVENTC", "checkForSwitchToSilentSoundModeAndDoIt("+initTask+")"); }
-
-        Log.d("EVENTC","[ASYNC TASKS] 'semaphore_async_task': "+ settings.getAll().get("semaphore_async_task")+ " // 'kill_all_async_tasks': " + settings.getAll().get("kill_all_async_tasks"));
-        Log.d("EVENTC","[ASYNC TASKS] #3 current event: " + getCurrentEvent().getContent());
-
         final SharedPreferences.Editor settingsEditor = settings.edit();
-        Log.d("EVENTC", "[ASYNC TASKS]: IF( current_event="+getCurrentEvent().getId()+"  !=  semaphore="+settings.getString("semaphore_async_task", null) +" )");
-        if ( !getCurrentEvent().getId().equals( settings.getString("semaphore_async_task", null))) {
+        Log.d("EVENTC", "[ASYNC TASKS]: IF( current_event="+getCurrentEvent().getIdSemaphore()+"  !=  semaphore="+settings.getString("semaphore_async_task", null) +" )");
+        if ( !getCurrentEvent().getIdSemaphore().equals( settings.getString("semaphore_async_task", null))) {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d("EVENTC", "SEMAPHORE (ToSilent): set semaphore to: " + getCurrentEvent().getId());
-                    settingsEditor.putString("semaphore_async_task", getCurrentEvent().getId());
+                    Log.d("EVENTC", "SEMAPHORE (ToSilent): set semaphore to: " + getCurrentEvent().getIdSemaphore());
+                    settingsEditor.putString("semaphore_async_task", getCurrentEvent().getIdSemaphore());
                     settingsEditor.apply();
                     final Timer timer = new Timer();
                     try {
@@ -426,7 +454,7 @@ class EventController {
                                     Log.d("TIMER", "[toSilent] stop timer because of the signal 'kill_all_async_tasks'");
                                 }
                                 // cancel timer if another async task is allowed to be active
-                                else if (!settings.getString("semaphore_async_task", null).equals(getCurrentEvent().getId())) {
+                                else if (!settings.getString("semaphore_async_task", null).equals(getCurrentEvent().getIdSemaphore())) {
                                     timer.cancel();
                                     timer.purge();
                                     Log.d("TIMER", "[toSilent] stop timer (event id: " + getCurrentEvent().getId() + ") by preemption (" + settings.getString("semaphore_async_task", null) + ")");
