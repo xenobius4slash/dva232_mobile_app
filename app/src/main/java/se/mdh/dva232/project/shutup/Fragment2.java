@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.sql.Struct;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Fragment2 extends Fragment {
 
@@ -53,8 +55,8 @@ public class Fragment2 extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_fragment2, container, false);
 
 
-
         data = new ListView_Adapter2(getContext(),Arrays.asList(values));
+
 
         // Get a reference to the ListView, and attach this adapter to it.
         ListView listView = (ListView) rootView.findViewById(R.id.listView_Items);
