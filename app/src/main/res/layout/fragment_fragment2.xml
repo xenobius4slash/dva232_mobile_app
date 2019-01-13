@@ -6,14 +6,11 @@
     android:focusableInTouchMode="true"
     android:windowSoftInputMode="stateAlwaysHidden">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ListView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/tab_text_3"
-        android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 </android.support.constraint.ConstraintLayout>

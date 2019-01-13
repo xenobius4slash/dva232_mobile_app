@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Boolean debugSettings = false;
+        Boolean debugSettings = true;
 
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor settingsEditor = settings.edit();
@@ -42,12 +42,12 @@ public class MainActivity extends AppCompatActivity {
             settingsEditor.putBoolean("silent_mode_active", false);
             settingsEditor.putString("semaphore_async_task", null);
             settingsEditor.putBoolean("kill_all_async_tasks", true);
-            settingsEditor.putString("btn_duration_1", String.valueOf(R.string.btn_0_duration_1));
-            settingsEditor.putString("btn_duration_2", String.valueOf(R.string.btn_0_duration_2));
-            settingsEditor.putString("btn_duration_3", String.valueOf(R.string.btn_0_duration_3));
-            settingsEditor.putString("btn_duration_4", String.valueOf(R.string.btn_0_duration_4));
-            settingsEditor.putString("btn_duration_5", String.valueOf(R.string.btn_0_duration_5));
-            settingsEditor.putString("btn_duration_6", String.valueOf(R.string.btn_0_duration_6));
+            settingsEditor.putString("btn_duration_1", getString(R.string.btn_0_duration_1) );
+            settingsEditor.putString("btn_duration_2", getString(R.string.btn_0_duration_2));
+            settingsEditor.putString("btn_duration_3", getString(R.string.btn_0_duration_3));
+            settingsEditor.putString("btn_duration_4", getString(R.string.btn_0_duration_4));
+            settingsEditor.putString("btn_duration_5", getString(R.string.btn_0_duration_5));
+            settingsEditor.putString("btn_duration_6", getString(R.string.btn_0_duration_6));
             settingsEditor.apply();
         } else {
             if (debugSettings) { Log.d("SETTINGS", "settings detected"); }

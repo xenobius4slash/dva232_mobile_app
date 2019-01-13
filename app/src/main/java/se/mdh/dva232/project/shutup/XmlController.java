@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -38,6 +39,30 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+class EventOutput {
+    private String id;
+    private String name;
+    private String startDate;
+    private String startTime;
+    private String endDate;
+    private String endTime;
+
+    EventOutput(String newId, String newName, String newStartDate, String newStartTime, String newEndDate, String newEndTime) {
+        id = newId;
+        name = newName;
+        startDate = newStartDate;
+        startTime = newStartTime;
+        endDate = newEndDate;
+        endTime = newEndTime;
+    }
+
+    String getId() { return  id; }
+    String getName() { return name; }
+    String getStartDate() { return startDate; }
+    String getStartTime() { return startTime; }
+    String getEndDate() { return endDate; }
+    String getEndTime() { return  endTime; }
+}
 
 class Collision {
     private Boolean collision;
@@ -73,7 +98,7 @@ class XmlController {
     private Context context;
     private String xmlFilename = "events.xml";
     private String xmlContent = null;
-    private Boolean debug = false;       // true: with Log.d output; false: without Log.d output
+    private Boolean debug = true;       // true: with Log.d output; false: without Log.d output
     private Collision currentCollision = null;
 
     /**
@@ -89,21 +114,36 @@ class XmlController {
     // public methods
     //
 
-    public void getAllEventsFromTheXmlContent() {
+    ArrayList<EventOutput> getAllEventsFromTheXmlContent() {
         if(debug) { Log.d("XMLC", "getAllEventsFromTheXmlContent()"); }
+        logCurrentXmlContent();
+        ArrayList<EventOutput> eventArray = new ArrayList<>();
+        String eventId=null, startDateString=null, startTimeString=null, endDateString=null, endTimeString=null, name=null;
+
         try {
             XmlPullParserFactory xmlFactory = XmlPullParserFactory.newInstance();
             XmlPullParser xmlParser = xmlFactory.newPullParser();
             xmlParser.setInput( new StringReader( getXmlContent() ));
-
             while(xmlParser.next() != XmlPullParser.END_DOCUMENT) {
-                if ( xmlParser.getName().equals("event") ) {
-                    if ( xmlParser.getEventType() == XmlPullParser.START_TAG ) {
-
-                    }
-                    if ( xmlParser.getEventType() == XmlPullParser.END_TAG ) {
-
-                    }
+                if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("event")) {
+                    eventId = xmlParser.getAttributeValue("","id");
+                } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("start_date")) {
+                    xmlParser.next();
+                    startDateString = xmlParser.getText();
+                } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("start_time")) {
+                    xmlParser.next();
+                    startTimeString = xmlParser.getText();
+                } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("end_date")) {
+                    xmlParser.next();
+                    endDateString = xmlParser.getText();
+                } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("end_time")) {
+                    xmlParser.next();
+                    endTimeString = xmlParser.getText();
+                } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("name")) {
+                    xmlParser.next();
+                    name = xmlParser.getText();
+                } else if ( xmlParser.getEventType() == XmlPullParser.END_TAG && xmlParser.getName().equals("event")) {
+                    eventArray.add( new EventOutput(eventId, name, startDateString, startTimeString, endDateString, endTimeString) );
                 }
             }
         } catch (XmlPullParserException e) {
@@ -111,7 +151,12 @@ class XmlController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        if (!eventArray.isEmpty()) {
+            for (int i = 0; i < eventArray.size(); i++) {
+                Log.d("XMLC", "eventArray["+i+"] => id: "+eventArray.get(i).getId()+" // name: "+eventArray.get(i).getName()+" // startDate: "+eventArray.get(i).getStartDate()+" // startTime: "+eventArray.get(i).getStartTime()+" // endDate: "+eventArray.get(i).getEndDate()+" // endTime: "+eventArray.get(i).getEndTime());
+            }
+        }
+        return eventArray;
     }
 
     Event getFirstUpcommingEvent() {
@@ -125,7 +170,6 @@ class XmlController {
             Boolean found = false;
             while(xmlParser.next() != XmlPullParser.END_DOCUMENT && !found) {
                 if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("event")) {
-
                     eventId = xmlParser.getAttributeValue("","id");
                 } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("start_date")) {
                     xmlParser.next();

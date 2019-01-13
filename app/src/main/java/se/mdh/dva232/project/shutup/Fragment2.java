@@ -32,6 +32,10 @@ public class Fragment2 extends Fragment {
         Log.d("LIFECYCLE Fragment2", "onCreateView(...)");
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_fragment2, container, false);
+
+        EventController EC = new EventController(getContext());
+        EC.getAllSavedEvents();
+
         return rootView;
     }
 
