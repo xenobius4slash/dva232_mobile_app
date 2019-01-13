@@ -52,18 +52,17 @@ public class Fragment2 extends Fragment {
         Log.d("LIFECYCLE Fragment2", "onCreateView(...)");
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_fragment2, container, false);
+        EventController EC = new EventController(getContext());
+        ArrayList<EventOutput> resultEvents =  EC.getAllSavedEvents();
 
 
-        data = new ListView_Adapter2(getContext(),Arrays.asList(values));
 
+        //data = new ListView_Adapter2(getContext(),Arrays.asList(values));
+        data = new ListView_Adapter2(getContext(), resultEvents);
 
         // Get a reference to the ListView, and attach this adapter to it.
         ListView listView = rootView.findViewById(R.id.listView_Items);
         listView.setAdapter(data);
-
-
-        EventController EC = new EventController(getContext());
-        EC.getAllSavedEvents();
 
         return rootView;
     }

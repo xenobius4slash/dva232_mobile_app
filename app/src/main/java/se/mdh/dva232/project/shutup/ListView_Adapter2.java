@@ -9,12 +9,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ListView_Adapter2 extends ArrayAdapter<element> {
+public class ListView_Adapter2 extends ArrayAdapter<EventOutput> {
 
 
-    public ListView_Adapter2(Context context, List<element> elements) {
+    public ListView_Adapter2(Context context, ArrayList<EventOutput> elements) {
         // Here, we initialize the ArrayAdapter's internal storage for the context and the list.
         // the second argument is used when the ArrayAdapter is populating a single TextView.
         // Because this is a custom adapter for two TextViews and an ImageView, the adapter is not

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -268,14 +269,15 @@ class EventController {
         return AC.getCurrentSoundMode();
     }
 
-    void getAllSavedEvents() {
+    ArrayList<EventOutput> getAllSavedEvents() {
         if(debug) { Log.d("EVENTC", "getAllSavedEvents()"); }
         XmlController XC = new XmlController(context);
         if (!XC.readXmlFileAndLoad()) {
             Log.d("EVENTC", "there are no saved events");
+            return null;
         } else {
             XC.logCurrentXmlContent();
-            XC.getAllEventsFromTheXmlContent();
+            return XC.getAllEventsFromTheXmlContent();
         }
     }
 
