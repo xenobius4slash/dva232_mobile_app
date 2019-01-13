@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -23,30 +24,34 @@ public class ListView_Adapter2 extends ArrayAdapter<element> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Gets the AndroidFlavor object from the ArrayAdapter at the appropriate position
-        element e = getItem(position);
 
-        // Adapters recycle views to AdapterViews.
-        // If this is a new View object we're getting, then inflate the layout.
-        // If not, this view already has the layout inflated from a previous call to getView,
-        // and we modify the View widgets as usual.
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
         }
 
         //define variables
         TextView NameView = (TextView) convertView.findViewById(R.id.item_name);
-        TextView NumberView = (TextView) convertView.findViewById(R.id.item_duration);
         TextView DateView = (TextView) convertView.findViewById(R.id.date_view);
+        TextView NumberView = (TextView) convertView.findViewById(R.id.item_duration);
+        ImageButton button = (ImageButton) convertView.findViewById(R.id.delete_button);
 
+
+        // Gets the AndroidFlavor object from the ArrayAdapter at the appropriate position
+        element e = getItem(position);
 
         //set values
         NameView.setText(e.name);
         NumberView.setText(e.start_time+" - "+e.end_time);
         DateView.setText(e.date);
-
-        ImageButton button = (ImageButton) convertView.findViewById(R.id.delete_button);
         button.setImageResource(R.drawable.baseline_delete_black_18dp);
+
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(),"button clicked",Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return convertView;
     }

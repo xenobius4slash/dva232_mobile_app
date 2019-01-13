@@ -52,13 +52,7 @@ public class Fragment2 extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_fragment2, container, false);
 
-        //list = rootView.findViewById(R.id.listView_Items);
 
-
-        //Log.d("set adapter", "setting listi view and item");
-
-
-       // list.setAdapter(new ListView_Adapter(getContext(),item_elements));
 
         data = new ListView_Adapter2(getContext(),Arrays.asList(values));
 
