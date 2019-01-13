@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
@@ -118,7 +117,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="@string/textView3"
+        android:text="@string/f0_text_switch_vibration"
         app:layout_constraintBaseline_toBaselineOf="@+id/f0_normal_switch_vibration"
         app:layout_constraintEnd_toStartOf="@+id/f0_normal_switch_vibration"
         app:layout_constraintStart_toEndOf="@+id/f0_normal_btn_duration_3" />
@@ -140,7 +139,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="@string/textView4"
+        android:text="@string/f0_text_switch_extended_mode"
         app:layout_constraintBaseline_toBaselineOf="@+id/f0_normal_switch_extended_mode"
         app:layout_constraintEnd_toStartOf="@+id/f0_normal_switch_extended_mode"
         app:layout_constraintStart_toEndOf="@+id/f0_normal_btn_duration_3" />
@@ -165,7 +164,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="@string/textView5"
+        android:text="@string/f0_text_switch_close_after_activation"
         app:layout_constraintBaseline_toBaselineOf="@+id/f0_normal_switch_close_after_activation"
         app:layout_constraintEnd_toStartOf="@+id/f0_normal_switch_close_after_activation"
         app:layout_constraintStart_toEndOf="@+id/f0_normal_btn_duration_3" />
