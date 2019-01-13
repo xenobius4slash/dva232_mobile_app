@@ -1,8 +1,12 @@
 package se.mdh.dva232.project.shutup;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -50,7 +55,15 @@ public class Fragment0 extends Fragment {
         final SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
         final SharedPreferences.Editor settingsEditor = settings.edit();
         final View rootView;
-        
+
+
+
+
+
+
+
+
+
         if( settings.getBoolean("extended_mode", false)) {
             /* ###################
              * ## EXTENDED mode ##
@@ -286,6 +299,13 @@ public class Fragment0 extends Fragment {
              */
             rootView = inflater.inflate(R.layout.fragment_fragment0, container, false);
 
+            //imageviews
+            ImageView silent_image = rootView.findViewById(R.id.silent_image);
+            ImageView normal_image = rootView.findViewById(R.id.normal_image);
+            ImageView vibration_image = rootView.findViewById(R.id.vibration_image);
+
+
+            selectAudioModeForImage(silent_image,normal_image,vibration_image);
 
             /*
              *  Buttons: silent for duration
@@ -614,4 +634,30 @@ public class Fragment0 extends Fragment {
             }
         }
     }
+
+
+
+    private void selectAudioModeForImage(ImageView silent, ImageView normal, ImageView vibration)
+    {
+        AudioManager AM = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+        int current_mode = AM.getRingerMode();
+        switch(current_mode)
+        {
+            case 0: Log.d("checking_images", "silent  "+current_mode);
+                silent.setImageResource(R.drawable.baseline_volume_off_black_18dp);
+                break;
+            case 1: Log.d("checking_images", "vibrate  "+current_mode);
+                vibration.setImageResource(R.drawable.baseline_vibration_black_18dp);
+                break;
+            case 2: Log.d("checking_images", "normal  "+current_mode);
+                normal.setImageResource(R.drawable.baseline_volume_up_black_18dp);
+                break;
+            default: Log.d("checking_images", "default  "+current_mode);
+                break;
+
+        }
+
+    }
+
+
 }

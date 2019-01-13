@@ -1,7 +1,12 @@
 package se.mdh.dva232.project.shutup;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.media.AudioManager;
+import android.media.Image;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
@@ -11,12 +16,15 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static Boolean debugLifecycle = false;
     SectionsPagerAdapter mSectionsPagerAdapter;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +36,12 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor settingsEditor = settings.edit();
+        //ImageView silent_image = findViewById(R.id.silent_image);
+        //ImageView normal_image = findViewById(R.id.normal_image);
+
+        //shows the image based on the actual sound mode
+        //selectAudioModeForImage(silent_image,normal_image);
+
 
         //if there is no settings put default to false
 
@@ -49,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
             settingsEditor.putString("btn_duration_5", getString(R.string.btn_0_duration_5));
             settingsEditor.putString("btn_duration_6", getString(R.string.btn_0_duration_6));
             settingsEditor.apply();
+            showStartDialog();      //show starting dialog
+
         } else {
             if (debugSettings) { Log.d("SETTINGS", "settings detected"); }
         }
@@ -161,4 +177,55 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() { return 3; }
     }
+
+    //show a starting dialog every time the user starts the application for the first time
+    private void showStartDialog()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("one time dialog")
+                .setMessage("This text only appear once at start of application")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();   //close the dialog
+
+
+                    }
+                })
+                .create().show();
+        //other code...
+
+    }
+
+    /*private void selectAudioModeForImage(ImageView silent, ImageView normal)
+    {
+        AudioManager AM = (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
+        //EventController EC = new EventController(getBaseContext());
+
+        int current_mode = AM.getRingerMode();
+        switch(current_mode)
+        {
+            case 0: Log.d("checking_images", "silent  "+current_mode);
+                //need to initialize the image resource
+                //silent.setImageResource(0);
+                //set image
+                silent.setImageResource(R.drawable.silent);
+                break;
+            case 1: Log.d("checking_images", "vibrate  "+current_mode);
+                break;
+            case 2: Log.d("checking_images", "normal  "+current_mode);
+                //need to initiallize the image resource
+                normal.setImageResource(0);
+                //set image
+                normal.setImageResource(R.drawable.normal);
+                break;
+            default: Log.d("checking_images", "default  "+current_mode);
+                break;
+
+        }
+
+    }*/
+
+
+
 }
