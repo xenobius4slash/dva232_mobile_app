@@ -105,7 +105,9 @@ class Event {
  */
 class EventController {
     private Context context;
-    private Boolean debug = true;   // true: with Log.d output; false: without Log.d output
+    private Boolean debug = false;              // true: with Log.d output; false: without Log.d output
+    private Boolean debugAsyncTask = false;     // true: with Log.d output; false: without Log.d output
+    private Boolean debugTimer = true;          // true: with Log.d output; false: without Log.d output
     private Event currentEvent = null;
     private SharedPreferences settings;
     private XmlController XC = null;
@@ -123,7 +125,6 @@ class EventController {
     //
     //  public methods
     //
-
 
     /**
      * Task which have to run at the start
@@ -143,30 +144,21 @@ class EventController {
         SystemClock.sleep(2000);
         settingsEditor.putBoolean("kill_all_async_tasks", false);
         settingsEditor.apply();
-        Log.d("EVENTC", "[ASYNCTASKS] kill_all_async_tasks -> TRUE -> FALSE");
+        if (debugAsyncTask) { Log.d("EVENTC", "[ASYNCTASK] kill_all_async_tasks -> TRUE -> FALSE"); }
 
         if (delXml) {
             XmlController XC = new XmlController(context);
             if (XC.readXmlFileAndLoad()) {
                 Log.d("EVENTC","XML files deleted");
-                XC.resetXmlContent();             // TODO: remove
-                XC.createXmlContentSkeleton();    // TODO: remove
-                XC.saveXmlContentToFile();        // TODO: remove
+                XC.resetXmlContent();
+                XC.createXmlContentSkeleton();
+                XC.saveXmlContentToFile();
             }
         }
         runOpenTasks();
     }
 
-    private void preemptRunningTaskAndRunOpenTask() {
-        Log.d("EVENTC","[ASYNCTASK] preemptRunningTaskAndRunOpenTask() --> current semaphore content: " + settings.getAll().get("semaphore_async_task"));
-        SharedPreferences.Editor settingsEditor = settings.edit();
-        settingsEditor.putString("semaphore_async_task", null);
-        settingsEditor.apply();
-        SystemClock.sleep(1000);
-        runOpenTasks();
-    }
-
-    private void runOpenTasks() {
+    void runOpenTasks() {
         if(debug) { Log.d("EVENTC", "runOpenTasks()"); }
         XmlController XC = new XmlController(context);
         if (XC.readXmlFileAndLoad()) {
@@ -177,7 +169,7 @@ class EventController {
             setCurrentEvent( XC.getFirstUpcommingEvent() );
             if ( getCurrentEvent().existEvent() ) {
                 Log.d("EVENTC", "upcoming events existing");
-                checkForSwitchToSilentSoundModeAndDoIt(true);
+                checkForSwitchToSilentSoundModeAndDoIt();
             }
             else { Log.d("EVENTC", "no events upcoming events are found"); }
             XC.logCurrentXmlContent();
@@ -254,7 +246,7 @@ class EventController {
             XC.addEventToXmlContent(eventId, newStartDate, newStartTime, newEndDate, newEndTime, eventName);
             XC.saveXmlContentToFile();
             XC.logCurrentXmlContent();
-            checkForSwitchToSilentSoundModeAndDoIt(false);       // Async Task
+            checkForSwitchToSilentSoundModeAndDoIt();       // Async Task
             Log.d("EVENTC", "after checkForSwitchToSilentSoundModeAndDoIt()");
             return true;
         }
@@ -281,6 +273,25 @@ class EventController {
         }
     }
 
+    /**
+     * Check for active state of an event
+     * @param eventId       String      ID of an event
+     * @return      Boolean
+     */
+    Boolean isEventActive(String eventId) {
+        if(debug) { Log.d("EVENTC", "isEventActive("+eventId+")"); }
+        Boolean active = false;
+        XmlController XC = new XmlController(context);
+        if (XC.readXmlFileAndLoad()) {
+            active = XC.isEventActiveById(eventId);
+        }
+        return active;
+    }
+
+    /**
+     * Delete an event by id-
+     * @param eventId   String      Event-ID
+     */
     void deleteEventById(String eventId) {
         if(debug) { Log.d("EVENTC", "deleteEventById()"); }
         XmlController XC = new XmlController( context );
@@ -364,6 +375,15 @@ class EventController {
         }
     }
 
+    private void preemptRunningTaskAndRunOpenTask() {
+        if (debugAsyncTask) { Log.d("EVENTC","[ASYNCTASK] preemptRunningTaskAndRunOpenTask() --> current semaphore content: " + settings.getAll().get("semaphore_async_task")); }
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putString("semaphore_async_task", null);
+        settingsEditor.apply();
+        SystemClock.sleep(1000);
+        runOpenTasks();
+    }
+
     /**
      * checks for switching back to the previous sound mode regarding the current event and call the deactivation
      */
@@ -372,13 +392,17 @@ class EventController {
         if (existCurrentEvent()) {
             if ( !getCurrentEvent().getIdSemaphore().equals(settings.getString("semaphore_async_task", null)) && settings.getString("semaphore_async_task", null) != null) {
                 // Semaphore in use --> preemption of running task
-                Log.d("EVENTC", "[ASYNCTASK] (toPrev) preempt running task by " + getCurrentEvent().getIdSemaphore() );
-                Log.d("EVENTC", "[ASYNCTASK] (toPrev) current semaphore content: " + settings.getAll().get("semaphore_async_task"));
+                if (debugAsyncTask) {
+                    Log.d("EVENTC", "[ASYNCTASK] (toPrev) preempt running task by " + getCurrentEvent().getIdSemaphore());
+                    Log.d("EVENTC", "[ASYNCTASK] (toPrev) current semaphore content: " + settings.getAll().get("semaphore_async_task"));
+                }
                 preemptRunningTaskAndRunOpenTask();
             } else if ( settings.getString("semaphore_async_task", null) == null ) {
                 // semaphore is free
-                Log.d("EVENTC", "[ASYNCTASK] (toPrev) semaphore is free task " + getCurrentEvent().getIdSemaphore() + " can run");
-                Log.d("EVENTC", "[ASYNCTASK] (toPrev) set semaphore to: " + getCurrentEvent().getIdSemaphore());
+                if (debugAsyncTask) {
+                    Log.d("EVENTC", "[ASYNCTASK] (toPrev) semaphore is free task " + getCurrentEvent().getIdSemaphore() + " can run");
+                    Log.d("EVENTC", "[ASYNCTASK] (toPrev) set semaphore to: " + getCurrentEvent().getIdSemaphore());
+                }
                 final SharedPreferences.Editor settingsEditor = settings.edit();
                 settingsEditor.putString("semaphore_async_task", getCurrentEvent().getIdSemaphore());
                 settingsEditor.apply();
@@ -398,22 +422,21 @@ class EventController {
                                         // cancel timer and delete running event if end time for silent mode is arrived/past or the silent mode is canceled by the user
                                         timer.cancel();
                                         timer.purge();
-                                        Log.d("TIMER", "stop timer by end of the event or canceling by user");
-                                        Log.d("EVENTC", "[ASYNCTASK] (toPrev) free semaphore (old: " + getCurrentEvent().getIdSemaphore() + ")");
+                                        if (debugTimer) { Log.d("TIMER", "stop timer by end of the event or canceling by user"); }
+                                        if (debugAsyncTask) { Log.d("EVENTC", "[ASYNCTASK] (toPrev) free semaphore (old: " + getCurrentEvent().getIdSemaphore() + ")"); }
                                         settingsEditor.putString("semaphore_async_task", null);
                                         settingsEditor.apply();
                                         deactivateSilentMode();
-                                        Log.d("EVENTC","[ASYNCTASK] (toPrev) end of the event or canceling by user --> runOpenTasks()");
+                                        if (debugAsyncTask) { Log.d("EVENTC","[ASYNCTASK] (toPrev) end of the event or canceling by user --> runOpenTasks()"); }
                                         runOpenTasks();
                                     } else if ( !getCurrentEvent().getIdSemaphore().equals(settings.getString("semaphore_async_task", null)) ) {
                                         // preemption by another task
                                         timer.cancel();
                                         timer.purge();
-                                        Log.d("TIMER", " (toPrev) stop timer preemption");
-                                        Log.d("EVENTC","[ASYNCTASK] (toPrev) stop by preemption --> runOpenTasks()");
-//                                        runOpenTasks();
+                                        if (debugTimer) { Log.d("TIMER", " (toPrev) stop timer preemption"); }
+                                        if (debugAsyncTask) { Log.d("EVENTC", "[ASYNCTASK] (toPrev) stop by preemption --> runOpenTasks()"); }
                                     } else {
-                                        Log.d("TIMER", "(toPrev) switch to previous tick: " + tick + " -> timer for event-id '" + getCurrentEvent().getId() + "' is running (now: " + Calendar.getInstance().getTime() + " // event-end: " + eventEnd + ")");
+                                        if (debugTimer) {  Log.d("TIMER", "(toPrev) switch to previous tick: " + tick + " -> timer for event-id '" + getCurrentEvent().getId() + "' is running (now: " + Calendar.getInstance().getTime() + " // event-end: " + eventEnd + ")"); }
                                     }
                                 }
                             }, 1000, 1000);     // TODO: modify period and delay depending on the time till end -> period from big to small (60 sec -> 30 sec -> 10 sec -> 1 sec)
@@ -467,18 +490,22 @@ class EventController {
     /**
      * checks for switching to the silent sound mode regarding the current event and call the activation
      */
-    private void checkForSwitchToSilentSoundModeAndDoIt(final Boolean initTask) {
-        if(debug) { Log.d("EVENTC", "checkForSwitchToSilentSoundModeAndDoIt("+initTask+")"); }
+    private void checkForSwitchToSilentSoundModeAndDoIt() {
+        if(debug) { Log.d("EVENTC", "checkForSwitchToSilentSoundModeAndDoIt()"); }
         if (existCurrentEvent()) {
             if ( !getCurrentEvent().getIdSemaphore().equals(settings.getString("semaphore_async_task", null)) && settings.getString("semaphore_async_task", null) != null) {
                 // Semaphore in use --> preemption of running task
-                Log.d("EVENTC", "[ASYNCTASK] (toSilent) preempt running task by " + getCurrentEvent().getIdSemaphore() );
-                Log.d("EVENTC", "[ASYNCTASK] (toSilent) current semaphore content: " + settings.getAll().get("semaphore_async_task"));
+                if (debugAsyncTask) {
+                    Log.d("EVENTC", "[ASYNCTASK] (toSilent) preempt running task by " + getCurrentEvent().getIdSemaphore());
+                    Log.d("EVENTC", "[ASYNCTASK] (toSilent) current semaphore content: " + settings.getAll().get("semaphore_async_task"));
+                }
                 preemptRunningTaskAndRunOpenTask();
             } else if ( settings.getString("semaphore_async_task", null) == null ) {
                 // semaphore is free
-                Log.d("EVENTC", "[ASYNCTASK] (toPrev) semaphore is free task " + getCurrentEvent().getIdSemaphore() + " can run");
-                Log.d("EVENTC", "[ASYNCTASK] (toPrev) set semaphore to: " + getCurrentEvent().getIdSemaphore());
+                if (debugAsyncTask) {
+                    Log.d("EVENTC", "[ASYNCTASK] (toPrev) semaphore is free task " + getCurrentEvent().getIdSemaphore() + " can run");
+                    Log.d("EVENTC", "[ASYNCTASK] (toPrev) set semaphore to: " + getCurrentEvent().getIdSemaphore());
+                }
                 final SharedPreferences.Editor settingsEditor = settings.edit();
                 settingsEditor.putString("semaphore_async_task", getCurrentEvent().getIdSemaphore());
                 settingsEditor.apply();
@@ -498,20 +525,19 @@ class EventController {
                                         // cancel timer and activate the silent mode if start time for silent mode is arrived/past
                                         timer.cancel();
                                         timer.purge();
-                                        Log.d("EVENTC", "[ASYNCTASK] (toSilent) free semaphore (old: " + getCurrentEvent().getIdSemaphore() + ")");
+                                        if (debugAsyncTask) { Log.d("EVENTC", "[ASYNCTASK] (toSilent) free semaphore (old: " + getCurrentEvent().getIdSemaphore() + ")"); }
                                         settingsEditor.putString("semaphore_async_task", null);
                                         settingsEditor.apply();
-                                        Log.d("TIMER", "stop timer by start of the event");
+                                        if (debugTimer) { Log.d("TIMER", "stop timer by start of the event"); }
                                         activateSilentMode();
                                     }else if ( !getCurrentEvent().getIdSemaphore().equals(settings.getString("semaphore_async_task", null)) ) {
                                         // preemption by another task
                                         timer.cancel();
                                         timer.purge();
-                                        Log.d("TIMER", "(toSilent) stop timer preemption");
-                                        Log.d("EVENTC","[ASYNCTASK] (toSilent) stop by preemption --> runOpenTasks()");
-//                                        runOpenTasks();
+                                        if (debugTimer) { Log.d("TIMER", "(toSilent) stop timer preemption"); }
+                                        if (debugAsyncTask) { Log.d("EVENTC","[ASYNCTASK] (toSilent) stop by preemption --> runOpenTasks()"); }
                                     } else {
-                                        Log.d("TIMER", "(toSilent) switch to silent tick: " + tick + " -> timer for event-id '" + getCurrentEvent().getId() + "' is running (now: " + Calendar.getInstance().getTime() + " // event-start: " + eventStart + ")");
+                                        if (debugTimer) { Log.d("TIMER", "(toSilent) switch to silent tick: " + tick + " -> timer for event-id '" + getCurrentEvent().getId() + "' is running (now: " + Calendar.getInstance().getTime() + " // event-start: " + eventStart + ")"); }
                                     }
                                 }
                             }, 1000, 1000);     // TODO: modify period and delay depending on the time till start -> period from big to small (60 sec -> 30 sec -> 10 sec -> 1 sec)

@@ -1,12 +1,9 @@
 package se.mdh.dva232.project.shutup;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.media.AudioManager;
-import android.media.Image;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
@@ -16,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,26 +20,16 @@ public class MainActivity extends AppCompatActivity {
     private static Boolean debugLifecycle = false;
     SectionsPagerAdapter mSectionsPagerAdapter;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (debugLifecycle) { Log.d("LIFECYCLE_Activity", "onCreate"); }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Boolean debugSettings = true;
+        Boolean debugSettings = false;
 
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor settingsEditor = settings.edit();
-        //ImageView silent_image = findViewById(R.id.silent_image);
-        //ImageView normal_image = findViewById(R.id.normal_image);
-
-        //shows the image based on the actual sound mode
-        //selectAudioModeForImage(silent_image,normal_image);
-
-
-        //if there is no settings put default to false
 
         if ( !settings.contains("vibration") || !settings.contains("extended_mode") || !settings.contains("close_after_activation") || !settings.contains("btn_duration_1")
                 || !settings.contains("btn_duration_2") || !settings.contains("btn_duration_3") || !settings.contains("btn_duration_4") || !settings.contains("btn_duration_5")
@@ -167,10 +153,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             switch(position) {
-                case 0: return Fragment0.newInstance();
-                case 1: return Fragment1.newInstance();
-                case 2: return Fragment2.newInstance();
-                default: return Fragment0.newInstance();
+                case 0: Log.d("ACTIVITY","Fragment0.newInstance()"); return Fragment0.newInstance();
+                case 1: Log.d("ACTIVITY","Fragment1.newInstance()"); return Fragment1.newInstance();
+                case 2: Log.d("ACTIVITY","Fragment2.newInstance()"); return Fragment2.newInstance();
+                default: Log.d("ACTIVITY","Fragment0.newInstance()"); return Fragment0.newInstance();
             }
         }
 
@@ -178,59 +164,21 @@ public class MainActivity extends AppCompatActivity {
         public int getCount() { return 3; }
     }
 
-    //show a starting dialog every time the user starts the application for the first time
+    /**
+     * show a starting dialog every time the user starts the application for the first time
+     */
     private void showStartDialog()
     {
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.manual_title))
-                /*
-                It is possible to change the default value of each button (time) at the page "NOW".
-                For changing the value press and hold the button.
-                */
-
                 .setMessage(getString(R.string.manual_message))
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();   //close the dialog
-
-
                     }
                 })
                 .create().show();
-        //other code...
-
     }
-
-    /*private void selectAudioModeForImage(ImageView silent, ImageView normal)
-    {
-        AudioManager AM = (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
-        //EventController EC = new EventController(getBaseContext());
-
-        int current_mode = AM.getRingerMode();
-        switch(current_mode)
-        {
-            case 0: Log.d("checking_images", "silent  "+current_mode);
-                //need to initialize the image resource
-                //silent.setImageResource(0);
-                //set image
-                silent.setImageResource(R.drawable.silent);
-                break;
-            case 1: Log.d("checking_images", "vibrate  "+current_mode);
-                break;
-            case 2: Log.d("checking_images", "normal  "+current_mode);
-                //need to initiallize the image resource
-                normal.setImageResource(0);
-                //set image
-                normal.setImageResource(R.drawable.normal);
-                break;
-            default: Log.d("checking_images", "default  "+current_mode);
-                break;
-
-        }
-
-    }*/
-
-
 
 }

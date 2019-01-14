@@ -6,31 +6,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
-import java.sql.Struct;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Fragment2 extends Fragment {
 
-    //define variables
-    ListView list;
-    private ListView_Adapter2 data;
-
-
-
-
-
-
+    private static Boolean debugLifecycle = false;
+    private Fragment2ListViewAdapter data;
 
     public Fragment2() {
         // Required empty public constructor
     }
 
     public static Fragment2 newInstance() {
-        Log.d("LIFECYCLE Fragment2", "newInstance()");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F2", "newInstance()"); }
         Fragment2 fragment = new Fragment2();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -39,57 +30,65 @@ public class Fragment2 extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d("LIFECYCLE Fragment2", "onCreate");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F2", "onCreate"); }
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("LIFECYCLE Fragment2", "onCreateView(...)");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F2", "onCreateView(...)"); }
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_fragment2, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_fragment2, container, false);
+
         EventController EC = new EventController(getContext());
         ArrayList<EventOutput> resultEvents =  EC.getAllSavedEvents();
-
-
-
-        //data = new ListView_Adapter2(getContext(),Arrays.asList(values));
-        data = new ListView_Adapter2(getContext(), resultEvents);
-
-        // Get a reference to the ListView, and attach this adapter to it.
+        data = new Fragment2ListViewAdapter(getContext(), resultEvents);
         ListView listView = rootView.findViewById(R.id.listView_Items);
         listView.setAdapter(data);
+
+        // refresh button
+        ImageButton btnRefresh = rootView.findViewById(R.id.f2_btn_refresh);
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventController EC = new EventController(getContext());
+                ArrayList<EventOutput> resultEvents =  EC.getAllSavedEvents();
+                data = new Fragment2ListViewAdapter(getContext(), resultEvents);
+                ListView listView = rootView.findViewById(R.id.listView_Items);
+                listView.setAdapter(data);
+            }
+        });
 
         return rootView;
     }
 
     @Override
     public void onStart() {
-        Log.d("LIFECYCLE Fragment2", "onStart");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F2", "onStart"); }
         super.onStart();
     }
 
     @Override
     public void onResume() {
-        Log.d("LIFECYCLE Fragment2", "onResume");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F2", "onResume"); }
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        Log.d("LIFECYCLE Fragment2", "onPause");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F2", "onPause"); }
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        Log.d("LIFECYCLE Fragment2", "onStop");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F2", "onStop"); }
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Log.d("LIFECYCLE Fragment2", "onDestroy");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F2", "onDestroy"); }
         super.onDestroy();
     }
 

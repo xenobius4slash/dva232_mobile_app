@@ -1,15 +1,10 @@
 package se.mdh.dva232.project.shutup;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -35,7 +29,7 @@ public class Fragment0 extends Fragment {
     }
 
     public static Fragment0 newInstance() {
-        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "newInstance()"); }
+        if (debugLifecycle) { Log.d("LIFECYCLE_F0", "newInstance()"); }
         Fragment0 fragment = new Fragment0();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -44,13 +38,13 @@ public class Fragment0 extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onCreate"); }
+        if (debugLifecycle) { Log.d("LIFECYCLE_F0", "onCreate"); }
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onCreateView(...)"); }
+        if (debugLifecycle) { Log.d("LIFECYCLE_F0", "onCreateView(...)"); }
 
         final EventController EC = new EventController( getContext() );
         final SharedPreferences settings = getContext().getSharedPreferences("UserInfo", 0);
@@ -488,31 +482,31 @@ public class Fragment0 extends Fragment {
 
     @Override
     public void onStart() {
-        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onStart"); }
+        if (debugLifecycle) { Log.d("LIFECYCLE_F0", "onStart"); }
         super.onStart();
     }
 
     @Override
     public void onResume() {
-        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onResume"); }
+        if (debugLifecycle) { Log.d("LIFECYCLE_F0", "onResume"); }
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onPause"); }
+        if (debugLifecycle) { Log.d("LIFECYCLE_F0", "onPause"); }
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onStop"); }
+        if (debugLifecycle) { Log.d("LIFECYCLE_F0", "onStop"); }
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        if (debugLifecycle) { Log.d("LIFECYCLE Fragment0", "onDestroy"); }
+        if (debugLifecycle) { Log.d("LIFECYCLE_F0", "onDestroy"); }
         super.onDestroy();
     }
 
@@ -633,42 +627,5 @@ public class Fragment0 extends Fragment {
             }
         }
     }
-
-
-
-    /*private void selectAudioModeForImage(ImageView silent, ImageView normal, ImageView vibration)
-    {
-        SystemClock.sleep(1000);
-        AudioManager AM = (AudioManager) getContext().getSystemService(getContext().AUDIO_SERVICE);
-        int current_mode = AM.getRingerMode();
-        Log.d("F0", "current sound mode: " + AM.getRingerMode() );
-
-        switch(current_mode)
-        {
-            case 0: Log.d("checking_images", "silent  "+current_mode);
-                normal.setVisibility(View.GONE);
-                vibration.setVisibility(View.GONE);
-                silent.setVisibility(View.VISIBLE);
-                silent.setImageResource(R.drawable.baseline_volume_off_black_18dp);
-                break;
-            case 1: Log.d("checking_images", "vibrate  "+current_mode);
-                normal.setVisibility(View.GONE);
-                vibration.setVisibility(View.VISIBLE);
-                silent.setVisibility(View.GONE);
-                vibration.setImageResource(R.drawable.baseline_vibration_black_18dp);
-                break;
-            case 2: Log.d("checking_images", "normal  "+current_mode);
-                normal.setVisibility(View.VISIBLE);
-                vibration.setVisibility(View.GONE);
-                silent.setVisibility(View.GONE);
-                normal.setImageResource(R.drawable.baseline_volume_up_black_18dp);
-                break;
-            default: Log.d("checking_images", "default  "+current_mode);
-                break;
-
-        }
-
-    }*/
-
 
 }

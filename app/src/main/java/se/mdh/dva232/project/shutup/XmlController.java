@@ -39,6 +39,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+/**
+ * Struct for the ListView on Fragment 2
+ * @author Sylvio Ujvari
+ */
 class EventOutput {
     private String id;
     private String name;
@@ -64,6 +68,10 @@ class EventOutput {
     String getEndTime() { return  endTime; }
 }
 
+/**
+ * Struct for saving results about the current collision detection
+ * @author Sylvio Ujvari
+ */
 class Collision {
     private Boolean collision;
     private Integer collisionCode;
@@ -98,7 +106,8 @@ class XmlController {
     private Context context;
     private String xmlFilename = "events.xml";
     private String xmlContent = null;
-    private Boolean debug = true;       // true: with Log.d output; false: without Log.d output
+    private Boolean debug = false;              // true: with Log.d output; false: without Log.d output
+    private Boolean debugCollision = true;      // true: with Log.d output; false: without Log.d output
     private Collision currentCollision = null;
 
     /**
@@ -114,6 +123,58 @@ class XmlController {
     // public methods
     //
 
+    Boolean isEventActiveById(String checkEventId) {
+        if(debug) { Log.d("XMLC", "isEventActiveById("+checkEventId+")"); }
+        Boolean active = false;
+        try {
+            XmlPullParserFactory xmlFactory = XmlPullParserFactory.newInstance();
+            XmlPullParser xmlParser = xmlFactory.newPullParser();
+            xmlParser.setInput( new StringReader( getXmlContent() ));
+            String eventId=null, startDateString=null, startTimeString=null, endDateString=null, endTimeString=null, name=null;
+            Boolean found = false;
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            while(xmlParser.next() != XmlPullParser.END_DOCUMENT && !found) {
+                if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("event")) {
+                    eventId = xmlParser.getAttributeValue("", "id");
+                } else if ( checkEventId.equals(eventId) ) {
+                    if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("start_date")) {
+                        xmlParser.next();
+                        startDateString = xmlParser.getText();
+                    } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("start_time")) {
+                        xmlParser.next();
+                        startTimeString = xmlParser.getText();
+                    } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("end_date")) {
+                        xmlParser.next();
+                        endDateString = xmlParser.getText();
+                    } else if ( xmlParser.getEventType() == XmlPullParser.START_TAG && xmlParser.getName().equals("end_time")) {
+                        xmlParser.next();
+                        endTimeString = xmlParser.getText();
+                    } else if ( xmlParser.getEventType() == XmlPullParser.END_TAG && xmlParser.getName().equals("event")) {
+                        Date startDateTime = sdfDateTime.parse(startDateString + " " + startTimeString);
+                        Date endDateTime = sdfDateTime.parse(endDateString + " " + endTimeString);
+                        Date now = Calendar.getInstance().getTime();
+                        // is current checking event active?
+                        if ( (now.equals(startDateTime) || now.after(startDateTime)) && (now.before(endDateTime) || now.equals(endDateTime)) ) {
+                            active = true;
+                        }
+                        found = true;
+                    }
+                }
+            }
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return active;
+    }
+
+    /**
+     * Returns all saved events in an ArrayList of Struct's (EventOutput)
+     * @return      ArrayList<EventOutput>      List of EventOutput-Struct's
+     */
     ArrayList<EventOutput> getAllEventsFromTheXmlContent() {
         if(debug) { Log.d("XMLC", "getAllEventsFromTheXmlContent()"); }
         logCurrentXmlContent();
@@ -150,11 +211,6 @@ class XmlController {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        if (!eventArray.isEmpty()) {
-            for (int i = 0; i < eventArray.size(); i++) {
-                Log.d("XMLC", "eventArray["+i+"] => id: "+eventArray.get(i).getId()+" // name: "+eventArray.get(i).getName()+" // startDate: "+eventArray.get(i).getStartDate()+" // startTime: "+eventArray.get(i).getStartTime()+" // endDate: "+eventArray.get(i).getEndDate()+" // endTime: "+eventArray.get(i).getEndTime());
-            }
         }
         return eventArray;
     }
@@ -248,9 +304,9 @@ class XmlController {
                 } else if ( xmlParser.getEventType() == XmlPullParser.END_TAG && xmlParser.getName().equals("event")) {
                     checkForCollision(startDateTime, endDateTime, newStartDateTime, newEndDateTime);
 
-                    Log.d("XMLC", "Collision Sruct: getCollision(): " + getCurrentCollision().getCollision());
+                    if (debugCollision) { Log.d("XMLC_COLLISION", "Collision Sruct: getCollision(): " + getCurrentCollision().getCollision()); }
                     if( getCurrentCollision().getCollision() ) {
-                        Log.d("XMLC", "collision detected -> eventId: "+ getCurrentCollision().getCollisionEventId()+ " // code: "+getCurrentCollision().getCollisionCode());
+                        if (debugCollision) { Log.d("XMLC_COLLISION", "collision detected -> eventId: "+ getCurrentCollision().getCollisionEventId()+ " // code: "+getCurrentCollision().getCollisionCode()); }
                         getCurrentCollision().setCollisionEventId(eventId);
                     }
                     collision = getCurrentCollision().getCollision();
@@ -401,8 +457,10 @@ class XmlController {
         Document doc = getDocumentOfXmlContent();
         if (doc != null) {
             Node nToRemove = doc.getElementById(id);
-            nToRemove.getParentNode().removeChild( nToRemove );
-            writeChangesToXmlContent(doc);
+            if (nToRemove != null) {
+                nToRemove.getParentNode().removeChild(nToRemove);
+                writeChangesToXmlContent(doc);
+            }
         }
     }
 
@@ -429,7 +487,6 @@ class XmlController {
                     Date now = Calendar.getInstance().getTime();
                     if (now.after(endDateTime)) {    // is "endDateTime" after now?
                         // event is past => remove event
-                        Log.d("XMLC","removeAllPastEventsFromXmlContent() -> IF("+now.toString()+" is after "+endDateTime.toString()+") is TRUE -> remove event with id " + id);
                         nRoot.removeChild( nRootList.item(i) );
                         deletion = true;
                     }
@@ -551,7 +608,7 @@ class XmlController {
     void modifySavedEventsRegardingCollisionInXmlContent(String newStartDate, String newStartTime, String newEndDate, String newEndTime) {
         if (!debug) { Log.d("XMLC", "modifySavedEventsRegardingCollisionInXmlContent("+newStartDate+", "+newStartTime+", "+newEndDate+", "+newEndTime+")"); }
         if ( getCurrentCollision().getCollision() ) {
-            Log.d("XMLC_COLLISION","collision: TRUE // collisionEventId: "+getCurrentCollision().getCollisionEventId()+" // collisionCode: "+getCurrentCollision().getCollisionCode()+" // collisionMessage: " + getCurrentCollision().getCollisionMessage() );
+            if (debugCollision) { Log.d("XMLC_COLLISION","collision: TRUE // collisionEventId: "+getCurrentCollision().getCollisionEventId()+" // collisionCode: "+getCurrentCollision().getCollisionCode()+" // collisionMessage: " + getCurrentCollision().getCollisionMessage() ); }
             if (getCurrentCollision().getCollisionCode() == 10) {
                 /*
                  * current event for check: -----------------------|----------------|-------------------->
@@ -569,9 +626,9 @@ class XmlController {
                     writeChangesToXmlContent(doc);      // write to XML content
                     logCurrentXmlContent();
                     if (!isCollisionByNewEvent(newStartDate, newStartTime, newEndDate, newEndTime)) {
-                        Log.d("XMLC", "[COLLISION] --> modify success");
+                        if (debugCollision) { Log.d("XMLC_COLLISION", "modify success"); }
                     } else {
-                        Log.d("XMLC", "[COLLISION] --> modify not success");
+                        if (debugCollision) { Log.d("XMLC_COLLISION", "modify not success"); }
                     }
                 }
             } else if (getCurrentCollision().getCollisionCode() == 30) {
@@ -597,7 +654,7 @@ class XmlController {
                 }
 
             } else {
-                Log.d("XMLC", "modifySavedEventsRegardingCollisionInXmlContent(...) -> collision code not equal 10 or 30");
+                if (debugCollision) { Log.d("XMLC_COLLISION", "modifySavedEventsRegardingCollisionInXmlContent(...) -> collision code not equal 10 or 30"); }
             }
         }
     }
@@ -715,7 +772,7 @@ class XmlController {
      * Writes the current XML content string to the Log
      */
     void logCurrentXmlContent() {
-        Log.d("XMLC", "XML content: " + getXmlContent() );
+        Log.d("XMLC", "XML-LOG content: " + getXmlContent() );
     }
 
 

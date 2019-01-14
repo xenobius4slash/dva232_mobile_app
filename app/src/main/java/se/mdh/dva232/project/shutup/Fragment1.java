@@ -24,12 +24,14 @@ import java.util.Date;
 
 public class Fragment1 extends Fragment {
 
+    private static Boolean debugLifecycle = false;
+
     public Fragment1() {
         // Required empty public constructor
     }
 
     public static Fragment1 newInstance() {
-        Log.d("LIFECYCLE Fragment1", "newInstance()");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F1", "newInstance()"); }
         Fragment1 fragment = new Fragment1();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -38,7 +40,7 @@ public class Fragment1 extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d("LIFECYCLE Fragment1", "onCreate");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F1", "onCreate"); }
         super.onCreate(savedInstanceState);
 
     }
@@ -46,7 +48,7 @@ public class Fragment1 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        Log.d("LIFECYCLE Fragment1", "onCreateView(...)");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F1", "onCreateView(...)"); }
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_fragment1, container, false);
 
@@ -158,42 +160,41 @@ public class Fragment1 extends Fragment {
 
     @Override
     public void onStart() {
-        Log.d("LIFECYCLE Fragment1", "onStart");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F1", "onStart"); }
         super.onStart();
     }
 
     @Override
     public void onResume() {
-        Log.d("LIFECYCLE Fragment1", "onResume");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F1", "onResume"); }
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        Log.d("LIFECYCLE Fragment1", "onPause");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F1", "onPause"); }
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        Log.d("LIFECYCLE Fragment1", "onStop");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F1", "onStop"); }
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Log.d("LIFECYCLE Fragment1", "onDestroy");
+        if (debugLifecycle) { Log.d("LIFECYCLE_F1", "onDestroy"); }
         super.onDestroy();
     }
 
     /**
      * show or hide the text which indicated that the end time is on the next day
-     * @param timePickerStart
-     * @param timePickerEnd
-     * @param textNextDay
+     * @param timePickerStart   TimePicker      for the start time
+     * @param timePickerEnd     TimePicker      for the end time
+     * @param textNextDay       TextView        hint "next day"
      */
     void setVisibilityTextByTimePicker(TimePicker timePickerStart, TimePicker timePickerEnd, TextView textNextDay) {
-        Log.d("F1-ACTIVATE", "setVisibilityTextByTimePicker(...)");
         Integer startTimeHour, startTimeMinute, endTimeHour, endTimeMinute;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             startTimeHour = timePickerStart.getHour();
@@ -219,16 +220,15 @@ public class Fragment1 extends Fragment {
 
     /**
      * prepare the inputs for calling the activate silent mode function regarding the mode (for duration or until time)
-     * @param EC
-     * @param startDate
-     * @param startTime
-     * @param endTime
-     * @param eventName
+     * @param EC                EventController
+     * @param startDate         Date                    Date object
+     * @param startTime         String                  String of start time
+     * @param endTime           String                  String of end time
+     * @param eventName         String                  name of the event
      */
     private void doActivateSilentMode(EventController EC, Date startDate, String startTime, String endTime, String eventName) {
         Log.d("F1_ACTIVATE","doActivateSilentMode(..., "+startDate+", "+startTime+", "+endTime+", "+eventName+")");
 
-        Boolean addDay = false;
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
@@ -247,7 +247,6 @@ public class Fragment1 extends Fragment {
                     temp.setTime(endDateTime);
                     temp.add(Calendar.DAY_OF_MONTH, 1);
                     endDateTime = temp.getTime();
-                    addDay = true;
                     Log.d("F1_ACTIVATE", "add one day -> start: " + sdfDateTime.format(startDateTime) + " // end: " + sdfDateTime.format(endDateTime));
                 } else {
                     Log.d("F1_ACTIVATE", "start: " + sdfDateTime.format(startDateTime) + " // end: " + sdfDateTime.format(endDateTime));

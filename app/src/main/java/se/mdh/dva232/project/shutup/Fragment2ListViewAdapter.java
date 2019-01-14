@@ -1,5 +1,6 @@
 package se.mdh.dva232.project.shutup;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,15 +11,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class ListView_Adapter2 extends ArrayAdapter<EventOutput> {
+/**
+ * @author Alberto Herraez Kuwana
+ */
+public class Fragment2ListViewAdapter extends ArrayAdapter<EventOutput> {
 
 
-    public ListView_Adapter2(Context context, ArrayList<EventOutput> elements) {
+    Fragment2ListViewAdapter(Context context, ArrayList<EventOutput> elements) {
         // Here, we initialize the ArrayAdapter's internal storage for the context and the list.
         // the second argument is used when the ArrayAdapter is populating a single TextView.
         // Because this is a custom adapter for two TextViews and an ImageView, the adapter is not
@@ -26,6 +28,7 @@ public class ListView_Adapter2 extends ArrayAdapter<EventOutput> {
         super(context, 0, elements);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -45,7 +48,7 @@ public class ListView_Adapter2 extends ArrayAdapter<EventOutput> {
 
         //set values
         NameView.setText(e.getName());
-        NumberView.setText(e.getStartTime()+" - "+e.getEndTime());
+        NumberView.setText(e.getStartTime().substring(0, 5)+" - "+e.getEndTime().substring(0, 5) );
         DateView.setText(e.getStartDate());
         button.setImageResource(R.drawable.baseline_delete_black_18dp);
 
@@ -53,24 +56,25 @@ public class ListView_Adapter2 extends ArrayAdapter<EventOutput> {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(getContext(),"button clicked",Toast.LENGTH_SHORT).show();
+                EventController EC = new EventController(getContext());
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setCancelable(true);
-                builder.setTitle(getContext().getString(R.string.f3_confirm_delete_title));
-                //builder.setMessage("Message");
+                builder.setTitle(getContext().getString(R.string.f2_confirm_delete_title));
+                if ( EC.isEventActive(e.getId()) ) {
+                    builder.setMessage(getContext().getString(R.string.f2_confirm_delete_message_active_event));
+                }
                 builder.setPositiveButton("Confirm",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Log.d("confirmation dialog","positive which: "+which+" id: "+e.getId());
                                 EventController EC = new EventController(getContext());
                                 EC.deleteEventById(e.getId());
+                                EC.runOpenTasks();
                             }
                         });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d("confirmation dialog","negative which: "+which);
                     }
                 });
 

@@ -29,12 +29,14 @@
     <string name="f1_select_date_text"> - </string>
     <string name="f1_activate_button">ACTIVATE EVENT</string>
     <string name="f1_text_end_time_next_day_string">next day</string>
+    <string name="f1_hint_input">name of the event</string>
     <string name="f2_text_current_events">SAVED EVENTS</string>
-    <string name="f3_confirm_delete_title">Delete Event?</string>
-    <string name="f3_confirm_delete_message"></string>
-    <string name="manual_message">It is possible to change the default value of each button (time) at the page \"NOW\".\n
-                For changing the value press and hold the button.</string>
+    <string name="f2_description_btn_delete">delete event</string>
+    <string name="f2_confirm_delete_title">Delete Event?</string>
+    <string name="f2_confirm_delete_message_active_event">Selected event is currently active. If you delete the event the silent mode will stop.</string>
+    <string name="manual_message">It is possible to change the default value of each button (time) at the page "NOW". For changing the value press and hold the button.</string>
     <string name="manual_title">MANUAL</string>
+    <string name="refresh">refresh</string>
 
 
 
